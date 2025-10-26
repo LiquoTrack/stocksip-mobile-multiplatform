@@ -1,0 +1,14 @@
+En la carpeta "/home" va el código relacionado con la vista principal y la barra de navegación.
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets

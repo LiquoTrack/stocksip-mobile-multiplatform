@@ -1,0 +1,23 @@
+En esta carpeta se desarrolla la funcionalidad para creación de cuentas.
+
+Funcionalidades:
+    - Permitir la creación de cuentas solo para dueños de licorerías.
+    - Pedir datos iniciales -> Correo, contraseña.
+    - Pedir datos del negocio -> Ubicación, nombre, etc.
+    - Opcional: Pedir datos personales del dueño de negocio.
+    - Dirigir a la vista de "subscription" para elegir un plan para la cuenta.
+
+Nota: Podría ser mejor iniciar desde una vista base con una bienvenida y un botón para empezar la creación de cuenta que redirija a "subscription" primero.
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets

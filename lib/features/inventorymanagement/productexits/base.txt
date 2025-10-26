@@ -1,0 +1,17 @@
+Funcionalidades:
+    - Visualizar el historial de salidas de products (solo algunos datos).
+    - Al dar clic a una salida, acceder al detalle completo.
+    - Se accede desde "Warehouses".
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets

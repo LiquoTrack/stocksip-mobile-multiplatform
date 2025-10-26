@@ -1,0 +1,19 @@
+En esta carpeta se desarrolla la funcionalidad de inicio de sesión.
+
+Funcionalidades:
+    - Iniciar sesión con correo/usuario y contraseña (puede ser oculta).
+    - Botón para recuperación de contraseña.
+    - Botón para autenticar y acceder a "home".
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets

@@ -1,0 +1,19 @@
+En esta carpeta va la funcionalidad relacionada al panel de administrador.
+
+Funcionalidades:
+    - Poder crear nuevos usuarios (email, contraseña, etc).
+    - Poder eliminar usuarios.
+    - Visualizar la lista de usuarios (y sus roles).
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets
