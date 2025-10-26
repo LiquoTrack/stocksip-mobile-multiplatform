@@ -1,0 +1,18 @@
+Funcionalidades:
+    - Mostrar los planes disponibles.
+    - Se accede desde una vista principal que no es login.
+    - Debe permitir al usuario elegir el plan y realizar el pago.
+    - Luego debe redirigir a "Register".
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets
