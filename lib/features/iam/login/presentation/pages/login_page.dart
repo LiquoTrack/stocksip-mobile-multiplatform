@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stocksip/features/home/presentation/pages/home_page.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_event.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_state.dart';
@@ -21,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         switch (state.status) {
           case Status.success:
-            Text('Login successful');
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
           case Status.failure:
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message ?? 'Unknown error')),

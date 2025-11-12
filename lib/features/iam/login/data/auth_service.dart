@@ -14,7 +14,7 @@ class AuthService {
   /// and a [FormatException] for JSON parsing errors.
   Future<User> login(String email, String password) async {
     try {
-      final Uri uri = Uri.parse(ApiConstants.baseUrl).replace(path: ApiConstants.signIn);
+      final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.signIn);
 
       final http.Response response = await http.post(
         uri,
