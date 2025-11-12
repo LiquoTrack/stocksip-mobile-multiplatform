@@ -23,8 +23,8 @@ class AuthService {
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        final json = jsonDecode(response.body)
-        return User.fromJson(json)
+        final json = jsonDecode(response.body);
+        return User.fromJson(json);
       }
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
     } on SocketException {
