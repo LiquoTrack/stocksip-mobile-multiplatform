@@ -1,0 +1,21 @@
+Funcionalidades:
+    - Crear guía de conservación a partir de un archivo.
+    - Crear guía de conservación manualmente pudiendo asociarlo a un producto en su creación.
+    - Desasignar guía de conservación de un producto.
+    - Asignar guía de conservación a un producto.
+    - Eliminar guía de conservación.
+    - Modificar guía de conservación.
+    - Exportar guía de conservación (pdf, txt).
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets

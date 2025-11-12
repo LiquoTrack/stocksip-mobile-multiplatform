@@ -1,0 +1,16 @@
+Funcionalidades:
+    - Mostrar el historial de ordenes de venta concretadas.
+    - Mostrar detalle igual que ordenes de compra.
+
+La estructura del código se ordena según Clean Architecture de la siguiente forma:
+
+- data
+    - datasources
+    - models
+    - repositories
+- domain
+    - entities
+- presentation
+    - blocs
+    - pages
+    - widgets
