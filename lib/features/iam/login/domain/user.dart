@@ -3,6 +3,7 @@ class User {
   final String userId;
   final String email;
   final String username;
+  final String accountId;
 
   /// Constructs a User instance with the given parameters.
   const User({
@@ -10,15 +11,16 @@ class User {
     required this.userId,
     required this.email,
     required this.username,
+    required this.accountId,
   });
 
-  /// Creates a User instance from a JSON map.
-  factory User.fromJson(Map<String, dynamic> json) {
+    factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      token: json['token'],
-      userId: json['userId'],
+      token: json['firstName'],
+      userId: json['lastName'],
       email: json['email'],
-      username: json['username'],
+      username: json['token'],
+      accountId: json['accountId'],
     );
   }
 }

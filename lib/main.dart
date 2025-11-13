@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stocksip/core/ui/theme.dart';
-import 'package:stocksip/features/iam/login/data/auth_service.dart';
+import 'package:stocksip/features/iam/login/data/services/remote/auth_service.dart';
 import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';

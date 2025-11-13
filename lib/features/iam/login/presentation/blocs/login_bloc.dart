@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stocksip/features/iam/login/data/auth_service.dart';
+import 'package:stocksip/features/iam/login/data/services/remote/auth_service.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_event.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_state.dart';
 import 'package:stocksip/core/enums/status.dart';
