@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.dart';
-import 'package:stocksip/features/iam/register/presentation/bloc/register_event.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_state.dart';
+import 'package:stocksip/features/iam/register/presentation/bloc/register_event.dart';
 import 'package:stocksip/features/iam/register/presentation/pages/register_account.dart';
 import 'package:stocksip/shared/presentation/widgets/stocksip_title.dart';
 
@@ -21,11 +20,10 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
-      listenWhen: (previous, current) => previous.status != current.status,
+      listenWhen: (previous, current) => previous.message != current.message,
       listener: (context, state) {
         if (state.message != null) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message!),
@@ -34,8 +32,6 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
               duration: const Duration(seconds: 2),
             ),
           );
-
-          context.read<RegisterBloc>().add(ClearMessage());
         }
       },
       child: Scaffold(
@@ -56,160 +52,141 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
               child: Container(color: const Color(0xFFF4ECEC)),
             ),
             Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-
-                  const StockSipLogo(),
-                
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "User Info",
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        const SizedBox(height: 10),
-                        TextField(
-                          onChanged: (value) {
-                            context.read<RegisterBloc>().add(
-                              OnUsernameChanged(username: value),
-                            );
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Username',
-                            prefixIcon: const Icon(Icons.person),
-                            filled: true,
-                            fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          onChanged: (value) {
-                            context.read<RegisterBloc>().add(
-                              OnEmailChanged(email: value),
-                            );
-                          },
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            hintText: 'Email',
-                            prefixIcon: const Icon(Icons.email),
-                            filled: true,
-                            fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          onChanged: (value) {
-                            context.read<RegisterBloc>().add(
-                              OnPasswordChanged(password: value),
-                            );
-                          },
-                          obscureText: _isHidden,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                            prefixIcon: const Icon(Icons.lock),
-                            filled: true,
-                            fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isHidden
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
-                              onPressed: () =>
-                                  setState(() => _isHidden = !_isHidden),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          onChanged: (value) {
-                            context.read<RegisterBloc>().add(
-                              OnConfirmPasswordChanged(confirmPassword: value),
-                            );
-                          },
-                          obscureText: _isConfirmHidden,
-                          decoration: InputDecoration(
-                            hintText: 'Confirm Password',
-                            prefixIcon: const Icon(Icons.lock),
-                            filled: true,
-                            fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isConfirmHidden
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
-                              onPressed: () => setState(
-                                () => _isConfirmHidden = !_isConfirmHidden,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        BlocSelector<RegisterBloc, RegisterState, bool>(
-                          selector: (state) => state.isFormValid,
-                          builder: (context, isFormValid) {
-                            return SizedBox(
-                              height: 55,
-                              width: MediaQuery.of(context).size.width * 0.85,
-                              child: FilledButton(
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: isFormValid
-                                      ? const Color(0xFF2B000D)
-                                      : Colors.grey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const StockSipLogo(),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "User Info",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                onPressed: isFormValid
-                                    ? () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                const RegisterAccountPage(),
-                                          ),
-                                        );
-                                      }
-                                    : null,
-                                child: const Text(
-                                  'Next',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 28,
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            onChanged: (value) => context.read<RegisterBloc>().add(
+                                  OnUsernameChanged(username: value),
+                                ),
+                            decoration: InputDecoration(
+                              hintText: 'Name',
+                              prefixIcon: const Icon(Icons.person),
+                              filled: true,
+                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            onChanged: (value) => context.read<RegisterBloc>().add(
+                                  OnEmailChanged(email: value),
+                                ),
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              hintText: 'Email',
+                              prefixIcon: const Icon(Icons.email),
+                              filled: true,
+                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            onChanged: (value) => context.read<RegisterBloc>().add(
+                                  OnPasswordChanged(password: value),
+                                ),
+                            obscureText: _isHidden,
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              prefixIcon: const Icon(Icons.lock),
+                              filled: true,
+                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              suffixIcon: IconButton(
+                                icon: Icon(_isHidden ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => _isHidden = !_isHidden),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            onChanged: (value) => context.read<RegisterBloc>().add(
+                                  OnConfirmPasswordChanged(confirmPassword: value),
+                                ),
+                            obscureText: _isConfirmHidden,
+                            decoration: InputDecoration(
+                              hintText: 'Confirm Password',
+                              prefixIcon: const Icon(Icons.lock),
+                              filled: true,
+                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              suffixIcon: IconButton(
+                                icon: Icon(_isConfirmHidden ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => _isConfirmHidden = !_isConfirmHidden),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          BlocSelector<RegisterBloc, RegisterState, bool>(
+                            selector: (state) => state.isUserInfoValid,
+                            builder: (context, isFormValid) {
+                              return SizedBox(
+                                height: 55,
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                child: FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor:
+                                        isFormValid ? const Color(0xFF2B000D) : Colors.grey,
+                                  ),
+                                  onPressed: isFormValid
+                                      ? () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => const RegisterAccountPage(),
+                                            ),
+                                          );
+                                        }
+                                      : null,
+                                  child: const Text(
+                                    'Next',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 28,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
