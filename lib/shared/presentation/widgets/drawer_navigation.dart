@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
+import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/pages/storage_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
 class DrawerNavigation extends StatelessWidget {
@@ -83,7 +84,17 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.inventory,
                     title: 'Products',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => StoragePage(
+                        onNavigate: (String route) {
+                          
+                        },
+                        onLogout: () {
+                          // Handle logout
+                        },
+                      )),
+                    ),
                   ),
                   NavigationTile(
                     icon: Icons.local_offer,
