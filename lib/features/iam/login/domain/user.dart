@@ -14,12 +14,13 @@ class User {
     required this.accountId,
   });
 
-    factory User.fromJson(Map<String, dynamic> json) {
+  /// Creates a User instance from a JSON map.
+  factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      token: json['firstName'],
-      userId: json['lastName'],
+      token: json['token'],
+      userId: json['userId'],
       email: json['email'],
-      username: json['token'],
+      username: json['username'],
       accountId: json['accountId'],
     );
   }
