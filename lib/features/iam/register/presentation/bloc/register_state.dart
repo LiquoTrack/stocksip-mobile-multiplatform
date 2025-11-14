@@ -2,12 +2,11 @@ import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/iam/register/domain/account_role.dart';
 
 class RegisterState {
-
   final Status status;
   final String username;
   final String email;
   final String password;
-  final String confirmPassword;  
+  final String confirmPassword;
   final String businessName;
   final AccountRole accountRole;
   final bool isPasswordVisible;
@@ -25,7 +24,7 @@ class RegisterState {
   /// [businessName] - The business name entered by the user.
   /// [isPasswordVisible] - Flag indicating if the password is visible.
   /// [doPasswordsMatch] - Flag indicating if the password and confirmation password match.
-  /// [isPasswordLongEnough] - Flag indicating if the password meets the minimum length requirement.  
+  /// [isPasswordLongEnough] - Flag indicating if the password meets the minimum length requirement.
   /// [message] - An optional message, typically used for error messages.
   const RegisterState({
     this.status = Status.initial,
@@ -38,7 +37,7 @@ class RegisterState {
     this.isPasswordVisible = false,
     this.doPasswordsMatch = true,
     this.isPasswordLongEnough = false,
-    this.message,    
+    this.message,
   });
 
   /// Creates a copy of the current state with optional new values.
@@ -69,4 +68,10 @@ class RegisterState {
       message: message ?? this.message,
     );
   }
+
+  bool get isFormValid =>
+      username.isNotEmpty &&
+      email.isNotEmpty &&
+      isPasswordLongEnough &&
+      doPasswordsMatch;
 }

@@ -41,18 +41,33 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
     });
 
+    on<ClearMessage>((event, emit) {
+      emit(state.copyWith(message: null));
+    });
+
     on<Register>(_onRegister);
   }
 
   /// Validate both passwords
   void _validatePasswords(Emitter<RegisterState> emit) {
-    final newPassword = state.password;
-    final newConfirmPassword = state.confirmPassword;
+    final password = state.password;
+    final confirmPassword = state.confirmPassword;
+
+    bool longEnough = password.length >= 8;
+    bool match = password == confirmPassword;
+    String? message;
+
+    if (password.isNotEmpty && password.length < 8) {
+      message = "Password must be at least 8 characters long.";
+    } else if (confirmPassword.isNotEmpty && !match) {
+      message = "Passwords do not match.";
+    }
 
     emit(
       state.copyWith(
-        isPasswordLongEnough: newPassword.length >= 8 && newConfirmPassword.length >= 8,
-        doPasswordsMatch: newPassword == newConfirmPassword,
+        isPasswordLongEnough: longEnough,
+        doPasswordsMatch: match,
+        message: message,
       ),
     );
   }

@@ -50,3 +50,7 @@ class OnConfirmPasswordChanged extends RegisterEvent {
   final String confirmPassword;
   const OnConfirmPasswordChanged({required this.confirmPassword});
 }
+
+class ClearMessage extends RegisterEvent {
+  const ClearMessage();
+}
