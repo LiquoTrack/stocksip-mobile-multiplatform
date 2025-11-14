@@ -6,16 +6,17 @@ import 'package:stocksip/core/constants/api_constants.dart';
 import 'package:stocksip/features/inventorymanagement/storage/domain/product_request.dart';
 import 'package:stocksip/features/inventorymanagement/storage/domain/product_response.dart';
 import 'package:stocksip/features/inventorymanagement/storage/domain/product_update_request.dart';
+import 'package:stocksip/features/inventorymanagement/storage/domain/products_with_count.dart';
 
 /// Service class to handle product-related API calls.
 class ProductService {
 
   /// Fetches products associated with the given [accountId].
-  /// Returns a list of [ProductResponse] instances upon successful retrieval.
+  /// Returns a list of [ProductsWithCount] instances upon successful retrieval.
   /// Throws an [HttpException] for non-200 HTTP responses,
   /// a [SocketException] for network issues,
   /// and a [FormatException] for JSON parsing errors.
-  Future<List<ProductResponse>> getProductsByAccountId({required String accountId}) async {
+  Future<ProductsWithCount> getProductsByAccountId({required String accountId}) async {
     try {
       final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.getProductsByAccountId(accountId));
 
@@ -26,7 +27,7 @@ class ProductService {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        return (json as List).map((item) => ProductResponse.fromJson(item)).toList();
+        return ProductsWithCount.fromJson(json);
       }
 
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
