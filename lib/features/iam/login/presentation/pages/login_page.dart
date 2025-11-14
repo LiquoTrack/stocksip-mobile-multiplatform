@@ -5,6 +5,7 @@ import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_event.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_state.dart';
 import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/iam/register/presentation/pages/register_user_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isHidden = true;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
@@ -22,7 +24,10 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         switch (state.status) {
           case Status.success:
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
           case Status.failure:
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message ?? 'Unknown error')),
@@ -51,18 +56,11 @@ class _LoginPageState extends State<LoginPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image(
-                        image: AssetImage('assets/images/stocksip_logo.png'),
-                        height: MediaQuery.of(context).size.height * 0.15,
-                      ),
-                    ),
-                  ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image(
+                  image: const AssetImage('assets/images/stocksip_logo.png'),
+                  height: MediaQuery.of(context).size.height * 0.15,
                 ),
               ),
 
@@ -88,32 +86,29 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
 
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              const SizedBox(height: 20),
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.85,
                   child: TextField(
-                    onChanged: (value) => context.read<LoginBloc>().add(
-                      OnEmailChanged(email: value),
-                    ),
+                    onChanged: (value) {
+                      context.read<LoginBloc>().add(
+                        OnEmailChanged(email: value),
+                      );
+                    },
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
                       hintText: 'Email',
                       prefixIcon: const Icon(Icons.email),
                       filled: true,
-                      fillColor: Color.fromRGBO(255, 255, 255, 0.9),
-                      enabledBorder: OutlineInputBorder(
+                      fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(color: Colors.transparent),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(color: Colors.transparent),
+                        borderSide: BorderSide.none,
                       ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
                   ),
                 ),
               ),
@@ -123,35 +118,30 @@ class _LoginPageState extends State<LoginPage> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.85,
                   child: TextField(
-                    onChanged: (value) => context.read<LoginBloc>().add(
-                      OnPasswordChanged(password: value),
-                    ),
+                    onChanged: (value) {
+                      context.read<LoginBloc>().add(
+                        OnPasswordChanged(password: value),
+                      );
+                    },
+                    obscureText: _isHidden,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.lock),
                       hintText: 'Password',
+                      prefixIcon: const Icon(Icons.lock),
                       filled: true,
-                      fillColor: Color.fromRGBO(255, 255, 255, 0.9),
+                      fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
                       suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isHidden = !_isHidden;
-                          });
-                        },
                         icon: Icon(
                           _isHidden ? Icons.visibility_off : Icons.visibility,
                         ),
+                        onPressed: () {
+                          setState(() => _isHidden = !_isHidden);
+                        },
                       ),
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(color: Colors.transparent),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(color: Colors.transparent),
+                        borderSide: BorderSide.none,
                       ),
                     ),
-                    obscureText: _isHidden,
                   ),
                 ),
               ),
@@ -167,13 +157,15 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.15,
+                  height: 55,
                   width: MediaQuery.of(context).size.width * 0.85,
                   child: FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFF2B000D),
                     ),
-                    onPressed: () => context.read<LoginBloc>().add(Login()),
+                    onPressed: () {
+                      context.read<LoginBloc>().add(Login());
+                    },
                     child: const Text(
                       'Sign In',
                       style: TextStyle(
@@ -193,7 +185,14 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterUserPage(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Sign Up',
                       style: TextStyle(fontWeight: FontWeight.w600),
