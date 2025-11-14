@@ -12,20 +12,10 @@ class RegisterState {
   final bool isPasswordVisible;
   final bool doPasswordsMatch;
   final bool isPasswordLongEnough;
+  final bool isEmailValid;
+  final bool isBusinessNameValid;
   final String? message;
 
-  /// Constructor
-  /// [status] - The current status of the registration process.
-  /// [username] - The username entered by the user.
-  /// [email] - The email entered by the user.
-  /// [password] - The password entered by the user.
-  /// [confirmPassword] - The confirmation password entered by the user.
-  /// [accountRole] - The account role selected by the user.
-  /// [businessName] - The business name entered by the user.
-  /// [isPasswordVisible] - Flag indicating if the password is visible.
-  /// [doPasswordsMatch] - Flag indicating if the password and confirmation password match.
-  /// [isPasswordLongEnough] - Flag indicating if the password meets the minimum length requirement.
-  /// [message] - An optional message, typically used for error messages.
   const RegisterState({
     this.status = Status.initial,
     this.username = '',
@@ -37,10 +27,11 @@ class RegisterState {
     this.isPasswordVisible = false,
     this.doPasswordsMatch = true,
     this.isPasswordLongEnough = false,
+    this.isEmailValid = true,
+    this.isBusinessNameValid = false,
     this.message,
   });
 
-  /// Creates a copy of the current state with optional new values.
   RegisterState copyWith({
     Status? status,
     String? username,
@@ -52,6 +43,8 @@ class RegisterState {
     bool? isPasswordVisible,
     bool? doPasswordsMatch,
     bool? isPasswordLongEnough,
+    bool? isEmailValid,
+    bool? isBusinessNameValid,
     String? message,
   }) {
     return RegisterState(
@@ -65,6 +58,8 @@ class RegisterState {
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
       doPasswordsMatch: doPasswordsMatch ?? this.doPasswordsMatch,
       isPasswordLongEnough: isPasswordLongEnough ?? this.isPasswordLongEnough,
+      isEmailValid: isEmailValid ?? this.isEmailValid,
+      isBusinessNameValid: isBusinessNameValid ?? this.isBusinessNameValid,
       message: message ?? this.message,
     );
   }
@@ -72,6 +67,15 @@ class RegisterState {
   bool get isFormValid =>
       username.isNotEmpty &&
       email.isNotEmpty &&
+      isEmailValid &&
+      isPasswordLongEnough &&
+      isBusinessNameValid &&
+      doPasswordsMatch;
+
+  bool get isUserInfoValid =>
+      username.isNotEmpty &&
+      email.isNotEmpty &&
+      isEmailValid &&
       isPasswordLongEnough &&
       doPasswordsMatch;
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/features/iam/login/data/services/remote/auth_service.dart';
 import 'package:stocksip/features/iam/register/domain/account_role.dart';
@@ -17,6 +16,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     on<OnEmailChanged>((event, emit) {
       emit(state.copyWith(email: event.email));
+      _validateEmail(emit, event.email);
     });
 
     on<OnPasswordChanged>((event, emit) {
@@ -26,6 +26,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     on<OnBusinessNameChanged>((event, emit) {
       emit(state.copyWith(businessName: event.businessName));
+      _validateBusinessName(emit, event.businessName);
     });
 
     on<OnAccountRoleChanged>((event, emit) {
@@ -41,25 +42,30 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
     });
 
-    on<ClearMessage>((event, emit) {
-      emit(state.copyWith(message: null));
-    });
-
     on<Register>(_onRegister);
   }
 
-  /// Validate both passwords
+  void _validateEmail(Emitter<RegisterState> emit, String email) {
+    final isValid = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+    emit(
+      state.copyWith(
+        isEmailValid: isValid,
+        message: isValid ? null : 'Invalid email format',
+      ),
+    );
+  }
+
   void _validatePasswords(Emitter<RegisterState> emit) {
     final password = state.password;
     final confirmPassword = state.confirmPassword;
 
-    bool longEnough = password.length >= 8;
-    bool match = password == confirmPassword;
+    final longEnough = password.length >= 8;
+    final match = password == confirmPassword;
     String? message;
 
-    if (password.isNotEmpty && password.length < 8) {
+    if (password.isNotEmpty && !longEnough) {
       message = "Password must be at least 8 characters long.";
-    } else if (confirmPassword.isNotEmpty && !match) {
+    } else if (password.isNotEmpty && confirmPassword.isNotEmpty && !match) {
       message = "Passwords do not match.";
     }
 
@@ -72,7 +78,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     );
   }
 
-  /// Handles the registration process when the Register event is triggered.
+  void _validateBusinessName(Emitter<RegisterState> emit, String businessName) {
+    final isValid = businessName.length >= 3;
+    emit(
+      state.copyWith(
+        isBusinessNameValid: isValid,
+        message: isValid
+            ? null
+            : "Business name must be at least 3 characters long",
+      ),
+    );
+  }
+
   FutureOr<void> _onRegister(
     Register event,
     Emitter<RegisterState> emit,
@@ -80,15 +97,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(status: Status.loading));
     try {
       await service.register(
-        state.username,
         state.email,
         state.password,
+        state.username,
         state.businessName,
         state.accountRole.toApi(),
       );
       emit(state.copyWith(status: Status.success));
     } catch (e) {
-      emit(state.copyWith(message: e.toString()));
+      emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
   }
 }
