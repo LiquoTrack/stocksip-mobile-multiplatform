@@ -27,9 +27,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
         darkTheme: theme.dark(),
-        home: Scaffold(          
-          body: LoginPage()
-        ),
+        home: LoginPage()
       ),
     );
   }

@@ -20,7 +20,7 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
-      listenWhen: (previous, current) => previous.message != current.message,
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.message != null) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
