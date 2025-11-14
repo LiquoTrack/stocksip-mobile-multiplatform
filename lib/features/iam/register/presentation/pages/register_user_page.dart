@@ -5,6 +5,7 @@ import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.d
 import 'package:stocksip/features/iam/register/presentation/bloc/register_event.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_state.dart';
 import 'package:stocksip/features/iam/register/presentation/pages/register_account.dart';
+import 'package:stocksip/shared/presentation/widgets/stocksip_title.dart';
 
 class RegisterUserPage extends StatefulWidget {
   const RegisterUserPage({super.key});
@@ -58,29 +59,9 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Stock',
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(
-                              color: Colors.red,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      Text(
-                        'Sip',
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(
-                              color: Colors.white,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ),
+
+                  const StockSipLogo(),
+                
                   const SizedBox(height: 20),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,

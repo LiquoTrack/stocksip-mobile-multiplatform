@@ -6,6 +6,7 @@ import 'package:stocksip/features/iam/login/presentation/blocs/login_event.dart'
 import 'package:stocksip/features/iam/login/presentation/blocs/login_state.dart';
 import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/iam/register/presentation/pages/register_user_page.dart';
+import 'package:stocksip/shared/presentation/widgets/stocksip_title.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -65,27 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
       
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Stock',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.red,
-                        fontSize: 64,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'Sip',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontSize: 64,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                const StockSipLogo(),
       
                 const SizedBox(height: 20),
       
