@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:stocksip/core/common/utils/resource.dart';
 import 'package:stocksip/core/constants/api_constants.dart';
 import 'package:stocksip/features/iam/login/domain/user.dart';
 import 'package:http/http.dart' as http;
@@ -34,5 +35,31 @@ class AuthService {
     } catch (e) {
       throw Exception('Login failed: $e');
     }
+  }
+
+  /// Registers a new user with the provided details.
+  /// Returns a [Resource<String>] containing a success message upon successful registration.
+  /// Throws an [HttpException] for non-200 HTTP responses.
+  Future<Resource<String>> register(String email, String password, String name, String businessName, String role) async {
+
+    final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.signUp);
+
+    final http.Response response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'name': name,
+        'businessName': businessName,
+        'role': role,
+      }),
+    );
+
+    if (response.statusCode == HttpStatus.ok) {
+      final json = jsonDecode(response.body);
+      return Success<String>(data: json['message']);
+    }
+    throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
   }
 }
