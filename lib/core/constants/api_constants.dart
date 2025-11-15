@@ -25,4 +25,8 @@ class ApiConstants {
   static String getProductsByAccountId(String accountId) {
     return 'accounts/$accountId/products';
   }
+
+  static String getCareGuidesByAccountId(String careGuideId) {
+    return 'care-guides/$careGuideId';
+  }
 }
