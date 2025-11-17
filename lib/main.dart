@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stocksip/core/ui/theme.dart';
 import 'package:stocksip/features/iam/login/data/services/remote/auth_service.dart';
 import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
@@ -22,7 +23,7 @@ class MainApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => LoginBloc(service: AuthService())),
+        BlocProvider(create: (context) => LoginBloc(service: AuthService(), storage: FlutterSecureStorage())),
         BlocProvider(create: (context) => RegisterBloc(service: AuthService())),
         BlocProvider(create: (context) => StorageBloc(service: ProductService()))
       ],
