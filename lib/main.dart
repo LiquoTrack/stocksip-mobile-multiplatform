@@ -8,7 +8,6 @@ import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/repositories/product_repository.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 
 void main() {
