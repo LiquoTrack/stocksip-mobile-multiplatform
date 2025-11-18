@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:stocksip/core/constants/api_constants.dart';
-import 'package:stocksip/features/inventorymanagement/storage/domain/product_request.dart';
-import 'package:stocksip/features/inventorymanagement/storage/domain/product_response.dart';
-import 'package:stocksip/features/inventorymanagement/storage/domain/product_update_request.dart';
-import 'package:stocksip/features/inventorymanagement/storage/domain/products_with_count.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/entities/product_request.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/entities/product_update_request.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/entities/products_with_count.dart';
 
 /// Service class to handle product-related API calls.
 class ProductService {

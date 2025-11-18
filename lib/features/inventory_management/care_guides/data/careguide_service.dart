@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:stocksip/features/inventorymanagement/careguides/domain/careguide.dart';
+import 'package:stocksip/features/inventory_management/care_guides/domain/careguide.dart';
 import 'package:stocksip/core/constants/api_constants.dart';
 
 class CareguideService {

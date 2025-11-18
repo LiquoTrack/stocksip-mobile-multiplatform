@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
-import 'package:stocksip/features/inventorymanagement/careguides/presentation/pages/careguide_page.dart';
-import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/pages/storage_page.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_page.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/storage/pages/storage_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
 class DrawerNavigation extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stocksip/features/inventorymanagement/careguides/presentation/widgets/careguide_card.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/widgets/careguide_card.dart';
 import 'package:stocksip/shared/presentation/widgets/drawer_navigation.dart';
 
 class CareGuidePage extends StatefulWidget {
