@@ -1,5 +1,5 @@
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventorymanagement/storage/domain/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
 
 /// Represents the state of the storage feature in the inventory management system.
 /// Includes the current status, a list of products with their counts, and an optional message.

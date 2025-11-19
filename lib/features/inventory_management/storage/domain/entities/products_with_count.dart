@@ -1,4 +1,4 @@
-import 'package:stocksip/features/inventorymanagement/storage/domain/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
 
 /// Represents a collection of products along with their count information
 /// in the inventory management system.

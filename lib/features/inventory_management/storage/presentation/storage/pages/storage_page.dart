@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/blocs/storage_bloc.dart';
-import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/blocs/storage_event.dart';
-import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/blocs/storage_state.dart';
-import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/widgets/product_list.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/storage/widgets/product_list.dart';
 import 'package:stocksip/shared/presentation/widgets/drawer_navigation.dart';
 
 class StoragePage extends StatefulWidget {
