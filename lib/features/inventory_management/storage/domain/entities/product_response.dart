@@ -12,10 +12,10 @@ class ProductResponse {
   final int totalStockInStore;
   final double content;
   final String imageUrl;
-  final String? supplierId = "string";
-  final String isInWarehouse;
+  final String? supplierId;
+  final bool isInWarehouse;
 
-  /// Constructs a ProductResponse instance with the given parameters.
+  // Constructor for creating a ProductResponse instance.
   const ProductResponse({
     required this.id,
     required this.name,
@@ -27,23 +27,25 @@ class ProductResponse {
     required this.totalStockInStore,
     required this.content,
     required this.imageUrl,
+    this.supplierId,
     required this.isInWarehouse,
   });
 
-  /// Creates a ProductResponse instance from a JSON map.
+  /// Creates a [ProductResponse] instance from a JSON map.
   factory ProductResponse.fromJson(Map<String, dynamic> json) {
     return ProductResponse(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      brand: json['brand'],
+      id: json['id'] as String,
+      name: json['name'] as String,
+      type: json['type'] as String,
+      brand: json['brand'] as String,
       unitPrice: (json['unitPrice'] as num).toDouble(),
-      code: json['code'],
-      minimumStock: json['minimumStock'],
-      totalStockInStore: json['totalStockInStore'],
+      code: json['code'] as String,
+      minimumStock: json['minimumStock'] as int,
+      totalStockInStore: json['totalStockInStore'] as int,
       content: (json['content'] as num).toDouble(),
-      imageUrl: json['imageUrl'],
-      isInWarehouse: json['isInWarehouse'],
+      imageUrl: json['imageUrl'] as String,
+      supplierId: json['supplierId'] as String?,
+      isInWarehouse: json['isInWarehouse'] as bool,
     );
   }
 }
