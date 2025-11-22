@@ -9,6 +9,9 @@ import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.d
 import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
+import 'package:stocksip/features/inventory_management/care_guides/data/remote/services/careguide_service.dart';
+import 'package:stocksip/features/inventory_management/care_guides/data/repositories/careguide_repository_impl.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/blocs/careguide_bloc.dart';
 
 void main() {
   runApp(const MainApp());
@@ -26,7 +29,8 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => LoginBloc(service: AuthService(), storage: FlutterSecureStorage())),
         BlocProvider(create: (context) => RegisterBloc(service: AuthService())),
-        BlocProvider(create: (context) => StorageBloc(repository: ProductRepositoryImpl(service: ProductService())))
+        BlocProvider(create: (context) => StorageBloc(repository: ProductRepositoryImpl(service: ProductService()))),
+        BlocProvider(create: (context) => CareguideBloc(repository: CareguideRepositoryImpl(service: CareguideService())))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:stocksip/features/inventory_management/care_guides/presentation/widgets/careguide_card.dart';
 import 'package:stocksip/shared/presentation/widgets/drawer_navigation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/blocs/careguide_bloc.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/blocs/careguide_state.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/blocs/careguide_event.dart';
+import 'package:stocksip/core/enums/status.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_create.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_detail.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_asign.dart';
+import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_update.dart';
 
 class CareGuidePage extends StatefulWidget {
   const CareGuidePage({super.key});
@@ -12,45 +22,22 @@ class CareGuidePage extends StatefulWidget {
 class _CareGuidePageState extends State<CareGuidePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
-  final List<CareGuideCardData> _mockedGuides = const [
-    CareGuideCardData(
-      id: 'vino-blanco',
-      title: 'Vino Blanco',
-      subtitle: 'Wine · 8°C – 10°C',
-      imageUrl:
-          'https://images.pexels.com/photos/1407853/pexels-photo-1407853.jpeg?auto=compress&cs=tinysrgb&w=400',
-    ),
-    CareGuideCardData(
-      id: 'vino-tinto',
-      title: 'Vino Tinto',
-      subtitle: 'Wine · 14°C – 16°C',
-      imageUrl:
-          'https://images.pexels.com/photos/290316/pexels-photo-290316.jpeg?auto=compress&cs=tinysrgb&w=400',
-    ),
-    CareGuideCardData(
-      id: 'whisky-blanco',
-      title: 'Whisky Blanco',
-      subtitle: 'Whisky · 18°C',
-      imageUrl:
-          'https://images.pexels.com/photos/5531556/pexels-photo-5531556.jpeg?auto=compress&cs=tinysrgb&w=400',
-    ),
-    CareGuideCardData(
-      id: 'ron-cartavio',
-      title: 'Ron Cartavio',
-      subtitle: 'Rum · 16°C – 20°C',
-      imageUrl:
-          'https://images.pexels.com/photos/1089930/pexels-photo-1089930.jpeg?auto=compress&cs=tinysrgb&w=400',
-    ),
-    CareGuideCardData(
-      id: 'ron-cartavio-reserva',
-      title: 'Ron Cartavio',
-      subtitle: 'Rum · 16°C – 20°C',
-      imageUrl:
-          'https://images.pexels.com/photos/290316/pexels-photo-290316.jpeg?auto=compress&cs=tinysrgb&w=400',
-    ),
-  ];
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  String _currentSort = 'Most Recent';
+  @override
+  void initState() {
+    super.initState();
+    _loadAccountAndFetch();
+  }
+
+  Future<void> _loadAccountAndFetch() async {
+    final accountId = await _storage.read(key: 'accountId');
+    if (!mounted) return;
+    if (accountId != null && accountId.isNotEmpty) {
+      final bloc = context.read<CareguideBloc>();
+      bloc.add(GetCareGuidesByAccountIdEvent(accountId: accountId));
+    }
+  }
 
   @override
   void dispose() {
@@ -61,15 +48,8 @@ class _CareGuidePageState extends State<CareGuidePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final Color backgroundColor = const Color(0xFFFDF6ED);
-    final Color accentColor = const Color(0xFF7A1D2A);
-    final filteredGuides = _mockedGuides
-        .where(
-          (guide) => guide.title.toLowerCase().contains(
-                _searchController.text.toLowerCase(),
-              ),
-        )
-        .toList();
+    final Color backgroundColor = const Color(0xFFF3E9E7);
+    final Color accentColor = const Color(0xFF471725);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -78,7 +58,23 @@ class _CareGuidePageState extends State<CareGuidePage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-          child: Column(
+          child: BlocBuilder<CareguideBloc, CareguideState>(
+            builder: (context, state) {
+              List<CareGuideCardData> guides = state.guides.map((g) {
+                final subtitle = '${g.productAssociated} · ${g.recommendedMinTemperature.toStringAsFixed(0)}°C – ${g.recommendedMaxTemperature.toStringAsFixed(0)}°C';
+                return CareGuideCardData(
+                  id: g.careGuideId,
+                  title: g.title,
+                  subtitle: subtitle,
+                  imageUrl: g.imageUrl,
+                );
+              }).toList();
+
+              guides = guides
+                  .where((guide) => guide.title.toLowerCase().contains(_searchController.text.toLowerCase()))
+                  .toList();
+
+              return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -89,7 +85,7 @@ class _CareGuidePageState extends State<CareGuidePage> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Care Guides (${filteredGuides.length})',
+                    'Care Guides',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color: accentColor,
                       fontWeight: FontWeight.w700,
@@ -126,99 +122,81 @@ class _CareGuidePageState extends State<CareGuidePage> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  ElevatedButton(
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.add, size: 18),
+                    label: const Text(
+                      'New',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      elevation: 6,
+                      elevation: 0,
                       backgroundColor: accentColor,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 18,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     ),
-                    onPressed: () {},
-                    child: const Text(
-                      '+ New',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const CareGuideCreate()),
+                      );
+                    },
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              Align(
-                alignment: Alignment.centerRight,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: PopupMenuButton<String>(
-                    initialValue: _currentSort,
-                    onSelected: (value) => setState(() => _currentSort = value),
-                    itemBuilder: (context) => const [
-                      PopupMenuItem(
-                        value: 'Most Recent',
-                        child: Text('Most Recent'),
-                      ),
-                      PopupMenuItem(
-                        value: 'Alphabetical',
-                        child: Text('Alphabetical'),
-                      ),
-                    ],
-                    offset: const Offset(0, 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            _currentSort,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF6C4F4F),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          const Icon(Icons.keyboard_arrow_down_rounded),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               const SizedBox(height: 16),
+              if (state.status == Status.loading) ...[
+                const Expanded(child: Center(child: CircularProgressIndicator()))
+              ] else if (state.status == Status.failure) ...[
+                Expanded(
+                  child: Center(
+                    child: Text(state.message ?? 'Failed to load care guides'),
+                  ),
+                )
+              ] else ...[
               Expanded(
-                child: ListView.builder(
-                  itemCount: filteredGuides.length,
+                child: ListView.separated(
+                  itemCount: guides.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    final guide = filteredGuides[index];
+                    final guide = guides[index];
+                    final domainGuide = state.guides[index];
                     return CareGuideCard(
                       data: guide,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => CareGuideUpdate(guide: domainGuide),
+                          ),
+                        );
+                      },
+                      onSeeGuide: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => CareGuideDetail(guide: domainGuide),
+                          ),
+                        );
+                      },
+                      onAssign: () {
+                        Navigator.of(context)
+                            .push<bool>(
+                              MaterialPageRoute(
+                                builder: (_) => CareGuideAssign(careGuideId: domainGuide.careGuideId),
+                              ),
+                            )
+                            .then((assigned) {
+                          if (assigned == true) {
+                            _loadAccountAndFetch();
+                          }
+                        });
+                      },
                     );
                   },
                 ),
               ),
+              ]
             ],
+          );
+            },
           ),
         ),
       ),
