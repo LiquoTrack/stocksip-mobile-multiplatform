@@ -14,7 +14,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User> signIn(String username, String password) async {
     final user = await service.login(username, password);
-    await tokenStorage.save(user.token);
+    await tokenStorage.save(user.token, user.accountId);
     return user;
   }
 
