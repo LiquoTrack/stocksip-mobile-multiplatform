@@ -26,7 +26,35 @@ class ApiConstants {
     return 'accounts/$accountId/products';
   }
 
-  static String getCareGuidesByAccountId(String careGuideId) {
+  static String getCareGuidesByAccountId(String accountId) {
+    return 'accounts/$accountId/care-guides';
+  }
+
+  static String getCareGuideById(String careGuideId) {
     return 'care-guides/$careGuideId';
+  }
+
+  static String getCareGuideByProductType(String accountId, String productType) {
+    return 'care-guides/$accountId/$productType';
+  } 
+
+  static String createCareGuide(String accountId) {
+    return 'care-guides/$accountId';
+  }
+
+  static String updateCareGuide(String careGuideId) {
+    return 'care-guides/$careGuideId';
+  }
+
+  static String deleteCareGuide(String careGuideId) {
+    return 'care-guides/$careGuideId';
+  }
+
+  static String unassignCareGuide(String careGuideId) {
+    return 'care-guides/$careGuideId/deallocations';
+  }
+
+  static String assignCareGuide(String careGuideId, String productId) {
+    return 'care-guides/$careGuideId/allocations/$productId';
   }
 }
