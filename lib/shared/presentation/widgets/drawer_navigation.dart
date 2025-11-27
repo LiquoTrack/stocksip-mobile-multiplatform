@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_bloc.dart';
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_event.dart';
+import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
 import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_page.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/pages/storage_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
@@ -97,10 +101,8 @@ class DrawerNavigation extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => StoragePage(
                         onNavigate: (String route) {
-                          
                         },
                         onLogout: () {
-                          // Handle logout
                         },
                       )),
                     ),
@@ -138,7 +140,8 @@ class DrawerNavigation extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  context.read<AuthBloc>().add(const LogOut());
                 },
               ),
             ),

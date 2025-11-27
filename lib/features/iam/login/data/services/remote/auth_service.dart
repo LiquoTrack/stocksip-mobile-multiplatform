@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:stocksip/core/common/utils/resource.dart';
 import 'package:stocksip/core/constants/api_constants.dart';
-import 'package:stocksip/features/iam/login/domain/user.dart';
+import 'package:stocksip/features/iam/login/domain/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
