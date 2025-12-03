@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/inventory/presentation/pages/inventory_page.dart';
+import 'package:stocksip/features/inventory_management/inventory/presentation/inventory/pages/inventory_page.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_bloc.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_event.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_state.dart';

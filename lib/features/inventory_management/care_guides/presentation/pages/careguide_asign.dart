@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
+import 'package:stocksip/core/storage/token_storage.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/remote/services/careguide_service.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/repositories/careguide_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 
 class CareGuideAssign extends StatefulWidget {
   final String careGuideId;
@@ -16,7 +18,7 @@ class CareGuideAssign extends StatefulWidget {
 
 class _CareGuideAssignState extends State<CareGuideAssign> {
   final _storage = const FlutterSecureStorage();
-  final _productRepo = ProductRepositoryImpl(service: ProductService());
+  final _productRepo = ProductRepositoryImpl(service: ProductService(client: AuthHttpClient()), tokenStorage: TokenStorage());
   final _careRepo = CareguideRepositoryImpl(service: CareguideService());
 
   List<ProductResponse> _products = [];
@@ -41,7 +43,7 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
         });
         return;
       }
-      final result = await _productRepo.getAllProductsByAccountId(accountId: accountId);
+      final result = await _productRepo.getAllProductsByAccountId();
       setState(() {
         _products = result.products;
         _loading = false;

@@ -1,7 +1,8 @@
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
+
 /// Represents a product response in the inventory management system.
 /// Contains details about the product.
-/// Includes a factory constructor to create an instance from JSON data.
-class ProductResponse {
+class ProductResponseDto {
   final String id;
   final String name;
   final String type;
@@ -15,8 +16,8 @@ class ProductResponse {
   final String? supplierId;
   final bool isInWarehouse;
 
-  // Constructor for creating a ProductResponse instance.
-  const ProductResponse({
+  /// Constructor for [ProductResponseDto].
+  const ProductResponseDto({
     required this.id,
     required this.name,
     required this.type,
@@ -31,9 +32,9 @@ class ProductResponse {
     required this.isInWarehouse,
   });
 
-  /// Creates a [ProductResponse] instance from a JSON map.
-  factory ProductResponse.fromJson(Map<String, dynamic> json) {
-    return ProductResponse(
+  /// Creates an instance of [ProductResponseDto] from a JSON map.
+  factory ProductResponseDto.fromJson(Map<String, dynamic> json) {
+    return ProductResponseDto(
       id: json['id'] as String,
       name: json['name'] as String,
       type: json['type'] as String,
@@ -46,6 +47,24 @@ class ProductResponse {
       imageUrl: json['imageUrl'] as String,
       supplierId: json['supplierId'] as String?,
       isInWarehouse: json['isInWarehouse'] as bool,
+    );
+  }
+
+  /// Converts the [ProductResponseDto] instance to a domain entity [ProductResponse].
+  ProductResponse toDomain() {
+    return ProductResponse(
+      id: id,
+      name: name,
+      type: type,
+      brand: brand,
+      unitPrice: unitPrice,
+      code: code,
+      minimumStock: minimumStock,
+      totalStockInStore: totalStockInStore,
+      content: content,
+      imageUrl: imageUrl,
+      supplierId: supplierId,
+      isInWarehouse: isInWarehouse,
     );
   }
 }

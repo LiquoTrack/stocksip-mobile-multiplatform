@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/widgets/product_card.dart';
 
 /// A widget that displays a list of products using [ProductCard] widgets.

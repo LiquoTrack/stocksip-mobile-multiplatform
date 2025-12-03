@@ -61,4 +61,32 @@ class ApiConstants {
   static String assignCareGuide(String careGuideId, String productId) {
     return 'care-guides/$careGuideId/allocations/$productId';
   }
+
+  static String getInventoriesByWarehouseId(String warehouseId) {
+    return 'warehouses/$warehouseId/products';
+  }
+
+  static String getInventoryByProductIdAndWarehouseId(String productId, String warehouseId) {
+    return 'warehouses/$warehouseId/products/$productId';
+  }
+
+  static String addProductsToWarehouseInventory(String warehouseId, String productId) {
+    return 'warehouses/$warehouseId/products/$productId/additions';
+  }
+
+  static String subtractProductsFromWarehouseInventory(String warehouseId, String productId) {
+    return 'warehouses/$warehouseId/products/$productId/subtractions';
+  }
+
+  static String transferProductsBetweenWarehouses(String fromWarehouseId, String productId) {
+    return 'warehouses/$fromWarehouseId/products/$productId/transfers';
+  }
+
+  static String getInventoryById(String inventoryId) {
+    return 'inventories/$inventoryId';
+  }
+
+  static String deleteInventoryById(String inventoryId) {
+    return 'inventories/$inventoryId';
+  }
 }
