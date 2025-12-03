@@ -19,7 +19,7 @@ class ProductMapper {
       code: product.code,
       minimumStock: product.minimumStock,
       content: product.content,
-      image: imageFile,
+      imageFile: imageFile,
     );
   }
 }
