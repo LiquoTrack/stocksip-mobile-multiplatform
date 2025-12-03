@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:stocksip/core/constants/api_constants.dart';
 import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
 import 'package:stocksip/features/inventory_management/inventory/data/models/inventory_addition_request_dto.dart';
