@@ -8,9 +8,9 @@ class WarehouseDto {
   String addressDistrict;
   String addressPostalCode;
   String addressCountry;
-  int capacity;
-  int temperatureMin;
-  int temperatureMax;
+  double capacity;
+  double temperatureMin;
+  double temperatureMax;
   String imageUrl;
 
   WarehouseDto({
@@ -36,9 +36,9 @@ class WarehouseDto {
       addressDistrict: json['addressDistrict'] as String,
       addressPostalCode: json['addressPostalCode'] as String,
       addressCountry: json['addressCountry'] as String,
-      capacity: json['capacity'] as int,
-      temperatureMin: json['temperatureMin'] as int,
-      temperatureMax: json['temperatureMax'] as int,
+      capacity: (json['capacity'] as num).toDouble(),
+      temperatureMin: (json['temperatureMin'] as num).toDouble(),
+      temperatureMax: (json['temperatureMax'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
     );
   }
