@@ -25,4 +25,18 @@ class ProductRequestDto {
     required this.content,
     this.imageFile,
   });
+
+  /// Converts a [ProductRequest] domain model to a [ProductRequestDto].
+  factory ProductRequestDto.fromDomain(ProductRequest request) {
+    return ProductRequestDto(
+      name: request.name,
+      type: request.type,
+      brand: request.brand,
+      unitPrice: request.unitPrice,
+      code: request.code,
+      minimumStock: request.minimumStock,
+      content: request.content,
+      imageFile: request.image,
+    );
+  }
 }

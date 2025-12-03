@@ -2,32 +2,41 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:stocksip/core/constants/api_constants.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_request.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_update_request.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/products_with_count.dart';
+import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
+import 'package:stocksip/features/inventory_management/storage/data/models/product_request_dto.dart';
+import 'package:stocksip/features/inventory_management/storage/data/models/product_response_dto.dart';
+import 'package:stocksip/features/inventory_management/storage/data/models/product_update_request_dto.dart';
+import 'package:stocksip/features/inventory_management/storage/data/models/products_with_count_dto.dart';
 
 /// Service class to handle product-related API calls.
 class ProductService {
+  final AuthHttpClient client;
+
+  const ProductService({required this.client});
 
   /// Fetches products associated with the given [accountId].
-  /// Returns a list of [ProductsWithCount] instances upon successful retrieval.
+  /// Returns a list of [ProductsWithCountDto] instances upon successful retrieval.
   /// Throws an [HttpException] for non-200 HTTP responses,
   /// a [SocketException] for network issues,
   /// and a [FormatException] for JSON parsing errors.
-  Future<ProductsWithCount> getProductsByAccountId({required String accountId}) async {
+  Future<ProductsWithCountDto> getProductsByAccountId({
+    required String accountId,
+  }) async {
     try {
-      final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.getProductsByAccountId(accountId));
+      final Uri uri = Uri.parse(
+        ApiConstants.baseUrl + ApiConstants.getProductsByAccountId(accountId),
+      );
 
-      final http.Response response = await http.get(
+      final response = await client.get(
         uri,
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        return ProductsWithCount.fromJson(json);
+        return ProductsWithCountDto.fromJson(json);
       }
 
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
@@ -41,22 +50,24 @@ class ProductService {
   }
 
   /// Fetches a product by its [productId].
-  /// Returns a [ProductResponse] instance upon successful retrieval.
+  /// Returns a [ProductResponseDto] instance upon successful retrieval.
   /// Throws an [HttpException] for non-200 HTTP responses,
   /// a [SocketException] for network issues,
   /// and a [FormatException] for JSON parsing errors.
-  Future<ProductResponse> getProductById({required String productId}) async {
+  Future<ProductResponseDto> getProductById({required String productId}) async {
     try {
-      final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.getProductById(productId));
+      final Uri uri = Uri.parse(
+        ApiConstants.baseUrl + ApiConstants.getProductById(productId),
+      );
 
-      final http.Response response = await http.get(
+      final response = await client.get(
         uri,
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        return ProductResponse.fromJson(json);
+        return ProductResponseDto.fromJson(json);
       }
 
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
@@ -70,39 +81,52 @@ class ProductService {
   }
 
   /// Registers a new product using the provided [request] details for the given [accountId].
-  /// Returns a [ProductResponse] instance upon successful registration.
+  /// Returns a [ProductResponseDto] instance upon successful registration.
   /// Throws an [HttpException] for non-200 HTTP responses,
   /// a [SocketException] for network issues,
   /// and a [FormatException] for JSON parsing errors.
-  Future<ProductResponse> registerProduct({
-    required String accountId, 
-    required ProductRequest request
+  Future<ProductResponseDto> registerProduct({
+    required String accountId,
+    required ProductRequestDto dto,
   }) async {
     try {
-      final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.registerProduct(accountId));
-
-      /// Create multipart request
-      final multipartRequest = http.MultipartRequest('POST', uri);
-
-      /// Add other fields from ProductRequest
-      multipartRequest.fields.addAll(request.toFields());
-
-      /// Attach image file
-      multipartRequest.files.add(
-        await http.MultipartFile.fromPath(
-          'Image',
-          request.image.path
-        ),
+      final Uri uri = Uri.parse(
+        ApiConstants.baseUrl + ApiConstants.registerProduct(accountId),
       );
 
+      /// Create multipart request
+      var request = http.MultipartRequest('POST', uri);
+
+      request.fields['Name'] = dto.name;
+      request.fields['Type'] = dto.type;
+      request.fields['Brand'] = dto.brand;
+      request.fields['UnitPrice'] = dto.unitPrice.toString();
+      request.fields['MoneyCode'] = dto.code;
+      request.fields['MinimumStock'] = dto.minimumStock.toString();
+      request.fields['Content'] = dto.content.toString();
+      request.fields['SupplierId'] = dto.supplierId ?? 'string';
+
+      if (dto.imageFile != null) {
+        var stream = http.ByteStream(dto.imageFile!.openRead());
+        var length = await dto.imageFile!.length();
+        var multipartFile = http.MultipartFile(
+          'Image',
+          stream,
+          length,
+          filename: basename(dto.imageFile!.path),
+        );
+        request.files.add(multipartFile);
+      }
+
       /// Send request
-      final streamedResponse = await multipartRequest.send();
+      final sendRequest = await client.sendMultipart(request);
 
       /// Get the response
-      final response = await http.Response.fromStream(streamedResponse);
+      final response = await http.Response.fromStream(sendRequest);
 
-      if (response.statusCode == HttpStatus.ok) {
-        return ProductResponse.fromJson(jsonDecode(response.body));
+      if (response.statusCode == HttpStatus.ok ||
+          response.statusCode == HttpStatus.created) {
+        return ProductResponseDto.fromJson(jsonDecode(response.body));
       }
 
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
@@ -116,39 +140,48 @@ class ProductService {
   }
 
   /// Updates an existing product identified by [productId] using the provided [request] details.
-  /// Returns a [ProductResponse] instance upon successful update.
+  /// Returns a [ProductResponseDto] instance upon successful update.
   /// Throws an [HttpException] for non-200 HTTP responses,
   /// a [SocketException] for network issues,
   /// and a [FormatException] for JSON parsing errors.
-  Future<ProductResponse> updateProduct({
-    required String productId, 
-    required ProductUpdateRequest request
+  Future<ProductResponseDto> updateProduct({
+    required String productId,
+    required ProductUpdateRequestDto dto,
   }) async {
     try {
-      final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.updateProduct(productId));
-
-      /// Create multipart request
-      final multipartRequest = http.MultipartRequest('PUT', uri);
-
-      /// Add other fields from ProductRequest
-      multipartRequest.fields.addAll(request.toFields());
-
-      /// Attach image file
-      multipartRequest.files.add(
-        await http.MultipartFile.fromPath(
-          'Image',
-          request.image.path
-        ),
+      final Uri uri = Uri.parse(
+        ApiConstants.baseUrl + ApiConstants.updateProduct(productId),
       );
 
+      /// Create multipart request
+      var request = http.MultipartRequest('POST', uri);
+
+      request.fields['Name'] = dto.name;
+      request.fields['UnitPrice'] = dto.unitPrice.toString();
+      request.fields['MoneyCode'] = dto.code;
+      request.fields['MinimumStock'] = dto.minimumStock.toString();
+      request.fields['Content'] = dto.content.toString();
+
+      if (dto.imageFile != null) {
+        var stream = http.ByteStream(dto.imageFile!.openRead());
+        var length = await dto.imageFile!.length();
+        var multipartFile = http.MultipartFile(
+          'Image',
+          stream,
+          length,
+          filename: basename(dto.imageFile!.path),
+        );
+        request.files.add(multipartFile);
+      }
+
       /// Send request
-      final streamedResponse = await multipartRequest.send();
+      final sendRequest = await client.sendMultipart(request);
 
       /// Get the response
-      final response = await http.Response.fromStream(streamedResponse);
+      final response = await http.Response.fromStream(sendRequest);
 
       if (response.statusCode == HttpStatus.ok) {
-        return ProductResponse.fromJson(jsonDecode(response.body));
+        return ProductResponseDto.fromJson(jsonDecode(response.body));
       }
 
       throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
@@ -167,11 +200,13 @@ class ProductService {
   /// and a [FormatException] for JSON parsing errors.
   Future<void> deleteProductById({required String productId}) async {
     try {
-      final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.getProductById(productId));
+      final Uri uri = Uri.parse(
+        ApiConstants.baseUrl + ApiConstants.getProductById(productId),
+      );
 
-      final http.Response response = await http.delete(
+      final http.Response response = await client.delete(
         uri,
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {

@@ -34,7 +34,7 @@ class InventoryAdditionBloc extends Bloc<InventoryAdditionEvent, InventoryAdditi
     emit(state.copyWith(status: Status.loading));
     try {
 
-      final productsWithCount = await productRepository.getAllProductsByAccountId(accountId: "");
+      final productsWithCount = await productRepository.getAllProductsByAccountId();
       final products = productsWithCount.products;
 
       final inventories = await inventoryRepository.getAllInventoriesByWarehouseId(warehouseId: event.warehouseId);

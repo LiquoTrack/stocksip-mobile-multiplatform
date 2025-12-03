@@ -23,15 +23,6 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
     GetProductsByAccountIdEvent event, 
     Emitter<StorageState> emit
   ) async {
-
-    // Here you would typically get the account ID from a token manager service.
-    final String accountId = "6914c9de8a3e6c966a0cb82d";
-
-    if (accountId.isEmpty) {
-      // Handle the case where account ID is not available.
-      return;
-    }
-
     // Emit loading state
     emit(state.copyWith(
       status: Status.loading, 
@@ -40,7 +31,7 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
 
     try {
       /// Fetch products by account ID using the service.
-      final ProductsWithCount productResponse = await repository.getAllProductsByAccountId(accountId: accountId);
+      final ProductsWithCount productResponse = await repository.getAllProductsByAccountId();
 
       /// Extract products from the response.
       final List<ProductResponse> products = productResponse.products;

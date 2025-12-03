@@ -9,7 +9,7 @@ abstract class ProductRepository {
   
   /// Fetches all products associated with the given [accountId].
   /// Returns a [ProductsWithCount] instance containing the products and their count information.
-  Future<ProductsWithCount> getAllProductsByAccountId({required String accountId});
+  Future<ProductsWithCount> getAllProductsByAccountId();
 
   /// Fetches a product by its [productId].
   /// Returns a [ProductResponse] instance representing the product details.
@@ -17,7 +17,7 @@ abstract class ProductRepository {
 
   /// Registers a new product for the given [accountId] using the provided [request] data.
   /// Returns a [ProductResponse] instance representing the newly created product.
-  Future<ProductResponse> registerProduct({required String accountId, required ProductRequest request});
+  Future<ProductResponse> registerProduct({required ProductRequest request});
 
   /// Updates an existing product identified by [productId] using the provided [request] data.
   /// Returns a [ProductResponse] instance representing the updated product.
