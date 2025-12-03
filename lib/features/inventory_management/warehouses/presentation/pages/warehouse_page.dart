@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
@@ -189,11 +190,22 @@ class _WarehousePageState extends State<WarehousePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Image.network(
-                                  warehouse.imageUrl,
+                                CachedNetworkImage(
+                                  imageUrl: warehouse.imageUrl,
                                   width: double.infinity,
                                   height: 180,
                                   fit: BoxFit.cover,
+
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(
+                                        Icons.broken_image,
+                                        size: 40,
+                                        color: Colors.grey,
+                                      ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
