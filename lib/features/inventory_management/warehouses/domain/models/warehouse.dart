@@ -6,9 +6,9 @@ class Warehouse {
   final String addressDistrict;
   final String addressPostalCode;
   final String addressCountry;
-  final int capacity;
-  final int temperatureMin;
-  final int temperatureMax;
+  final double capacity;
+  final double temperatureMin;
+  final double temperatureMax;
   final String imageUrl;
 
   const Warehouse({
@@ -33,9 +33,9 @@ class Warehouse {
     String? addressDistrict,
     String? addressPostalCode,
     String? addressCountry,
-    int? capacity,
-    int? temperatureMin,
-    int? temperatureMax,
+    double? capacity,
+    double? temperatureMin,
+    double? temperatureMax,
     String? imageUrl,
   }) {
     return Warehouse(
