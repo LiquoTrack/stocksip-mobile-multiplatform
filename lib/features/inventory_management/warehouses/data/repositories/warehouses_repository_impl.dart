@@ -11,18 +11,13 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
   final WarehouseService service;
   final TokenStorage tokenStorage;
 
-  WarehousesRepositoryImpl({
-    required this.service,
-    required this.tokenStorage,
-  });
+  WarehousesRepositoryImpl({required this.service, required this.tokenStorage});
 
   @override
-  Future<void> addWarehouse(
-    String accountId,
-    Warehouse warehouseData,
-    File? imageFile,
-  ) async {
+  Future<void> addWarehouse(Warehouse warehouseData, File? imageFile) async {
     try {
+      final accountId = await tokenStorage.readAccountId();
+      if (accountId == null) throw Exception('No accountId found');
       final warehouseRequest = WarehouseMapper.toRequestDto(
         warehouseData,
         imageFile: imageFile,
@@ -49,12 +44,10 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
       final accountId = await tokenStorage.readAccountId();
       if (accountId == null) throw Exception('No accountId found');
 
-      final WarehouseWrapperDto wrapper =
-          await service.getWarehousesByAccountId(accountId);
+      final WarehouseWrapperDto wrapper = await service
+          .getWarehousesByAccountId(accountId);
 
-      return wrapper.warehouses
-          .map((dto) => dto.toDomain())
-          .toList();
+      return wrapper.warehouses.map((dto) => dto.toDomain()).toList();
     } catch (e) {
       throw Exception('Error fetching warehouses: $e');
     }

@@ -17,6 +17,7 @@ dependencies:
   path: ^1.9.1
   lottie: ^3.3.2
   flutter_launcher_icons: ^0.14.4
+  image_picker: ^1.2.1
 
 flutter_launcher_icons:
   android: true
