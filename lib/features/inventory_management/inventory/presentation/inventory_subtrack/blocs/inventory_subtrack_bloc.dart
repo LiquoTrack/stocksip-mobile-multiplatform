@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_subtrack_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_subtrack_request.dart';
 import 'package:stocksip/features/inventory_management/inventory/domain/repositories/inventory_repository.dart';
 import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_subtrack/blocs/inventory_subtrack_event.dart';
 import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_subtrack/blocs/inventory_subtrack_state.dart';

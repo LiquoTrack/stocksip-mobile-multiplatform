@@ -1,7 +1,7 @@
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_addition_request.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_response.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_subtrack_request.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_transfer_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_addition_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_response.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_subtrack_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_transfer_request.dart';
 
 /// Abstract repository interface for managing inventories in the inventory management system.
 /// Defines methods for fetching, adding, subtracting, transferring, and deleting inventories.

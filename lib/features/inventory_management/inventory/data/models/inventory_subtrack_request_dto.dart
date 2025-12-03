@@ -1,4 +1,4 @@
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_subtrack_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_subtrack_request.dart';
 
 /// Data Transfer Object for [InventorySubtrackRequest].
 /// Facilitates conversion between domain entity and JSON map.
