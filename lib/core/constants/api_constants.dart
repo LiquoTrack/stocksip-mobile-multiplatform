@@ -6,8 +6,12 @@ class ApiConstants {
 
   static final String signUp = 'sign-up';
   
-  static String getWarehousesByAccountId(String accountId) {
+  static String warehousesByAccountId(String accountId) {
     return 'accounts/$accountId/warehouses';
+  }
+
+  static String warehouseById(String warehouseId) {
+    return 'warehouses/$warehouseId';
   }
 
   static String registerProduct(String accountId) {
