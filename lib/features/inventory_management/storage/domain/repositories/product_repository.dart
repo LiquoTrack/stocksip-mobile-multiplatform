@@ -1,7 +1,7 @@
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_request.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_update_request.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/products_with_count.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_request.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_update_request.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/products_with_count.dart';
 
 /// Abstract repository interface for managing products in the inventory management system.
 /// Defines methods for fetching, registering, updating, and deleting products.

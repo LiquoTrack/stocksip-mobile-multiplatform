@@ -4,7 +4,7 @@ import 'package:stocksip/features/inventory_management/care_guides/data/remote/s
 import 'package:stocksip/features/inventory_management/care_guides/data/repositories/careguide_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 
 class CareGuideAssign extends StatefulWidget {
   final String careGuideId;

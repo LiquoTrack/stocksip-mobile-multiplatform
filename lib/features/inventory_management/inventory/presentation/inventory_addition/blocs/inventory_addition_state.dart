@@ -1,6 +1,6 @@
 import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_response.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 
 /// State class for managing inventory addition
 /// Includes status, messages, inventories, products,
