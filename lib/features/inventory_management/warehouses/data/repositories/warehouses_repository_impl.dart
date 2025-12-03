@@ -1,15 +1,20 @@
 import 'dart:io';
 
-import 'package:stocksip/features/inventory_management/inventories/data/remote/mappers/warehouse_mapper.dart';
-import 'package:stocksip/features/inventory_management/inventories/data/remote/models/warehouse_wrapper_dto.dart';
-import 'package:stocksip/features/inventory_management/inventories/data/remote/services/warehouse_service.dart';
-import 'package:stocksip/features/inventory_management/inventories/domain/models/warehouse.dart';
-import 'package:stocksip/features/inventory_management/inventories/domain/repositories/warehouse_repository.dart';
+import 'package:stocksip/core/storage/token_storage.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/mappers/warehouse_mapper.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_wrapper_dto.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/services/warehouse_service.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/repositories/warehouse_repository.dart';
 
 class WarehousesRepositoryImpl extends WarehouseRepository {
   final WarehouseService service;
+  final TokenStorage tokenStorage;
 
-  WarehousesRepositoryImpl({required this.service});
+  WarehousesRepositoryImpl({
+    required this.service,
+    required this.tokenStorage,
+  });
 
   @override
   Future<void> addWarehouse(
@@ -39,10 +44,13 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
   }
 
   @override
-  Future<List<Warehouse>> fetchWarehouses(String accountId) async {
+  Future<List<Warehouse>> fetchWarehouses() async {
     try {
-      final WarehouseWrapperDto wrapper = await service
-          .getWarehousesByAccountId(accountId);
+      final accountId = await tokenStorage.readAccountId();
+      if (accountId == null) throw Exception('No accountId found');
+
+      final WarehouseWrapperDto wrapper =
+          await service.getWarehousesByAccountId(accountId);
 
       return wrapper.warehouses
           .map((dto) => dto.toDomain())

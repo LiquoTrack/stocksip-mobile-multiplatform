@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:stocksip/features/inventory_management/inventories/data/remote/models/warehouse_request_dto.dart';
-import 'package:stocksip/features/inventory_management/inventories/domain/models/warehouse.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_request_dto.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse.dart';
 
 class WarehouseMapper {
   static WarehouseRequestDto toRequestDto(

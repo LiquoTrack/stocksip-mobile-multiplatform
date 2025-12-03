@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:stocksip/features/inventory_management/inventories/domain/models/warehouse.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse.dart';
 
 abstract class WarehouseRepository {
 
   Future<void> addWarehouse(String accountId, Warehouse warehouseData, File? imageFile);
 
-  Future<List<Warehouse>> fetchWarehouses(String accountId);
+  Future<List<Warehouse>> fetchWarehouses();
 
   Future<void> updateWarehouse(Warehouse warehouseData);
 

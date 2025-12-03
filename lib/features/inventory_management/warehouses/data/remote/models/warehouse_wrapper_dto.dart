@@ -1,7 +1,5 @@
-
-import 'package:stocksip/features/inventory_management/inventories/data/remote/models/warehouse_dto.dart';
-import 'package:stocksip/features/inventory_management/inventories/domain/models/warehouse_wrapper.dart';
-
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_dto.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse_wrapper.dart';
 
 class WarehouseWrapperDto {
   List<WarehouseDto> warehouses;
@@ -15,14 +13,15 @@ class WarehouseWrapperDto {
   });
 
   factory WarehouseWrapperDto.fromJson(Map<String, dynamic> json) {
-    var list = json['warehouses'] as List;
-    List<WarehouseDto> warehousesList =
-        list.map((i) => WarehouseDto.fromJson(i)).toList();
+    var list = json['warehouses'] as List? ?? [];
+    List<WarehouseDto> warehousesList = list
+        .map((i) => WarehouseDto.fromJson(i))
+        .toList();
 
     return WarehouseWrapperDto(
       warehouses: warehousesList,
-      total: json['total'] as int,
-      maxWarehousesAllowed: json['maxWarehousesAllowed'] as int,
+      total: json['total'] as int? ?? 0,
+      maxWarehousesAllowed: json['maxWarehousesAllowed'] as int? ?? 0,
     );
   }
 

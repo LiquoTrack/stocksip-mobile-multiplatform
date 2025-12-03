@@ -1,23 +1,34 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:stocksip/core/constants/api_constants.dart';
-import 'package:stocksip/features/inventory_management/inventories/data/remote/models/warehouse_request_dto.dart';
-import 'package:stocksip/features/inventory_management/inventories/data/remote/models/warehouse_wrapper_dto.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
+import 'package:stocksip/core/constants/api_constants.dart';
+import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_request_dto.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_wrapper_dto.dart';
 
 class WarehouseService {
+  final AuthHttpClient client;
+
+  WarehouseService({required this.client});
+
   Future<WarehouseWrapperDto> getWarehousesByAccountId(String accountId) async {
-    final Uri uri = Uri.parse(
+    final uri = Uri.parse(
       "${ApiConstants.baseUrl}/${ApiConstants.warehousesByAccountId(accountId)}",
     );
+
     try {
-      final response = await http.get(uri);
-  
+      final response = await client.get(uri);
+
       if (response.statusCode == HttpStatus.ok) {
         final jsonResponse = jsonDecode(response.body);
         return WarehouseWrapperDto.fromJson(jsonResponse);
+      } else if (response.statusCode == HttpStatus.notFound) {
+        return WarehouseWrapperDto(
+          warehouses: [],
+          total: 0,
+          maxWarehousesAllowed: 0,
+        );
       } else {
         throw Exception('Failed to load warehouses: ${response.statusCode}');
       }
@@ -27,12 +38,12 @@ class WarehouseService {
   }
 
   Future<bool> deleteWarehouse(String warehouseId) async {
-    final Uri uri = Uri.parse(
+    final uri = Uri.parse(
       "${ApiConstants.baseUrl}/${ApiConstants.warehouseById(warehouseId)}",
     );
 
     try {
-      final response = await http.delete(uri);
+      final response = await client.delete(uri);
 
       if (response.statusCode == HttpStatus.ok ||
           response.statusCode == HttpStatus.noContent) {
@@ -52,6 +63,7 @@ class WarehouseService {
     final uri = Uri.parse(
       "${ApiConstants.baseUrl}/${ApiConstants.warehousesByAccountId(accountId)}",
     );
+
     try {
       var request = http.MultipartRequest('POST', uri);
 
@@ -77,7 +89,8 @@ class WarehouseService {
         request.files.add(multipartFile);
       }
 
-      var response = await request.send();
+      final response = await client.sendMultipart(request);
+
       if (response.statusCode == HttpStatus.ok ||
           response.statusCode == HttpStatus.created) {
         return true;
@@ -96,6 +109,7 @@ class WarehouseService {
     final uri = Uri.parse(
       "${ApiConstants.baseUrl}/${ApiConstants.warehouseById(warehouseId)}",
     );
+
     try {
       var request = http.MultipartRequest('PUT', uri);
 
@@ -121,7 +135,8 @@ class WarehouseService {
         request.files.add(multipartFile);
       }
 
-      var response = await request.send();
+      final response = await client.sendMultipart(request);
+
       if (response.statusCode == HttpStatus.ok) {
         return true;
       } else {

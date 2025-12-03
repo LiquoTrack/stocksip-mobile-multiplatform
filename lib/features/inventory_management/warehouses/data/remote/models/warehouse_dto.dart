@@ -1,4 +1,4 @@
-import 'package:stocksip/features/inventory_management/inventories/domain/models/warehouse.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse.dart';
 
 class WarehouseDto {
   String warehouseId;
