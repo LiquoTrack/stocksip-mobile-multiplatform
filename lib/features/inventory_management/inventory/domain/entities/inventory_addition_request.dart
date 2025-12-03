@@ -9,12 +9,4 @@ class InventoryAdditionRequest {
     required this.quantityToAdd,
     this.expirationDate,
   });
-
-  /// Converts the [InventoryAdditionRequest] instance to a JSON map.
-  Map<String, dynamic> toJson() {
-    return {
-      'quantityToAdd': quantityToAdd,
-      'expirationDate': expirationDate?.toIso8601String(),
-    };
-  }
 }

@@ -12,13 +12,4 @@ class InventoryTransferRequest {
     required this.quantityToTransfer,
     this.expirationDate,
   });
-
-  /// Converts the [InventoryTransferRequest] instance to a map.
-  Map<String, dynamic> toMap() {
-    return {
-      'destinationWarehouseId': destinationWarehouseId,
-      'quantityToTransfer': quantityToTransfer,
-      'expirationDate': expirationDate?.toIso8601String(),
-    };
-  }
 }

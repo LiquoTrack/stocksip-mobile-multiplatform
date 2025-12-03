@@ -11,13 +11,4 @@ class InventorySubtrackRequest {
     required this.subtrackReason,
     this.expirationDate,
   });
-
-  /// Converts the [InventorySubtrackRequest] to a JSON representation.
-  Map<String, dynamic> toJson() {
-    return {
-      'quantityToDecrease': quantityToSubtrack,
-      'exitReason': subtrackReason,
-      'expirationDate': expirationDate?.toIso8601String(),
-    };
-  }
 }
