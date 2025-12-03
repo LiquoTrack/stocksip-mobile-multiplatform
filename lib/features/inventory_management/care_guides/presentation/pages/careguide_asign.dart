@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/remote/services/careguide_service.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/repositories/careguide_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
 

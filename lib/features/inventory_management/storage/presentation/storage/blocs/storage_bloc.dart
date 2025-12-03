@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/entities/products_with_count.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/repositories/product_repository.dart';

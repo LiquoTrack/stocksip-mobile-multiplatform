@@ -13,7 +13,7 @@ import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.d
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/services/warehouse_service.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/repositories/warehouses_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_bloc.dart';
-import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/remote/services/careguide_service.dart';

@@ -1,4 +1,4 @@
-import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/entities/product_request.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/entities/product_update_request.dart';
