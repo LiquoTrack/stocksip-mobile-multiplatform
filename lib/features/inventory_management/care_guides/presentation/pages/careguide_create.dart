@@ -76,7 +76,7 @@ class _CareGuideCreateState extends State<CareGuideCreate> {
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: DropdownButtonFormField<String>(
-                    value: _selectedProduct,
+                    initialValue: _selectedProduct,
                     decoration: inputDecoration.copyWith(hintText: 'Select Product'),
                     icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF471725)),
                     items: const [
