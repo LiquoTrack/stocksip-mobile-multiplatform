@@ -27,12 +27,12 @@ class AdminPanelRepositoryImpl extends AdminPanelRepository {
   }
 
   @override
-  Future<List<AdminSubUsersGroup>> fetchSubUsers({String? role}) async {
+  Future<List<AdminSubUsersGroup>> fetchSubUsers({String? role, String? accountId}) async {
     try {
-      final accountId = await tokenStorage.readAccountId();
-      if (accountId == null) throw Exception('No accountId found');
+      final acc = accountId ?? await tokenStorage.readAccountId();
+      if (acc == null) throw Exception('No accountId found');
 
-      final wrappers = await service.getSubUsers(accountId, role: role);
+      final wrappers = await service.getSubUsers(acc, role: role);
       return wrappers.map(AdminPanelMapper.toGroup).toList();
     } catch (e) {
       throw Exception('Error fetching sub users: $e');

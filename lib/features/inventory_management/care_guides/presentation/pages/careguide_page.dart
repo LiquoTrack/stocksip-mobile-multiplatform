@@ -28,6 +28,20 @@ class _CareGuidePageState extends State<CareGuidePage> {
   List<String> _selectedIds = [];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final accountId = await TokenStorage().readAccountId();
+      if (!mounted) return;
+      if (accountId != null && accountId.isNotEmpty) {
+        context
+            .read<CareguideBloc>()
+            .add(GetCareGuidesByAccountIdEvent(accountId: accountId));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     const bg = Color(0xFFF4ECEC);
 

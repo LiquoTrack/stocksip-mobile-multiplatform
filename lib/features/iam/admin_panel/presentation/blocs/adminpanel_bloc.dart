@@ -23,7 +23,7 @@ class AdminPanelBloc extends Bloc<AdminPanelEvent, AdminPanelState> {
   ) async {
     emit(state.copyWith(status: Status.loading, selectedRole: event.role));
     try {
-      final groups = await repository.fetchSubUsers(role: event.role);
+      final groups = await repository.fetchSubUsers(role: event.role, accountId: event.accountId);
       emit(state.copyWith(status: Status.success, groups: groups));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
