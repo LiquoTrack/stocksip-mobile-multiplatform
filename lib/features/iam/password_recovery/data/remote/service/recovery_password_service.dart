@@ -22,8 +22,8 @@ class RecoveryPasswordService {
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        final json = jsonDecode(response.body);
-        return RecoveryCodeResponse.fromJson(json);
+        final message = response.body;
+        return RecoveryCodeResponse(message: message);
       } else {
         throw Exception('Failed to send recovery email. Status code: ${response.statusCode}');
       }
@@ -46,8 +46,8 @@ class RecoveryPasswordService {
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        final json = jsonDecode(response.body);
-        return RecoveryCodeResponse.fromJson(json);
+        final message = response.body;
+        return RecoveryCodeResponse(message: message);
       } else {
         throw Exception('Failed to verify recovery code. Status code: ${response.statusCode}');
       }
@@ -63,15 +63,15 @@ class RecoveryPasswordService {
         ApiConstants.baseUrl + ApiConstants.resetPassword(),
       );
 
-      final http.Response response = await http.post(
+      final http.Response response = await http.put(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': requestDto.email, 'newPassword': requestDto.newPassword}),
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        final json = jsonDecode(response.body);
-        return RecoveryCodeResponse.fromJson(json);
+        final message = response.body;
+        return RecoveryCodeResponse(message: message);
       } else {
         throw Exception('Failed to reset password. Status code: ${response.statusCode}');
       }

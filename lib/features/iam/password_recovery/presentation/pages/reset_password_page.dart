@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_bloc.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_event.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_state.dart';
-import 'package:stocksip/features/iam/password_recovery/presentation/pages/confirmation_message_page.dart';
 
-class SendEmailPage extends StatefulWidget {
-  const SendEmailPage({super.key});
+class ResetPasswordPage extends StatefulWidget {
+  final String email;
+  const ResetPasswordPage({super.key, required this.email});
 
   @override
-  State<SendEmailPage> createState() => _SendEmailPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _SendEmailPageState extends State<SendEmailPage> {
-  String email = '';
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
+  String newPassword = '';
   bool isLoading = false;
 
   @override
@@ -25,19 +26,16 @@ class _SendEmailPageState extends State<SendEmailPage> {
           if (state.status == Status.success) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  state.message ?? 'Recovery email sent successfully',
-                ),
+                content: Text(state.message ?? 'Password reset successfully.'),
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
               ),
             );
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ConfirmationMessagePage(email: email),
-                ),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
               );
             });
           } else if (state.status == Status.failure) {
@@ -68,7 +66,7 @@ class _SendEmailPageState extends State<SendEmailPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'Recover',
+                    'Reset',
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -87,17 +85,17 @@ class _SendEmailPageState extends State<SendEmailPage> {
                   ),
                   const SizedBox(height: 30),
                   const Text(
-                    'Enter your email to receive a recovery code',
+                    'Enter your new password below',
                     style: TextStyle(fontSize: 14, color: Colors.white70),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
                   TextField(
-                    onChanged: (value) => setState(() => email = value),
-                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => setState(() => newPassword = value),
+                    obscureText: true,
                     decoration: InputDecoration(
-                      hintText: 'Email',
-                      prefixIcon: const Icon(Icons.email),
+                      hintText: 'New Password',
+                      prefixIcon: const Icon(Icons.lock),
                       filled: true,
                       fillColor: Colors.white.withAlpha((0.9 * 255).round()),
                       border: OutlineInputBorder(
@@ -112,21 +110,22 @@ class _SendEmailPageState extends State<SendEmailPage> {
                     height: 56,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: email.isNotEmpty
+                        backgroundColor: newPassword.isNotEmpty
                             ? const Color(0xFF4A1B2A)
                             : Colors.grey.shade400,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
                         ),
                       ),
-                      onPressed: email.isNotEmpty && !isLoading
+                      onPressed: newPassword.isNotEmpty && !isLoading
                           ? () async {
                               setState(() => isLoading = true);
-
                               context.read<RecoveryPasswordBloc>().add(
-                                SendRecoveryEmailEvent(email: email),
+                                ResetPasswordEvent(
+                                  email: widget.email,
+                                  newPassword: newPassword,
+                                ),
                               );
-
                               await Future.delayed(const Duration(seconds: 1));
                               setState(() => isLoading = false);
                             }
@@ -140,13 +139,11 @@ class _SendEmailPageState extends State<SendEmailPage> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : Text(
-                              'Send Code',
+                          : const Text(
+                              'Reset Password',
                               style: TextStyle(
                                 fontSize: 24,
-                                color: email.isNotEmpty
-                                    ? Colors.white
-                                    : Colors.grey.shade500,
+                                color: Colors.white,
                               ),
                             ),
                     ),

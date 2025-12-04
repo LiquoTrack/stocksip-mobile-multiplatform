@@ -15,7 +15,7 @@ class VerifyRecoveryCodeEvent extends RecoveryPasswordEvent {
 
 class ResetPasswordEvent extends RecoveryPasswordEvent {
   final String email;
-  final String resetPassword;
+  final String newPassword;
 
-  const ResetPasswordEvent({required this.email, required this.resetPassword});
+  const ResetPasswordEvent({required this.email, required this.newPassword});
 }

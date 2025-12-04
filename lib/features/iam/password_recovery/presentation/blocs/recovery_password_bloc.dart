@@ -28,7 +28,7 @@ class RecoveryPasswordBloc
       await repository.sendRecoveryEmail(sendEmail);
       emit(state.copyWith(status: Status.success, sendEmail: sendEmail));
     } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+      emit(state.copyWith(status: Status.failure, message: "Failed to send recovery email. Please try again."));
     }
   }
 
@@ -42,7 +42,7 @@ class RecoveryPasswordBloc
       await repository.verifyRecoveryCode(verifyCode);
       emit(state.copyWith(status: Status.success, verifyCode: verifyCode));
     } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+      emit(state.copyWith(status: Status.failure, message: "Verification failed. Please try again."));
     }
   }
 
@@ -54,14 +54,14 @@ class RecoveryPasswordBloc
       emit(state.copyWith(status: Status.loading));
       final ResetPassword resetPassword = ResetPassword(
         email: event.email,
-        newPassword: event.resetPassword,
+        newPassword: event.newPassword,
       );
       await repository.resetPassword(resetPassword);
       emit(
         state.copyWith(status: Status.success, resetPassword: resetPassword),
       );
     } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+      emit(state.copyWith(status: Status.failure, message: "Password reset failed. Please try again."));
     }
   }
 }
