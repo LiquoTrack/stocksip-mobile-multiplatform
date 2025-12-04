@@ -113,4 +113,16 @@ class ApiConstants {
   static String resetPassword() {
     return 'users/reset-password';
   }
+
+  static String accountSubscriptions(String accountId) {
+    return 'accounts/$accountId/subscriptions';
+  }
+
+  static String upgradeSubscription(String accountId, String subscriptionId) {
+    return 'accounts/$accountId/subscriptions/$subscriptionId';
+  }
+
+  static String accountStatus(String accountId) {
+    return 'accounts/$accountId/status';
+  }
 }
