@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 
 /// A card widget that displays product information including image, name, stock, and price.
 /// It is clickable and triggers the [onClick] callback when tapped.

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
+import 'package:stocksip/core/storage/token_storage.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/remote/services/careguide_service.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/repositories/careguide_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/data/remote/services/product_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_repository_impl.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/entities/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 
 class CareGuideAssign extends StatefulWidget {
   final String careGuideId;
@@ -16,7 +18,7 @@ class CareGuideAssign extends StatefulWidget {
 
 class _CareGuideAssignState extends State<CareGuideAssign> {
   final _storage = const FlutterSecureStorage();
-  final _productRepo = ProductRepositoryImpl(service: ProductService());
+  final _productRepo = ProductRepositoryImpl(service: ProductService(client: AuthHttpClient()), tokenStorage: TokenStorage());
   final _careRepo = CareguideRepositoryImpl(service: CareguideService());
 
   List<ProductResponse> _products = [];
@@ -33,7 +35,7 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
 
   Future<void> _loadProducts() async {
     try {
-      final accountId = await _storage.read(key: 'accountId');
+      final accountId = await _storage.read(key: 'accountId') ?? await _storage.read(key: 'account_id');
       if (accountId == null || accountId.isEmpty) {
         setState(() {
           _error = 'No account found';
@@ -41,7 +43,7 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
         });
         return;
       }
-      final result = await _productRepo.getAllProductsByAccountId(accountId: accountId);
+      final result = await _productRepo.getAllProductsByAccountId();
       setState(() {
         _products = result.products;
         _loading = false;
@@ -130,15 +132,27 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
                               ),
                             ),
                             icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF471725)),
+                            isExpanded: true,
+                            menuMaxHeight: 320,
                             items: _products
                                 .map((p) => DropdownMenuItem(
                                       value: p.id,
                                       child: Text(p.name),
                                     ))
                                 .toList(),
-                            onChanged: (v) => setState(() => _selectedProductId = v),
+                            onChanged: _products.isEmpty ? null : (v) => setState(() => _selectedProductId = v),
                           ),
                         ),
+                        if (!_loading && _error == null && _products.isEmpty) ...[
+                          const SizedBox(height: 8),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'No products found. Please register a product first.',
+                              style: TextStyle(color: Color(0xFF9E9E9E)),
+                            ),
+                          )
+                        ],
                         const Spacer(),
                         SizedBox(
                           width: double.infinity,

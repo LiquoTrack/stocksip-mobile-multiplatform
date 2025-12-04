@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_bloc.dart';
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_event.dart';
+import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
 import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_page.dart';
+import 'package:stocksip/features/inventory_management/warehouses/presentation/pages/warehouse_page.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/pages/storage_page.dart';
+import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
 class DrawerNavigation extends StatelessWidget {
@@ -70,7 +76,7 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.warehouse,
                     title: 'Warehouse',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WarehousePage())),
                   ),
                   NavigationTile(
                     icon: Icons.menu_book,
@@ -97,10 +103,8 @@ class DrawerNavigation extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => StoragePage(
                         onNavigate: (String route) {
-                          
                         },
                         onLogout: () {
-                          // Handle logout
                         },
                       )),
                     ),
@@ -118,7 +122,15 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.shield,
                     title: 'Admin Panel',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AdminPanelPage(),
+                        ),
+                      );
+                    },
                   ),
                   NavigationTile(
                     icon: Icons.person,
@@ -138,7 +150,8 @@ class DrawerNavigation extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  context.read<AuthBloc>().add(const LogOut());
                 },
               ),
             ),
