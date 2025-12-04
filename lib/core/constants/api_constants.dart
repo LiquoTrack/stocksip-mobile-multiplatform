@@ -101,4 +101,25 @@ class ApiConstants {
   static String updateProfile(String profileId) {
     return 'profiles/$profileId';
   }
+
+  static String sendRecoveryCode() {
+    return 'users/recovery-code';
+  }
+
+  static String verifyRecoveryCode() {
+    return 'users/verify-recovery-code';
+  }
+
+  static String resetPassword() {
+    return 'users/reset-password';
+  }
+
+  static final String getAllBrands = 'brands';
+
+  static final String getAllProductTypes = 'product-types';
+  static final String getAllPlans = 'plans';
+
+  static String createSubscription(String planId) {
+    return 'subscriptions/plan/$planId';
+  }
 }

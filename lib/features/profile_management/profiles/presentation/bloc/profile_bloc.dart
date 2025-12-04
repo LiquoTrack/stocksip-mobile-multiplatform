@@ -162,6 +162,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     LogoutEvent event,
     Emitter<ProfileState> emit,
   ) {
-    emit(state.copyWith(status: Status.failure, message: 'Logged out'));
+    emit(const ProfileState());
   }
 }

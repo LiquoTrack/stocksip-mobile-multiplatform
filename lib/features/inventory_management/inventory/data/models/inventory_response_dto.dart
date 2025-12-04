@@ -1,4 +1,4 @@
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_response.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_response.dart';
 
 /// Data Transfer Object for Inventory, used for JSON serialization and deserialization.
 class InventoryResponseDto {

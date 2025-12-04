@@ -20,4 +20,22 @@ class ProductUpdateRequest {
     required this.content,
     this.image,
   });
+
+  ProductUpdateRequest copyWith({
+    String? name,
+    double? unitPrice,
+    String? code,
+    int? minimumStock,
+    double? content,
+    File? image,
+  }) {
+    return ProductUpdateRequest(
+      name: name ?? this.name,
+      unitPrice: unitPrice ?? this.unitPrice,
+      code: code ?? this.code,
+      minimumStock: minimumStock ?? this.minimumStock,
+      content: content ?? this.content,
+      image: image ?? this.image,
+    );
+  }
 }

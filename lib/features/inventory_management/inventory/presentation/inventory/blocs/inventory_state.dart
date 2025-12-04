@@ -1,5 +1,5 @@
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_response.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_response.dart';
 
 /// Represents the state of the inventory management feature.
 class InventoryState {

@@ -348,12 +348,12 @@ class CatalogService {
         body: jsonEncode(request.toJson()),
       );
 
-      if (response.statusCode == HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.ok || response.statusCode == HttpStatus.created) {
         final json = jsonDecode(response.body);
         return CatalogDto.fromJson(json).toDomain();
       }
 
-      throw HttpException('Failed to add catalog item: ${response.statusCode}');
+      throw HttpException('Failed to add catalog item: ${response.statusCode} - ${response.body}');
     } on SocketException {
       throw const SocketException('Failed to establish network connection');
     } catch (e) {

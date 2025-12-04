@@ -2,10 +2,10 @@ import 'package:stocksip/features/inventory_management/inventory/data/models/inv
 import 'package:stocksip/features/inventory_management/inventory/data/models/inventory_subtrack_request_dto.dart';
 import 'package:stocksip/features/inventory_management/inventory/data/models/inventory_transfer_request_dto.dart';
 import 'package:stocksip/features/inventory_management/inventory/data/remote/inventory_service.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_addition_request.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_response.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_subtrack_request.dart';
-import 'package:stocksip/features/inventory_management/inventory/domain/entities/inventory_transfer_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_addition_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_response.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_subtrack_request.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_transfer_request.dart';
 import 'package:stocksip/features/inventory_management/inventory/domain/repositories/inventory_repository.dart';
 
 /// Implementation of the [InventoryRepository] interface for managing inventories.

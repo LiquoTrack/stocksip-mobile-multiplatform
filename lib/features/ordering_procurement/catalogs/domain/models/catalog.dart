@@ -30,7 +30,7 @@ class Catalog {
           ?.map((item) => CatalogItem.fromJson(item as Map<String, dynamic>))
           .toList() ??
           [],
-      ownerAccount: json['ownerAccount'] as String,
+      ownerAccount: json['ownerAccount'] as String? ?? json['ownerAccountId'] as String? ?? '',
       warehouseId: json['warehouseId'] as String?,
     );
   }
