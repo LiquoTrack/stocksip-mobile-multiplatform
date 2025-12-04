@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stocksip/features/iam/login/data/services/remote/auth_service.dart';
+import 'package:stocksip/features/iam/login/domain/repositories/auth_repository.dart';
 import 'package:stocksip/features/iam/register/domain/account_role.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_event.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_state.dart';
 import 'package:stocksip/core/enums/status.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final AuthService service;
+  final AuthRepository repository;
 
-  RegisterBloc({required this.service}) : super(RegisterState()) {
+  RegisterBloc({required this.repository}) : super(RegisterState()) {
     on<OnUsernameChanged>((event, emit) {
       emit(state.copyWith(username: event.username));
     });
@@ -96,12 +96,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      await service.register(
+      await repository.signUp(
+        state.username,
         state.email,
         state.password,
-        state.username,
-        state.businessName,
         state.accountRole.toApi(),
+        state.businessName
       );
       emit(state.copyWith(status: Status.success));
     } catch (e) {
