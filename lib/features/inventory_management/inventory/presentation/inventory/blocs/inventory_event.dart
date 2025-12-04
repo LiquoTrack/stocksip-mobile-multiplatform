@@ -10,3 +10,11 @@ class GetInventoriesByWarehouseIdEvent extends InventoryEvent {
 
   const GetInventoriesByWarehouseIdEvent(this.warehouseId);
 }
+
+/// Event to delete a specific inventory item.
+/// Requires the inventory ID as a parameter.
+class DeleteInventoryEvent extends InventoryEvent {
+  final String inventoryId;
+
+  const DeleteInventoryEvent(this.inventoryId);
+}

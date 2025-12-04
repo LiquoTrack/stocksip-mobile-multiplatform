@@ -28,7 +28,7 @@ class _StoragePageState extends State<StoragePage> {
   void initState() {
     super.initState();
     // Load products when screen is initialized
-    context.read<StorageBloc>().add(GetProductsByAccountIdEvent());
+    context.read<StorageBloc>().add(GetAllProductsEvent());
   }
 
   @override
@@ -67,16 +67,15 @@ class _StoragePageState extends State<StoragePage> {
           }
 
           final products = state.products;
-          final totalProducts = products.length;
+          final totalProducts = products.totalCount;
           final maxProductsAllowed = 100;
           final isMaxReached = totalProducts >= maxProductsAllowed;
 
           return Column(
             children: [
-              // Header con información de stock y botón agregar
               Container(
                 width: double.infinity,
-                color: const Color(0xFFE0DCDC), // Ajusta color según tu tema
+                color: const Color(0xFFE0DCDC),
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,10 +140,10 @@ class _StoragePageState extends State<StoragePage> {
                   ],
                 ),
               ),
-              // Lista de productos
+              // Product List
               Expanded(
                 child: ProductList(
-                  products: products,
+                  products: products.products,
                   onProductClick: (product) =>
                       widget.onNavigate("product_detail/${product.id}"),
                 ),
