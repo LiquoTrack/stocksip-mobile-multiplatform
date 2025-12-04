@@ -33,6 +33,9 @@ import 'package:stocksip/features/profile_management/profiles/presentation/bloc/
 import 'package:stocksip/features/ordering_procurement/catalogs/data/repositories/catalog_repository_impl.dart';
 import 'package:stocksip/features/ordering_procurement/catalogs/data/services/remote/catalog_service.dart';
 import 'package:stocksip/features/ordering_procurement/catalogs/presentation/bloc/catalog_bloc.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/data/services/plan_service.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/data/repositories/plan_repository_impl.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/bloc/plan_bloc.dart';
 
 void main() {
   runApp(const MainApp());
@@ -117,6 +120,16 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
+        BlocProvider(create: (context) => LoginBloc(repository: authRepository)),
+        BlocProvider(create: (context) => RegisterBloc(repository: authRepository)),
+        BlocProvider(create: (context) => AuthBloc(tokenStorage: tokenStorage)..add(const AppStarted())),
+        BlocProvider(create: (context) => StorageBloc(repository: ProductRepositoryImpl(service: ProductService(client: authHttpClient), tokenStorage: tokenStorage))),
+        BlocProvider(create: (context) => CareguideBloc(repository: CareguideRepositoryImpl(service: CareguideService(client: authHttpClient)))),
+        BlocProvider(create: (context) => WarehouseBloc(repository: WarehousesRepositoryImpl(service: WarehouseService(client: authHttpClient), tokenStorage: tokenStorage)),),
+        BlocProvider(create: (context) => ProfileBloc(repository: ProfileRepositoryImpl(service: ProfileService())),),
+        BlocProvider(create: (context) => CatalogBloc(repository: CatalogRepositoryImpl(catalogService: CatalogService())),),
+        BlocProvider(create: (context) => RecoveryPasswordBloc(repository: RecoveryPasswordRepositoryImpl(service: RecoveryPasswordService()))),
+        BlocProvider(create: (context) => PlanBloc(repository: PlanRepositoryImpl(apiService: PlanService(client: authHttpClient)))),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

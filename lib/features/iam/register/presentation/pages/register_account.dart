@@ -20,7 +20,7 @@ class RegisterAccountPage extends StatelessWidget {
           case Status.success:
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LoginPage()),
+              MaterialPageRoute(builder: (context) => const LoginPage()),
             );
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
