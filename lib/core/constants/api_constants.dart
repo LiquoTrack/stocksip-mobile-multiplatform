@@ -1,6 +1,6 @@
 class ApiConstants {
 
-  static final String baseUrl = 'http://10.0.2.2:5283/api/v1/';
+  static final String baseUrl = 'https://stocksip-back-end.azurewebsites.net/api/v1/';
 
   static final String signIn = 'sign-in';
 
