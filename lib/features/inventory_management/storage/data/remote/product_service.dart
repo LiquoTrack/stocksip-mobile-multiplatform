@@ -135,7 +135,7 @@ class ProductService {
       request.fields['Type'] = dto.type;
       request.fields['Brand'] = dto.brand;
       request.fields['UnitPrice'] = dto.unitPrice.toString();
-      request.fields['MoneyCode'] = dto.code;
+      request.fields['Code'] = dto.code;
       request.fields['MinimumStock'] = dto.minimumStock.toString();
       request.fields['Content'] = dto.content.toString();
       request.fields['SupplierId'] = dto.supplierId ?? 'string';
