@@ -2,5 +2,5 @@
 abstract class ProductTypeRepository {
 
   /// Retrieves all product types from the repository.
-  Future<String> getAllProductTypeNames();
+  Future<List<String>> getAllProductTypeNames();
 }

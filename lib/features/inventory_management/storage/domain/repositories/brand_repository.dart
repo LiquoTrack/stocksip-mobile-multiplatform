@@ -2,5 +2,5 @@
 abstract class BrandRepository {
 
   /// Retrieves all brands from the repository.
-  Future<String> getAllBrandNames();
+  Future<List<String>> getAllBrandNames();
 }
