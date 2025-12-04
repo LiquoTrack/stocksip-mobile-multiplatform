@@ -6,8 +6,8 @@ import 'package:stocksip/features/inventory_management/warehouses/domain/models/
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_bloc.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_event.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_state.dart';
-import 'package:stocksip/features/inventory_management/warehouses/presentation/components/image_picker.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/components/text_field.dart';
+import 'package:stocksip/shared/presentation/widgets/image_picker.dart';
 
 class CreateAndEditWarehousePage extends StatefulWidget {
   final Warehouse? warehouse;
