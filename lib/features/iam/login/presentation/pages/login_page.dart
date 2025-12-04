@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stocksip/core/storage/token_storage.dart';
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_event.dart';
@@ -7,6 +8,7 @@ import 'package:stocksip/features/iam/login/presentation/blocs/login_state.dart'
 import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/pages/send_email_page.dart';
 import 'package:stocksip/features/iam/register/presentation/pages/register_user_page.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/pages/choose_plan_screen.dart';
 import 'package:stocksip/shared/presentation/widgets/stocksip_title.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,13 +26,36 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: BlocListener<LoginBloc, LoginState>(
         listenWhen: (previous, current) => previous.status != current.status,
-        listener: (context, state) {
+        listener: (context, state) async {
           switch (state.status) {
             case Status.success:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );              
+              final tokenStorage = TokenStorage();
+              final isFirst = await tokenStorage.isFirstLogin();
+              
+              if (isFirst) {
+                if (mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChoosePlanScreen(
+                        onContinue: (selectedPlan) async {
+                          await tokenStorage.markLoginComplete();
+                          if (mounted) {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                }
+              } else {
+                if (mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }
+              }
             case Status.failure:
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message ?? 'Unknown error'), behavior: SnackBarBehavior.floating, backgroundColor: Colors.red,),
