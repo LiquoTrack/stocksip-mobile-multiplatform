@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_request.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
