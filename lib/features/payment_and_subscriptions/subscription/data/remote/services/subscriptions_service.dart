@@ -22,7 +22,12 @@ class SubscriptionsService {
       final Uri uri = Uri.parse(
         "${ApiConstants.baseUrl}/${ApiConstants.accountSubscriptions(accountId)}",
       );
-      final response = await client.post(uri);
+
+      final response = await client.post(
+        uri,
+        body: jsonEncode(request.toJson()),
+        headers: {'Content-Type': 'application/json'},
+      );
 
       if (response.statusCode == HttpStatus.created) {
         final jsonResponse = jsonDecode(response.body);
@@ -37,9 +42,7 @@ class SubscriptionsService {
     }
   }
 
-  Future<SubscriptionResponse> getSubscriptionDetails(
-    String accountId,
-  ) async {
+  Future<SubscriptionResponse> getSubscriptionDetails(String accountId) async {
     try {
       final Uri uri = Uri.parse(
         "${ApiConstants.baseUrl}/${ApiConstants.accountSubscriptions(accountId)}",
@@ -57,9 +60,13 @@ class SubscriptionsService {
     } catch (e) {
       throw Exception('Error fetching subscription details: $e');
     }
-  } 
+  }
 
-  Future<UpgradeSubscriptionResponse> upgradeSubscription(UpgradeSubscriptionRequest request, String accountId, String subscriptionId) async {
+  Future<UpgradeSubscriptionResponse> upgradeSubscription(
+    UpgradeSubscriptionRequest request,
+    String accountId,
+    String subscriptionId,
+  ) async {
     try {
       final Uri uri = Uri.parse(
         "${ApiConstants.baseUrl}/${ApiConstants.upgradeSubscription(accountId, subscriptionId)}",

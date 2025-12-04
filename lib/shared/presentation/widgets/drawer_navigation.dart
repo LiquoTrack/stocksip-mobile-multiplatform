@@ -10,8 +10,9 @@ import 'package:stocksip/features/inventory_management/storage/presentation/stor
 import 'package:stocksip/features/profile_management/profiles/presentation/pages/profile_page.dart';
 import 'package:stocksip/features/ordering_procurement/catalogs/presentation/pages/catalog_list_page.dart';
 import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
-import 'package:stocksip/features/order_management/salesorder/presentation/pages/orders_router_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
+
+import '../../../features/order_management/salesorder/presentation/pages/supplier_orders_page.dart';
 
 class DrawerNavigation extends StatelessWidget {
   const DrawerNavigation({super.key});
@@ -27,10 +28,10 @@ class DrawerNavigation extends StatelessWidget {
               height: 120,
               padding: EdgeInsets.symmetric(
                 horizontal:
-                    MediaQuery.of(context).size.width *
+                MediaQuery.of(context).size.width *
                     0.04,
                 vertical:
-                    MediaQuery.of(context).size.height *
+                MediaQuery.of(context).size.height *
                     0.02,
               ),
               color: const Color(0xFF2B000D),
@@ -101,7 +102,7 @@ class DrawerNavigation extends StatelessWidget {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const OrdersRouterPage()),
+                        MaterialPageRoute(builder: (context) => const SupplierOrdersPage()),
                       );
                     },
                   ),

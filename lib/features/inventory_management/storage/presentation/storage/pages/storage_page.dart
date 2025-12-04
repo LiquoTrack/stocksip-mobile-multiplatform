@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/product_detail/pages/product_detail_page.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
@@ -94,12 +96,13 @@ class _StoragePageState extends State<StoragePage> {
 
                         return ProductCard(
                           product: product,
-                          onStartSelecting: () {
-                            setState(() => isSelecting = true);
+                          onTap: () async {
+                            _openProductDetail(product: product);
                           },
-                          onStopSelecting: () {
-                            setState(() => isSelecting = false);
-                          },
+                          onStartSelecting: () =>
+                              setState(() => isSelecting = true),
+                          onStopSelecting: () =>
+                              setState(() => isSelecting = false),
                         );
                       },
                     ),
@@ -184,6 +187,23 @@ class _StoragePageState extends State<StoragePage> {
               child: child,
             );
           },
+        );
+      },
+    );
+  }
+
+  void _openProductDetail({required ProductResponse product}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return ProductDetailPage(
+          productId: product.id,
         );
       },
     );

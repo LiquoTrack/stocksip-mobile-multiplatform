@@ -1,4 +1,4 @@
-import 'package:stocksip/features/payment_and_subscriptions/subscription/domain/models/account_subscriptions.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/domain/models/account_subscription.dart';
 
 class SubscriptionResponse {
   final String subscriptionId;
@@ -37,8 +37,8 @@ class SubscriptionResponse {
     );
   }
 
-  AccountSubscriptions toDomain() {
-    return AccountSubscriptions(
+  AccountSubscription toDomain() {
+    return AccountSubscription(
       subscriptionId: subscriptionId,
       planId: planId,
       status: status,

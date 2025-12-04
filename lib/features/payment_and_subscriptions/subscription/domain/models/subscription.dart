@@ -1,13 +1,13 @@
 class Subscription {
 
-  final String accountID;
+  final String accountId;
   final String planId;
   final String? preferenceId;
   final String initPoint;
   final bool isPaymentLaunched;
 
   const Subscription({
-    required this.accountID,
+    required this.accountId,
     required this.planId,
     this.preferenceId,
     required this.initPoint,
@@ -15,14 +15,14 @@ class Subscription {
   });
 
   Subscription copyWith({
-    String? accountID,
+    String? accountId,
     String? planId,
     String? preferenceId,
     String? initPoint,
     bool? isPaymentLaunched,
   }) {
     return Subscription(
-      accountID: accountID ?? this.accountID,
+      accountId: accountId ?? this.accountId,
       planId: planId ?? this.planId,
       preferenceId: preferenceId ?? this.preferenceId,
       initPoint: initPoint ?? this.initPoint,

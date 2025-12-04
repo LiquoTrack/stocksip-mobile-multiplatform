@@ -8,7 +8,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   final AccountRepository repository;  
 
-  AccountBloc(this.repository) : super(const AccountState()) {
+  AccountBloc({required this.repository}) : super(const AccountState()) {
     on<GetAccountStatus>(_onGetAccountStatus);
   }
 

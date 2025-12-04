@@ -1,4 +1,4 @@
-class AccountSubscriptions {
+class AccountSubscription {
 
   final String subscriptionId;
   final String planId;
@@ -10,7 +10,7 @@ class AccountSubscriptions {
   final int maxProducts;
   final int maxWarehouses;
 
-  const AccountSubscriptions({
+  const AccountSubscription({
     required this.subscriptionId,
     required this.planId,
     required this.status,
@@ -22,7 +22,7 @@ class AccountSubscriptions {
     required this.maxWarehouses,
   });
 
-  AccountSubscriptions copyWith({
+  AccountSubscription copyWith({
     String? subscriptionId,
     String? planId,
     String? status,
@@ -33,7 +33,7 @@ class AccountSubscriptions {
     int? maxProducts,
     int? maxWarehouses,
   }) {
-    return AccountSubscriptions(
+    return AccountSubscription(
       subscriptionId: subscriptionId ?? this.subscriptionId,
       planId: planId ?? this.planId,
       status: status ?? this.status,

@@ -5,20 +5,30 @@ import 'package:stocksip/features/inventory_management/storage/data/remote/produ
 import 'package:stocksip/features/inventory_management/storage/domain/models/product_request.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/models/product_update_request.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/models/products_with_count.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/repositories/brand_repository.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/repositories/product_repository.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/repositories/product_type_repository.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
 
 /// Bloc to manage storage-related events and states in the inventory management feature.
 /// Handles fetching products by account ID and updating the state accordingly.
-/// Uses the [ProductService] to interact with the data layer.
+/// Uses the [ProductService] to interact w, required ProductTypeRepositoryImpl productTypeRepositoryith the data layer.
 /// Extends [Bloc] with [StorageEvent] and [StorageState].
 class StorageBloc extends Bloc<StorageEvent, StorageState> {
   final ProductRepository repository;
+  final ProductTypeRepository productTypeRepository;
+  final BrandRepository brandRepository;
 
-  StorageBloc({required this.repository}) : super(StorageState()) {
+  StorageBloc({
+    required this.repository,
+    required this.productTypeRepository,
+    required this.brandRepository,
+  }) : super(StorageState()) {
     on<GetAllProductsEvent>(_getProductsByAccountId);
     on<GetProductsByWarehouseIdEvent>(_getProductsByWarehouseId);
+    on<GetAllBrandNamesEvent>(_getAllBrandNames);
+    on<GetAllProductTypeNamesEvent>(_getAllProductTypeNames);
     on<OnProductNameChanged>(_onProductNameChanged);
     on<OnProductTypeChanged>(_onProductTypeChanged);
     on<OnProductBrandChanged>(_onProductBrandChanged);
@@ -80,7 +90,10 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
   ) async {
     // Emit loading state
     emit(
-      state.copyWith(status: Status.loading, message: "Fetching warehouse products..."),
+      state.copyWith(
+        status: Status.loading,
+        message: "Fetching warehouse products...",
+      ),
     );
 
     try {
@@ -130,7 +143,9 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
         throw Exception('Invalid product ID');
       }
 
-      final productToValidate = await repository.getProductById(productId: event.productId);
+      final productToValidate = await repository.getProductById(
+        productId: event.productId,
+      );
 
       if (productToValidate.totalStockInStore > 0) {
         throw Exception('Cannot delete product with existing stock in store');
@@ -155,7 +170,6 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
           message: "Product deleted successfully.",
         ),
       );
-
     } catch (e) {
       emit(
         state.copyWith(
@@ -210,8 +224,9 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
   ) {
     emit(
       state.copyWith(
-        selectedProduct:
-            state.selectedProduct?.copyWith(unitPrice: event.unitPrice),
+        selectedProduct: state.selectedProduct?.copyWith(
+          unitPrice: event.unitPrice,
+        ),
       ),
     );
   }
@@ -223,8 +238,9 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
   ) {
     emit(
       state.copyWith(
-        selectedProduct:
-            state.selectedProduct?.copyWith(code: event.currencyCode),
+        selectedProduct: state.selectedProduct?.copyWith(
+          code: event.currencyCode,
+        ),
       ),
     );
   }
@@ -236,8 +252,9 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
   ) {
     emit(
       state.copyWith(
-        selectedProduct: state.selectedProduct
-            ?.copyWith(minimumStock: event.minimumStock),
+        selectedProduct: state.selectedProduct?.copyWith(
+          minimumStock: event.minimumStock,
+        ),
       ),
     );
   }
@@ -249,8 +266,9 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
   ) {
     emit(
       state.copyWith(
-        selectedProduct:
-            state.selectedProduct?.copyWith(content: event.content),
+        selectedProduct: state.selectedProduct?.copyWith(
+          content: event.content,
+        ),
       ),
     );
   }
@@ -278,23 +296,27 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
     Emitter<StorageState> emit,
   ) async {
     try {
-
-      emit(state.copyWith(status: Status.loading, message: "Creating product..."));
+      emit(
+        state.copyWith(status: Status.loading, message: "Creating product..."),
+      );
 
       final request = ProductRequest(
-        name: event.product.name, 
-        type: event.product.type, 
-        brand: event.product.brand, 
-        unitPrice: event.product.unitPrice, 
-        code: event.product.code, 
-        minimumStock: event.product.minimumStock, 
+        name: event.product.name,
+        type: event.product.type,
+        brand: event.product.brand,
+        unitPrice: event.product.unitPrice,
+        code: event.product.code,
+        minimumStock: event.product.minimumStock,
         content: event.product.content,
         image: event.imageFile,
       );
 
-      final productToCreate = await repository.registerProduct(request: request);
+      final productToCreate = await repository.registerProduct(
+        request: request,
+      );
 
-      final updatedList = List.of(state.products.products)..add(productToCreate);
+      final updatedList = List.of(state.products.products)
+        ..add(productToCreate);
 
       final wrapper = state.products.copyWith(
         products: updatedList,
@@ -309,7 +331,6 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
           message: "Product created successfully.",
         ),
       );
-
     } catch (e) {
       emit(
         state.copyWith(
@@ -327,14 +348,15 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
     Emitter<StorageState> emit,
   ) async {
     try {
-
-      emit(state.copyWith(status: Status.loading, message: "Updating product..."));
+      emit(
+        state.copyWith(status: Status.loading, message: "Updating product..."),
+      );
 
       final request = ProductUpdateRequest(
         name: event.product.name,
-        unitPrice: event.product.unitPrice, 
-        code: event.product.code, 
-        minimumStock: event.product.minimumStock, 
+        unitPrice: event.product.unitPrice,
+        code: event.product.code,
+        minimumStock: event.product.minimumStock,
         content: event.product.content,
         image: event.imageFile,
       );
@@ -359,12 +381,78 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
           message: "Product updated successfully.",
         ),
       );
-
     } catch (e) {
       emit(
         state.copyWith(
           status: Status.failure,
           message: "Failed to update product: $e",
+        ),
+      );
+      return;
+    }
+  }
+
+  /// Handles fetching all brand names.
+  FutureOr<void> _getAllBrandNames(
+    GetAllBrandNamesEvent event,
+    Emitter<StorageState> emit,
+  ) async {
+    try {
+      emit(
+        state.copyWith(
+          status: Status.loading,
+          message: "Fetching brand names...",
+        ),
+      );
+
+      final brandNames = await brandRepository.getAllBrandNames();
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          brandNames: brandNames,
+          message: "Brand names fetched successfully.",
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to fetch brand names: $e",
+        ),
+      );
+      return;
+    }
+  }
+
+  /// Handles fetching all product type names.
+  FutureOr<void> _getAllProductTypeNames(
+    GetAllProductTypeNamesEvent event,
+    Emitter<StorageState> emit,
+  ) async {
+    try {
+      emit(
+        state.copyWith(
+          status: Status.loading,
+          message: "Fetching product type names...",
+        ),
+      );
+
+      final productTypeNames = await productTypeRepository
+          .getAllProductTypeNames();
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          productTypeNames: productTypeNames,
+          message: "Product type names fetched successfully.",
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to fetch product type names: $e",
         ),
       );
       return;
