@@ -17,6 +17,7 @@ import 'package:stocksip/features/inventory_management/storage/data/remote/brand
 import 'package:stocksip/features/inventory_management/storage/data/remote/product_type_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/brand_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/product_type_repository_impl.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/product_detail/blocs/product_detail_bloc.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/services/warehouse_service.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/repositories/warehouses_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_bloc.dart';
@@ -70,7 +71,9 @@ class MainApp extends StatelessWidget {
               service: ProductService(client: authHttpClient),
               tokenStorage: tokenStorage,
             ),
-            productTypeRepository: ProductTypeRepositoryImpl(productTypeService: ProductTypeService()),
+            productTypeRepository: ProductTypeRepositoryImpl(
+              productTypeService: ProductTypeService(),
+            ),
             brandRepository: BrandRepositoryImpl(brandService: BrandService()),
           ),
         ),
@@ -103,6 +106,14 @@ class MainApp extends StatelessWidget {
           create: (context) => RecoveryPasswordBloc(
             repository: RecoveryPasswordRepositoryImpl(
               service: RecoveryPasswordService(),
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ProductDetailBloc(
+            productRepository: ProductRepositoryImpl(
+              service: ProductService(client: authHttpClient),
+              tokenStorage: tokenStorage,
             ),
           ),
         ),
