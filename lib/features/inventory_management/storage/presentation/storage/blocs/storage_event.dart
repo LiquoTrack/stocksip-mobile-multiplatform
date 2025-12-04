@@ -87,6 +87,14 @@ class GetAllProductsEvent extends StorageEvent {
   const GetAllProductsEvent();
 }
 
+/// Event to fetch products by a specific warehouse ID.
+/// Used to load products from a warehouse's inventory.
+class GetProductsByWarehouseIdEvent extends StorageEvent {
+  final String warehouseId;
+
+  const GetProductsByWarehouseIdEvent({required this.warehouseId});
+}
+
 /// Event to validate the minimum stock of a product.
 class OnValidateMinimumStock extends StorageEvent {
   final int minimumStock;

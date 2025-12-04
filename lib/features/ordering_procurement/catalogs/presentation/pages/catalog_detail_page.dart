@@ -5,6 +5,7 @@ import '../../domain/models/catalog.dart';
 import '../bloc/catalog_bloc.dart';
 import '../bloc/catalog_event.dart';
 import '../bloc/catalog_state.dart';
+import 'catalog_create_edit_page.dart';
 
 class CatalogDetailPage extends StatefulWidget {
   final String catalogId;
@@ -41,6 +42,25 @@ class _CatalogDetailPageState extends State<CatalogDetailPage> {
             backgroundColor: const Color(0xFFF4ECEC),
             foregroundColor: const Color(0xFF4A1B2A),
             elevation: 0,
+            actions: [
+              if (catalog != null)
+                IconButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => CatalogCreateEditPage(
+                        catalogId: catalog.id,
+                        isEditMode: true,
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Color(0xFF8B4C5C),
+                  ),
+                ),
+            ],
           ),
           backgroundColor: const Color(0xFFF4ECEC),
           body: state.status == Status.loading
@@ -241,13 +261,43 @@ class _CatalogDetailPageState extends State<CatalogDetailPage> {
               ),
             ),
             const SizedBox(width: 8.0),
-            // Options
+            // Remove Button
             IconButton(
               onPressed: () {
-                // Show options menu
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Remove Item'),
+                    content: const Text('Are you sure you want to remove this item from the catalog?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.read<CatalogBloc>().add(
+                            RemoveCatalogItem(
+                              catalogId: context.read<CatalogBloc>().state.selectedCatalog?.id ?? '',
+                              productId: item.productId,
+                            ),
+                          );
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Item removed from catalog')),
+                          );
+                        },
+                        child: const Text(
+                          'Remove',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
               icon: const Icon(
-                Icons.more_vert,
+                Icons.delete_outline,
                 color: Color(0xFFE8B4BE),
                 size: 20.0,
               ),

@@ -18,6 +18,7 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
 
   StorageBloc({required this.repository}) : super(StorageState()) {
     on<GetAllProductsEvent>(_getProductsByAccountId);
+    on<GetProductsByWarehouseIdEvent>(_getProductsByWarehouseId);
     on<OnProductNameChanged>(_onProductNameChanged);
     on<OnProductTypeChanged>(_onProductTypeChanged);
     on<OnProductBrandChanged>(_onProductBrandChanged);
@@ -66,6 +67,48 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
         state.copyWith(
           status: Status.failure,
           message: "Failed to fetch products: $e",
+        ),
+      );
+      return;
+    }
+  }
+
+  /// Handles fetching products by warehouse ID.
+  FutureOr<void> _getProductsByWarehouseId(
+    GetProductsByWarehouseIdEvent event,
+    Emitter<StorageState> emit,
+  ) async {
+    // Emit loading state
+    emit(
+      state.copyWith(status: Status.loading, message: "Fetching warehouse products..."),
+    );
+
+    try {
+      /// Fetch products by warehouse ID using the repository.
+      final products = await repository.getProductsByWarehouseId(
+        warehouseId: event.warehouseId,
+      );
+
+      final productsWithCount = state.products.copyWith(
+        products: products,
+        totalCount: products.length,
+        maxTotalAllowed: state.products.maxTotalAllowed,
+      );
+
+      // Emit success state with fetched products
+      emit(
+        state.copyWith(
+          status: Status.success,
+          products: productsWithCount,
+          message: "Warehouse products fetched successfully.",
+        ),
+      );
+    } catch (e) {
+      // Emit error state in case of failure
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to fetch warehouse products: $e",
         ),
       );
       return;
