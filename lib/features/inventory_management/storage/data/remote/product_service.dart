@@ -49,6 +49,40 @@ class ProductService {
     }
   }
 
+  /// Fetches products by warehouse ID.
+  /// Returns a list of [ProductResponseDto] instances for the warehouse inventory.
+  /// Throws an [HttpException] for non-200 HTTP responses,
+  /// a [SocketException] for network issues,
+  /// and a [FormatException] for JSON parsing errors.
+  Future<List<ProductResponseDto>> getProductsByWarehouseId({
+    required String warehouseId,
+  }) async {
+    try {
+      final Uri uri = Uri.parse(
+        ApiConstants.baseUrl + ApiConstants.getInventoriesByWarehouseId(warehouseId),
+      );
+
+      final response = await client.get(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        final List<dynamic> data = json is List ? json : (json['data'] ?? []);
+        return data.map((item) => ProductResponseDto.fromJson(item)).toList();
+      }
+
+      throw HttpException('Unexpected HTTP Status: ${response.statusCode}');
+    } on SocketException {
+      throw const SocketException('Failed to establish network connection');
+    } on FormatException catch (e) {
+      throw FormatException('Failed to parse response: $e');
+    } catch (e) {
+      throw Exception('Fetching warehouse products failed: $e');
+    }
+  }
+
   /// Fetches a product by its [productId].
   /// Returns a [ProductResponseDto] instance upon successful retrieval.
   /// Throws an [HttpException] for non-200 HTTP responses,

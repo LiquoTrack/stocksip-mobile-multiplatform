@@ -1,6 +1,6 @@
 class ApiConstants {
 
-  static final String baseUrl = 'http://10.0.2.2:5283/api/v1/';
+  static final String baseUrl = 'https://stocksip-back-end.azurewebsites.net/api/v1/';
 
   static final String signIn = 'sign-in';
 
@@ -100,5 +100,17 @@ class ApiConstants {
 
   static String updateProfile(String profileId) {
     return 'profiles/$profileId';
+  }
+
+  static String sendRecoveryCode() {
+    return 'users/recovery-code';
+  }
+
+  static String verifyRecoveryCode() {
+    return 'users/verify-recovery-code';
+  }
+
+  static String resetPassword() {
+    return 'users/reset-password';
   }
 }

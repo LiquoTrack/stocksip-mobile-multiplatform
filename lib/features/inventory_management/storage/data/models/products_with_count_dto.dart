@@ -16,15 +16,15 @@ class ProductsWithCountDto {
 
   /// Creates a [ProductsWithCountDto] instance from a JSON map.
   factory ProductsWithCountDto.fromJson(Map<String, dynamic> json) {
-    var productsJson = json['products'] as List;
+    var productsJson = json['products'] as List? ?? [];
     List<ProductResponseDto> productsList = productsJson
-        .map((productJson) => ProductResponseDto.fromJson(productJson))
+        .map((productJson) => ProductResponseDto.fromJson(productJson as Map<String, dynamic>))
         .toList();
 
     return ProductsWithCountDto(
       products: productsList,
-      totalCount: json['totalCount'],
-      maxTotalAllowed: json['maxTotalAllowed'],
+      totalCount: (json['totalCount'] as num?)?.toInt() ?? 0,
+      maxTotalAllowed: (json['maxTotalAllowed'] as num?)?.toInt() ?? 0,
     );
   }
 

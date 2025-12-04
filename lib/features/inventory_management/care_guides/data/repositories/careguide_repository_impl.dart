@@ -1,86 +1,74 @@
+import 'package:stocksip/features/inventory_management/care_guides/data/remote/mappers/careguide_mapper.dart';
+import 'package:stocksip/features/inventory_management/care_guides/data/remote/models/careguide_request_dto.dart';
 import 'package:stocksip/features/inventory_management/care_guides/data/remote/services/careguide_service.dart';
-import 'package:stocksip/features/inventory_management/care_guides/domain/entities/careguide_response.dart';
+import 'package:stocksip/features/inventory_management/care_guides/domain/models/careguide.dart';
 import 'package:stocksip/features/inventory_management/care_guides/domain/repositories/careguide_repository.dart';
-import 'package:stocksip/features/inventory_management/care_guides/domain/entities/careguide_request.dart';
 
-/// Implementation of the CareGuideRepository interface for managing care guides
-/// in the inventory management system. This class interacts with the
-/// CareguideService to perform CRUD operations on care guides.
 class CareguideRepositoryImpl implements CareGuideRepository {
-  // The service used to perform remote operations related to care guides.
   final CareguideService service;
 
-  // Constructor that accepts a CareguideService instance.
   const CareguideRepositoryImpl({required this.service});
 
-  /// Fetches a care guide by its [careGuideId].
-  /// Returns a [CareguideResponse] instance representing the care guide details.
   @override
-  Future<CareguideResponse> getById({required String careGuideId}) {
-    return service.getById(careGuideId: careGuideId);
+  Future<CareGuide> getById({required String careGuideId}) async {
+    final dto = await service.getById(careGuideId);
+    return CareguideMapper.toDomain(dto);
   }
 
-  /// Fetches all care guides associated with the given [accountId].
-  /// Returns a list of [CareguideResponse] instances upon successful retrieval.
-  /// Throws an [HttpException] for non-200 HTTP responses,
-  /// a [SocketException] for network issues,
-  /// and a [FormatException] for JSON parsing errors.
   @override
-  Future<List<CareguideResponse>> getAllCareGuideBytId({required String accountId}) async {
-    return service.getAllCareGuideByAccountId(accountId: accountId);
+  Future<List<CareGuide>> getAllCareGuideById({required String accountId}) async {
+    final wrapper = await service.getCareGuidesByAccountId(accountId);
+    return CareguideMapper.toDomainWrapper(wrapper).careGuides;
   }
 
-  /// Registers a new care guide using the provided [request] details for the given [accountId].
-  /// Returns a [CareguideResponse] instance upon successful registration.
-  /// Throws an [HttpException] for non-200 HTTP responses,
-  /// a [SocketException] for network issues,
-  /// and a [FormatException] for JSON parsing errors.
   @override
-  Future<CareguideResponse> createCareGuide({required CareGuideRequest request}) {
-    return service.createCareGuide(request: request);
+  Future<CareGuide> createCareGuide({required CareGuide careGuide}) async {
+    final req = CareguideRequestDto(
+      typeOfLiquor: careGuide.typeOfLiquor,
+      productName: careGuide.productName,
+      title: careGuide.title,
+      summary: careGuide.summary,
+      recommendedMinTemperature: careGuide.recommendedMinTemperature,
+      recommendedMaxTemperature: careGuide.recommendedMaxTemperature,
+    );
+    final dto = await service.createCareGuide(careGuide.accountId, req);
+    return CareguideMapper.toDomain(dto);
   }
 
-  /// Updates an existing care guide identified by [careGuideId] using the provided [request] data.
-  /// Returns a [CareguideResponse] instance representing the updated care guide.
   @override
-  Future<CareguideResponse> updateCareGuide({required String careGuideId, required CareGuideRequest request}) {
-    return service.updateCareGuide(careGuideId: careGuideId, request: request);
+  Future<CareGuide> updateCareGuide({required String careGuideId, required CareGuide careGuide, String? recommendedPlaceStorage, String? generalRecommendation}) async {
+    final requestBody = {
+      'careGuideId': careGuideId,
+      'title': careGuide.title,
+      'summary': careGuide.summary,
+      'recommendedMinTemperature': careGuide.recommendedMinTemperature,
+      'recommendedMaxTemperature': careGuide.recommendedMaxTemperature,
+      'recommendedPlaceStorage': recommendedPlaceStorage ?? '',
+      'generalRecommendation': generalRecommendation ?? '',
+    };
+    
+    final dto = await service.updateCareGuideWithBody(careGuideId, requestBody);
+    return CareguideMapper.toDomain(dto);
   }
 
-  /// Deletes a care guide by its [careGuideId].
-  /// Throws an [HttpException] for non-200 HTTP responses,
-  /// a [SocketException] for network issues,
-  /// and a [FormatException] for JSON parsing errors.
   @override
-  Future<void> deleteCareGuide({required String careGuideId}) {
-    return service.deleteCareGuide(careGuideId: careGuideId);
+  Future<void> deleteCareGuide({required String careGuideId}) async {
+    await service.deleteCareGuide(careGuideId);
   }
 
-  /// Fetches care guides associated with the given [accountId] and [productType].
-  /// Returns a list of [CareguideResponse] instances upon successful retrieval.
-  /// Throws an [HttpException] for non-200 HTTP responses,
-  /// a [SocketException] for network issues,
-  /// and a [FormatException] for JSON parsing errors.
   @override
-  Future<List<CareguideResponse>> getCareGuideByProductType({required String accountId, required String productType}) {
-    return service.getCareGuideByProductType(accountId: accountId, productType: productType);
+  Future<List<CareGuide>> getCareGuideByProductType({required String accountId, required String productType}) async {
+    final list = await service.getCareGuideByProductType(accountId, productType);
+    return CareguideMapper.listToDomain(list);
   }
 
-  /// Unassigns a care guide from a product identified by [careGuideId].
-  /// Throws an [HttpException] for non-200 HTTP responses,
-  /// a [SocketException] for network issues,
-  /// and a [FormatException] for JSON parsing errors.
   @override
-  Future<void> unassignCareGuide({required String careGuideId}) {
-    return service.unassignCareGuide(careGuideId: careGuideId);
+  Future<void> unassignCareGuide({required String careGuideId}) async {
+    await service.unassignCareGuide(careGuideId);
   }
 
-  /// Assigns a care guide to a product identified by [careGuideId] and [productId].
-  /// Throws an [HttpException] for non-200 HTTP responses,
-  /// a [SocketException] for network issues,
-  /// and a [FormatException] for JSON parsing errors.
   @override
-  Future<void> assignCareGuide({required String careGuideId, required String productId}) {
-    return service.assignCareGuide(careGuideId: careGuideId, productId: productId);
+  Future<void> assignCareGuide({required String careGuideId, required String productId}) async {
+    await service.assignCareGuide(careGuideId, productId);
   }
 }
