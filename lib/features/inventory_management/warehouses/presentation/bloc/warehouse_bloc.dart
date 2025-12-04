@@ -3,7 +3,6 @@ import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/inventory_management/warehouses/domain/repositories/warehouse_repository.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_event.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_state.dart';
-import 'package:flutter/foundation.dart';
 
 class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
   final WarehouseRepository repository;
@@ -131,7 +130,6 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
         warehouses: warehouses,
         total: warehouses.length,
       );
-
       emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, messsage: e.toString()));
@@ -143,17 +141,16 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
     Emitter<WarehouseState> emit,
   ) async {
     try {
-      final selected = state.selectedWarehouse;
-      if (selected == null) {
-        throw Exception("No warehouse selected for deletion.");
-      }
-
       emit(state.copyWith(status: Status.loading));
 
-      await repository.deleteWarehouse(selected.warehouseId);
+      if (event.warehouseId.isEmpty) {
+        throw Exception('Invalid warehouse ID');
+      }
+
+      await repository.deleteWarehouse(event.warehouseId);
 
       final updatedWarehouses = state.warehouseWrapper.warehouses
-          .where((w) => w.warehouseId != selected.warehouseId)
+          .where((w) => w.warehouseId != event.warehouseId)
           .toList();
 
       final wrapper = state.warehouseWrapper.copyWith(
@@ -161,7 +158,7 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
         total: updatedWarehouses.length,
       );
 
-      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper));
+      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper, messsage: 'Warehouse deleted successfully'));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, messsage: e.toString()));
     }
@@ -172,34 +169,21 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
     Emitter<WarehouseState> emit,
   ) async {
     try {
-      debugPrint('🏗️ Creating Warehouse...');
-      debugPrint('Name: ${event.warehouse.name}');
-      debugPrint('Street: ${event.warehouse.addressStreet}');
-      debugPrint('City: ${event.warehouse.addressCity}');
-      debugPrint('District: ${event.warehouse.addressDistrict}');
-      debugPrint('Postal Code: ${event.warehouse.addressPostalCode}');
-      debugPrint('Country: ${event.warehouse.addressCountry}');
-      debugPrint('Capacity: ${event.warehouse.capacity}');
-      debugPrint('Min Temp: ${event.warehouse.temperatureMin}');
-      debugPrint('Max Temp: ${event.warehouse.temperatureMax}');
-      debugPrint('Image file: ${event.image?.path ?? "No image"}');
 
       emit(state.copyWith(status: Status.loading));
 
-      await repository.addWarehouse(event.warehouse, event.image);
+      final createdWarehouse = await repository.addWarehouse(event.warehouse, event.image);
 
-      final warehouses = await repository.fetchWarehouses();
+      final updatedList = List.of(state.warehouseWrapper.warehouses)
+        ..add(createdWarehouse);
 
       final wrapper = state.warehouseWrapper.copyWith(
-        warehouses: warehouses,
-        total: warehouses.length,
+        warehouses: updatedList,
+        total: updatedList.length,
       );
 
-      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper));
-
-      debugPrint('✅ Warehouse created successfully.');
+      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper, messsage: 'Warehouse created successfully'));
     } catch (e) {
-      debugPrint('❌ Error creating warehouse: $e');
       emit(state.copyWith(status: Status.failure, messsage: e.toString()));
     }
   }
@@ -220,7 +204,7 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
         total: warehouses.length,
       );
 
-      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper));
+      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper, messsage: 'Warehouse updated successfully'));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, messsage: e.toString()));
     }

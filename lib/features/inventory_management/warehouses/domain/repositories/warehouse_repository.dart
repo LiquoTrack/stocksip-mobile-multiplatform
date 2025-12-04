@@ -4,11 +4,11 @@ import 'package:stocksip/features/inventory_management/warehouses/domain/models/
 
 abstract class WarehouseRepository {
 
-  Future<void> addWarehouse(Warehouse warehouseData, File? imageFile);
+  Future<Warehouse> addWarehouse(Warehouse warehouseData, File? imageFile) ;
 
   Future<List<Warehouse>> fetchWarehouses();
 
-  Future<void> updateWarehouse(Warehouse warehouseData);
+  Future<Warehouse> updateWarehouse(Warehouse warehouseData);
 
   Future<void> deleteWarehouse(String warehouseId);
 }

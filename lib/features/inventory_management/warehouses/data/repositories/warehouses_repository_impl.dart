@@ -14,7 +14,7 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
   WarehousesRepositoryImpl({required this.service, required this.tokenStorage});
 
   @override
-  Future<void> addWarehouse(Warehouse warehouseData, File? imageFile) async {
+  Future<Warehouse> addWarehouse(Warehouse warehouseData, File? imageFile) async {
     try {
       final accountId = await tokenStorage.readAccountId();
       if (accountId == null) throw Exception('No accountId found');
@@ -22,8 +22,8 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
         warehouseData,
         imageFile: imageFile,
       );
-
-      await service.registerWarehouse(accountId, warehouseRequest);
+      final dto = await service.registerWarehouse(accountId, warehouseRequest);
+      return dto.toDomain();
     } catch (e) {
       throw Exception('Error adding warehouse: $e');
     }
@@ -54,12 +54,13 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
   }
 
   @override
-  Future<void> updateWarehouse(Warehouse warehouseData) async {
+  Future<Warehouse> updateWarehouse(Warehouse warehouseData) async {
     try {
-      await service.updateWarehouse(
+      final dto = await service.updateWarehouse(
         warehouseData.warehouseId,
         WarehouseMapper.toRequestDto(warehouseData),
       );
+      return dto.toDomain();
     } catch (e) {
       throw Exception('Error updating warehouse: $e');
     }

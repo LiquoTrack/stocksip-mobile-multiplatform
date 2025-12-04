@@ -64,7 +64,8 @@ class OnWarehouseUpdated extends WarehouseEvent {
 }
 
 class OnWarehouseDeleted extends WarehouseEvent {
-  const OnWarehouseDeleted();
+  final String warehouseId;
+  const OnWarehouseDeleted({required this.warehouseId});
 }
 
 class GetAllWarehouses extends WarehouseEvent {

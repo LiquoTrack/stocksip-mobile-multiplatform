@@ -21,21 +21,38 @@ class CreateAndEditWarehousePage extends StatefulWidget {
 class _CreateAndEditWarehousePageState
     extends State<CreateAndEditWarehousePage> {
   final _formKey = GlobalKey<FormState>();
+
+  late final List<TextEditingController> _controllers;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _districtController = TextEditingController();
   final TextEditingController _postalCodeController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
   final TextEditingController _minTempController = TextEditingController();
   final TextEditingController _maxTempController = TextEditingController();
-  final TextEditingController _countryController = TextEditingController();
-  final TextEditingController _districtController = TextEditingController();
 
   File? _selectedImage;
+
+  bool _isButtonEnabled = false;
 
   @override
   void initState() {
     super.initState();
+
+    _controllers = [
+      _nameController,
+      _streetController,
+      _cityController,
+      _districtController,
+      _postalCodeController,
+      _countryController,
+      _capacityController,
+      _minTempController,
+      _maxTempController,
+    ];
+
     if (widget.warehouse != null) {
       _nameController.text = widget.warehouse!.name;
       _streetController.text = widget.warehouse!.addressStreet;
@@ -47,18 +64,35 @@ class _CreateAndEditWarehousePageState
       _minTempController.text = widget.warehouse!.temperatureMin.toString();
       _maxTempController.text = widget.warehouse!.temperatureMax.toString();
     }
+
+    for (var controller in _controllers) {
+      controller.addListener(_updateButtonState);
+    }
+
+    _updateButtonState();
+  }
+
+  void _updateButtonState() {
+    final allFilled = _controllers.every((c) => c.text.isNotEmpty);
+
+    final currentState = context.read<WarehouseBloc>().state;
+    final shouldEnable = allFilled && currentState.status != Status.failure;
+    if (shouldEnable != _isButtonEnabled) {
+      setState(() {
+        _isButtonEnabled = shouldEnable;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<WarehouseBloc, WarehouseState>(
       listener: (context, state) {
-        if (state.messsage?.isNotEmpty ?? false) {
+        if (state.messsage.isNotEmpty) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(state.messsage!)));
+          ).showSnackBar(SnackBar(content: Text(state.messsage)));
         }
-
         if (state.status == Status.success) {
           Navigator.pop(context);
         }
@@ -72,124 +106,132 @@ class _CreateAndEditWarehousePageState
         ),
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.warehouse == null ? 'New Warehouse' : 'Edit Warehouse',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-          
-              ImagePickerField(onImageSelected: (file) => _selectedImage = file),
-              const SizedBox(height: 16),
-          
-              CustomTextField(
-                controller: _nameController,
-                label: 'Warehouse Name',
-                hint: 'Main Warehouse',
-              ),
-              const SizedBox(height: 16),
-              CustomTextField(
-                controller: _streetController,
-                label: 'Street',
-                hint: 'Calle 123',
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _cityController,
-                      label: 'City',
-                      hint: 'Lima',
-                    ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.warehouse == null ? 'New Warehouse' : 'Edit Warehouse',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _districtController,
-                      label: 'District',
-                      hint: 'Chorrillos',
+                ),
+                const SizedBox(height: 16),
+                ImagePickerField(
+                  onImageSelected: (file) => _selectedImage = file,
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: _nameController,
+                  label: 'Warehouse Name',
+                  hint: 'Main Warehouse',
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: _streetController,
+                  label: 'Street',
+                  hint: 'Calle 123',
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _cityController,
+                        label: 'City',
+                        hint: 'Lima',
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _postalCodeController,
-                      label: 'Postal Code',
-                      hint: '12063',
-                      keyboard: TextInputType.number,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _districtController,
+                        label: 'District',
+                        hint: 'Chorrillos',
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _countryController,
-                      label: 'Country',
-                      hint: 'Peru',
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _postalCodeController,
+                        label: 'Postal Code',
+                        hint: '12063',
+                        keyboard: TextInputType.number,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              CustomTextField(
-                controller: _capacityController,
-                label: 'Capacity',
-                hint: '1000',
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _minTempController,
-                      label: 'Min Temp',
-                      hint: '5.0',
-                      keyboard: TextInputType.number,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _countryController,
+                        label: 'Country',
+                        hint: 'Peru',
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: CustomTextField(
-                      controller: _maxTempController,
-                      label: 'Max Temp',
-                      hint: '25.0',
-                      keyboard: TextInputType.number,
+                  ],
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: _capacityController,
+                  label: 'Capacity',
+                  hint: '1000',
+                  keyboard: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _minTempController,
+                        label: 'Min Temp',
+                        hint: '5.0',
+                        keyboard: TextInputType.number,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _onSubmit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2B000D),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _maxTempController,
+                        label: 'Max Temp',
+                        hint: '25.0',
+                        keyboard: TextInputType.number,
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    widget.warehouse == null
-                        ? 'Add Warehouse'
-                        : 'Update Warehouse',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white,
+                  ],
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _isButtonEnabled ? _onSubmit : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isButtonEnabled
+                          ? const Color(0xFF2B000D)
+                          : Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      widget.warehouse == null
+                          ? 'Add Warehouse'
+                          : 'Update Warehouse',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -239,14 +281,9 @@ class _CreateAndEditWarehousePageState
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _streetController.dispose();
-    _cityController.dispose();
-    _districtController.dispose();
-    _postalCodeController.dispose();
-    _capacityController.dispose();
-    _minTempController.dispose();
-    _maxTempController.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 }

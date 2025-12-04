@@ -5,7 +5,7 @@ import 'package:stocksip/features/inventory_management/warehouses/domain/models/
 class WarehouseState {
   final Status status;
   final WarehouseWrapper warehouseWrapper;
-  final String? messsage;
+  final String messsage;
   final Warehouse? selectedWarehouse;
 
   const WarehouseState({
@@ -15,7 +15,7 @@ class WarehouseState {
       total: 0,
       maxWarehousesAllowed: 0,
     ),
-    this.messsage,
+    this.messsage = "",
     this.selectedWarehouse,
   });
 
