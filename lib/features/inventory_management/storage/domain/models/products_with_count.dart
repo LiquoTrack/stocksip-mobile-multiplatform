@@ -13,4 +13,18 @@ class ProductsWithCount {
     required this.totalCount,
     required this.maxTotalAllowed,
   });
+
+  /// Creates a copy of this [ProductsWithCount] with the given fields replaced
+  /// by new values.
+  ProductsWithCount copyWith({
+    List<ProductResponse>? products,
+    int? totalCount,
+    int? maxTotalAllowed,
+  }) {
+    return ProductsWithCount(
+      products: products ?? this.products,
+      totalCount: totalCount ?? this.totalCount,
+      maxTotalAllowed: maxTotalAllowed ?? this.maxTotalAllowed,
+    );
+  }
 }
