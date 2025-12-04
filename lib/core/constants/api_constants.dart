@@ -113,4 +113,10 @@ class ApiConstants {
   static String resetPassword() {
     return 'users/reset-password';
   }
+
+  static final String getAllPlans = 'plans';
+
+  static String createSubscription(String planId) {
+    return 'subscriptions/plan/$planId';
+  }
 }
