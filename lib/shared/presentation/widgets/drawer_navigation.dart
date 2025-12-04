@@ -7,6 +7,8 @@ import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
 import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_page.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/pages/warehouse_page.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/pages/storage_page.dart';
+import 'package:stocksip/features/profile_management/profiles/presentation/pages/profile_page.dart';
+import 'package:stocksip/features/ordering_procurement/catalogs/presentation/pages/catalog_list_page.dart';
 import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
@@ -64,6 +66,7 @@ class DrawerNavigation extends StatelessWidget {
               ),
             ),
 
+
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -112,7 +115,10 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.local_offer,
                     title: 'Catalog',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CatalogListPage()),
+                    ),
                   ),
                   NavigationTile(
                     icon: Icons.subscriptions,
@@ -135,7 +141,10 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.person,
                     title: 'Profile',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ProfilePage()),
+                    ),
                   ),
                 ],
               ),

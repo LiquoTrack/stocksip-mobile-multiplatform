@@ -152,6 +152,29 @@ class _CareGuideCreateState extends State<CareGuideCreate> {
             key: _formKey,
             child: Column(
               children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _selectedProduct,
+                    decoration: inputDecoration.copyWith(hintText: 'Select Product'),
+                    icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF471725)),
+                    items: const [
+                      DropdownMenuItem(value: 'Whiskey', child: Text('Whiskey')),
+                      DropdownMenuItem(value: 'Wine', child: Text('Wine')),
+                      DropdownMenuItem(value: 'Rum', child: Text('Rum')),
+                    ],
+                    onChanged: (v) => setState(() => _selectedProduct = v),
                 if (_loading)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),

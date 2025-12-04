@@ -113,7 +113,7 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: DropdownButtonFormField<String>(
-                            value: _selectedProductId,
+                            initialValue: _selectedProductId,
                             decoration: InputDecoration(
                               hintText: 'Select Product',
                               filled: true,
