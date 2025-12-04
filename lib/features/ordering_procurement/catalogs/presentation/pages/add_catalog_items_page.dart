@@ -32,7 +32,7 @@ class _AddCatalogItemsPageState extends State<AddCatalogItemsPage> {
   void initState() {
     super.initState();
     // Load products when page initializes
-    context.read<StorageBloc>().add(GetProductsByAccountIdEvent());
+    context.read<StorageBloc>().add(const GetAllProductsEvent());
     // Load warehouses
     context.read<WarehouseBloc>().add(GetAllWarehouses());
   }
@@ -122,8 +122,7 @@ class _AddCatalogItemsPageState extends State<AddCatalogItemsPage> {
               );
             }
 
-            final products = storageState.products;
-            final filteredProducts = products
+            final filteredProducts = storageState.products.products
                 .where((product) => product.name
                     .toLowerCase()
                     .contains(_searchQuery.toLowerCase()))

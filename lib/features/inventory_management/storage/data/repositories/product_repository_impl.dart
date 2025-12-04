@@ -49,6 +49,20 @@ class ProductRepositoryImpl implements ProductRepository {
     }
   }
 
+  /// Fetches products by warehouse ID.
+  /// Returns a list of [ProductResponse] instances for the warehouse inventory.
+  @override
+  Future<List<ProductResponse>> getProductsByWarehouseId({required String warehouseId}) async {
+    try {
+      final productDtos = await service.getProductsByWarehouseId(
+        warehouseId: warehouseId,
+      );
+      return productDtos.map((dto) => dto.toDomain()).toList();
+    } catch (e) {
+      return Future.error('$e');
+    }
+  }
+
   /// Fetches a product by its [productId].
   /// Returns a [ProductResponse] instance representing the product details.
   @override

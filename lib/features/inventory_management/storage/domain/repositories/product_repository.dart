@@ -11,6 +11,10 @@ abstract class ProductRepository {
   /// Returns a [ProductsWithCount] instance containing the products and their count information.
   Future<ProductsWithCount> getAllProductsByAccountId();
 
+  /// Fetches products by warehouse ID.
+  /// Returns a list of [ProductResponse] instances for the warehouse inventory.
+  Future<List<ProductResponse>> getProductsByWarehouseId({required String warehouseId});
+
   /// Fetches a product by its [productId].
   /// Returns a [ProductResponse] instance representing the product details.
   Future<ProductResponse> getProductById({required String productId});

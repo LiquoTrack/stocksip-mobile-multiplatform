@@ -385,8 +385,9 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                                                     .read<StorageBloc>()
                                                     .add(
                                                       GetProductsByWarehouseIdEvent(
-                                                          warehouse
-                                                              .warehouseId),
+                                                        warehouseId: warehouse
+                                                            .warehouseId,
+                                                      ),
                                                     );
                                                 Navigator.pop(context);
                                               },
@@ -566,7 +567,7 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                       );
                     }
 
-                    final filteredProducts = storageState.products
+                    final filteredProducts = storageState.products.products
                         .where((product) => product.name
                             .toLowerCase()
                             .contains(_searchQuery.toLowerCase()))
