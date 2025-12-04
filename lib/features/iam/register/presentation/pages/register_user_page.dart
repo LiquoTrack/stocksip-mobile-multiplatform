@@ -5,6 +5,7 @@ import 'package:stocksip/features/iam/register/presentation/bloc/register_state.
 import 'package:stocksip/features/iam/register/presentation/bloc/register_event.dart';
 import 'package:stocksip/features/iam/register/presentation/pages/register_account.dart';
 import 'package:stocksip/shared/presentation/widgets/stocksip_title.dart';
+import 'package:stocksip/core/enums/status.dart';
 
 class RegisterUserPage extends StatefulWidget {
   const RegisterUserPage({super.key});
@@ -22,16 +23,20 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
     return BlocListener<RegisterBloc, RegisterState>(
       listenWhen: (previous, current) => previous.message != current.message,
       listener: (context, state) {
-        if (state.message != null) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message!),
-              backgroundColor: Colors.red,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 2),
-            ),
-          );
+        switch (state.status) {
+          case Status.failure:
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? 'Unknown error'),
+                backgroundColor: Colors.red,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+            break;
+          default:
+            break;
         }
       },
       child: Scaffold(
@@ -65,9 +70,7 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                         children: [
                           Text(
                             "User Info",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
+                            style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -76,14 +79,19 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                           ),
                           const SizedBox(height: 10),
                           TextField(
-                            onChanged: (value) => context.read<RegisterBloc>().add(
-                                  OnUsernameChanged(username: value),
-                                ),
+                            onChanged: (value) => context
+                                .read<RegisterBloc>()
+                                .add(OnUsernameChanged(username: value)),
                             decoration: InputDecoration(
                               hintText: 'Name',
                               prefixIcon: const Icon(Icons.person),
                               filled: true,
-                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              fillColor: const Color.fromRGBO(
+                                255,
+                                255,
+                                255,
+                                0.9,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0),
                                 borderSide: BorderSide.none,
@@ -92,15 +100,20 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                           ),
                           const SizedBox(height: 16),
                           TextField(
-                            onChanged: (value) => context.read<RegisterBloc>().add(
-                                  OnEmailChanged(email: value),
-                                ),
+                            onChanged: (value) => context
+                                .read<RegisterBloc>()
+                                .add(OnEmailChanged(email: value)),
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               hintText: 'Email',
                               prefixIcon: const Icon(Icons.email),
                               filled: true,
-                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              fillColor: const Color.fromRGBO(
+                                255,
+                                255,
+                                255,
+                                0.9,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0),
                                 borderSide: BorderSide.none,
@@ -109,18 +122,28 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                           ),
                           const SizedBox(height: 16),
                           TextField(
-                            onChanged: (value) => context.read<RegisterBloc>().add(
-                                  OnPasswordChanged(password: value),
-                                ),
+                            onChanged: (value) => context
+                                .read<RegisterBloc>()
+                                .add(OnPasswordChanged(password: value)),
                             obscureText: _isHidden,
                             decoration: InputDecoration(
                               hintText: 'Password',
                               prefixIcon: const Icon(Icons.lock),
                               filled: true,
-                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              fillColor: const Color.fromRGBO(
+                                255,
+                                255,
+                                255,
+                                0.9,
+                              ),
                               suffixIcon: IconButton(
-                                icon: Icon(_isHidden ? Icons.visibility_off : Icons.visibility),
-                                onPressed: () => setState(() => _isHidden = !_isHidden),
+                                icon: Icon(
+                                  _isHidden
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: () =>
+                                    setState(() => _isHidden = !_isHidden),
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0),
@@ -130,18 +153,32 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                           ),
                           const SizedBox(height: 16),
                           TextField(
-                            onChanged: (value) => context.read<RegisterBloc>().add(
-                                  OnConfirmPasswordChanged(confirmPassword: value),
+                            onChanged: (value) =>
+                                context.read<RegisterBloc>().add(
+                                  OnConfirmPasswordChanged(
+                                    confirmPassword: value,
+                                  ),
                                 ),
                             obscureText: _isConfirmHidden,
                             decoration: InputDecoration(
                               hintText: 'Confirm Password',
                               prefixIcon: const Icon(Icons.lock),
                               filled: true,
-                              fillColor: const Color.fromRGBO(255, 255, 255, 0.9),
+                              fillColor: const Color.fromRGBO(
+                                255,
+                                255,
+                                255,
+                                0.9,
+                              ),
                               suffixIcon: IconButton(
-                                icon: Icon(_isConfirmHidden ? Icons.visibility_off : Icons.visibility),
-                                onPressed: () => setState(() => _isConfirmHidden = !_isConfirmHidden),
+                                icon: Icon(
+                                  _isConfirmHidden
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: () => setState(
+                                  () => _isConfirmHidden = !_isConfirmHidden,
+                                ),
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0),
@@ -158,15 +195,17 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                                 width: MediaQuery.of(context).size.width * 0.85,
                                 child: FilledButton(
                                   style: FilledButton.styleFrom(
-                                    backgroundColor:
-                                        isFormValid ? const Color(0xFF2B000D) : Colors.grey,
+                                    backgroundColor: isFormValid
+                                        ? const Color(0xFF2B000D)
+                                        : Colors.grey,
                                   ),
                                   onPressed: isFormValid
                                       ? () {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (_) => const RegisterAccountPage(),
+                                              builder: (_) =>
+                                                  const RegisterAccountPage(),
                                             ),
                                           );
                                         }

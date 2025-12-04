@@ -104,8 +104,8 @@ class _SendEmailPageState extends State<SendEmailPage> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: email.isNotEmpty
-                            ? const Color(0xFF4A1B2A) // color activo
-                            : Colors.grey.shade400, // color desactivado
+                            ? const Color(0xFF4A1B2A)
+                            : Colors.grey.shade400,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
                         ),
