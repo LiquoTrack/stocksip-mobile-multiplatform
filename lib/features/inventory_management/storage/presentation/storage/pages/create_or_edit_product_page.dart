@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_request.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
-import 'package:stocksip/features/inventory_management/warehouses/presentation/components/text_field.dart';
 import 'package:stocksip/shared/presentation/widgets/image_picker.dart';
+import 'package:stocksip/shared/presentation/widgets/text_field.dart';
 
 /// A page for creating or editing a product.
 class CreateOrEditProductPage extends StatefulWidget {

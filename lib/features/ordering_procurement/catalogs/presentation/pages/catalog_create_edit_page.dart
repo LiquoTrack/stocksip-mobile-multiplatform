@@ -552,7 +552,7 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                               ),
                               const SizedBox(height: 4.0),
                               Text(
-                                storageState.message ?? 'Unknown error',
+                                storageState.message,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
