@@ -87,6 +87,12 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
         throw Exception('Invalid product ID');
       }
 
+      final productToValidate = await repository.getProductById(productId: event.productId);
+
+      if (productToValidate.totalStockInStore > 0) {
+        throw Exception('Cannot delete product with existing stock in store');
+      }
+
       await repository.deleteProduct(productId: event.productId);
 
       final updateProducts = state.products.products
