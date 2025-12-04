@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_request.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
-import 'package:stocksip/features/inventory_management/warehouses/presentation/components/text_field.dart';
 import 'package:stocksip/shared/presentation/widgets/image_picker.dart';
+import 'package:stocksip/shared/presentation/widgets/spinner_field.dart';
+import 'package:stocksip/shared/presentation/widgets/text_field.dart';
 
 /// A page for creating or editing a product.
 class CreateOrEditProductPage extends StatefulWidget {
@@ -18,11 +18,11 @@ class CreateOrEditProductPage extends StatefulWidget {
   const CreateOrEditProductPage({super.key, this.product});
 
   @override
-  State<CreateOrEditProductPage> createState() => _CreateOrEditProductPageState();
+  State<CreateOrEditProductPage> createState() =>
+      _CreateOrEditProductPageState();
 }
 
 class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
-  
   final _formKey = GlobalKey<FormState>();
 
   late final List<TextEditingController> _controllers;
@@ -61,7 +61,10 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
       _minimumStockController.text = widget.product!.minimumStock.toString();
       _contentController.text = widget.product!.content.toString();
     }
-    
+
+    context.read<StorageBloc>().add(const GetAllBrandNamesEvent());
+    context.read<StorageBloc>().add(const GetAllProductTypeNamesEvent());
+
     for (var controller in _controllers) {
       controller.addListener(_updateButtonState);
     }
@@ -80,18 +83,17 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<StorageBloc>().state;
+
     return BlocListener<StorageBloc, StorageState>(
       listener: (context, state) {
         if (state.message.isNotEmpty) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.message)));
-        }
-        if (state.status == Status.success) {
-          Navigator.pop(context);
         }
       },
       child: Padding(
@@ -129,18 +131,20 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: CustomTextField(
+                      child: CustomSpinnerField(
                         controller: _brandController,
                         label: 'Brand',
-                        hint: 'Jhonnie Walker',
+                        hint: 'Select a brand',
+                        options: state.brandNames,
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: CustomTextField(
+                      child: CustomSpinnerField(
                         controller: _typeController,
                         label: 'Type',
-                        hint: 'Whiskey',
+                        hint: 'Select a type',
+                        options: state.productTypeNames,
                       ),
                     ),
                   ],
@@ -157,10 +161,11 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: CustomTextField(
+                      child: CustomSpinnerField(
                         controller: _currencyCodeController,
-                        label: 'Currency Code',
-                        hint: 'USD',
+                        label: 'Currency',
+                        hint: 'Select a currency',
+                        options: state.currencyCodes,
                       ),
                     ),
                   ],
@@ -201,9 +206,7 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
                       ),
                     ),
                     child: Text(
-                      widget.product == null
-                          ? 'Add Product'
-                          : 'Update Product',
+                      widget.product == null ? 'Add Product' : 'Update Product',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -219,6 +222,7 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
       ),
     );
   }
+
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
 
