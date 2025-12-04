@@ -4,7 +4,6 @@ import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
 import 'package:stocksip/features/order_management/salesorder/data/remote/services/saleorder_service.dart';
 import 'package:stocksip/features/order_management/salesorder/data/repositories/salesorder_repository_impl.dart';
 import 'package:stocksip/features/order_management/salesorder/presentation/blocs/saleorder_bloc.dart';
-import 'package:stocksip/features/order_management/salesorder/presentation/blocs/saleorder_event.dart';
 import 'package:stocksip/features/order_management/salesorder/presentation/blocs/saleorder_state.dart';
 import 'package:stocksip/features/order_management/salesorder/presentation/widgets/saleorder_card.dart';
 import 'package:stocksip/shared/presentation/widgets/drawer_navigation.dart';
