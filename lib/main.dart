@@ -13,6 +13,10 @@ import 'package:stocksip/features/iam/password_recovery/data/remote/service/reco
 import 'package:stocksip/features/iam/password_recovery/data/repositories/recovery_password_repository_impl.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_bloc.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/brand_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/remote/product_type_service.dart';
+import 'package:stocksip/features/inventory_management/storage/data/repositories/brand_repository_impl.dart';
+import 'package:stocksip/features/inventory_management/storage/data/repositories/product_type_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/services/warehouse_service.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/repositories/warehouses_repository_impl.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/bloc/warehouse_bloc.dart';
@@ -38,7 +42,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     MaterialTheme theme = MaterialTheme(TextTheme());
 
     final authHttpClient = AuthHttpClient();
@@ -51,21 +54,64 @@ class MainApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => LoginBloc(repository: authRepository)),
-        BlocProvider(create: (context) => RegisterBloc(repository: authRepository)),
-        BlocProvider(create: (context) => AuthBloc(tokenStorage: tokenStorage)..add(const AppStarted())),
-        BlocProvider(create: (context) => StorageBloc(repository: ProductRepositoryImpl(service: ProductService(client: authHttpClient), tokenStorage: tokenStorage))),
-        BlocProvider(create: (context) => CareguideBloc(repository: CareguideRepositoryImpl(service: CareguideService(client: authHttpClient)))),
-        BlocProvider(create: (context) => WarehouseBloc(repository: WarehousesRepositoryImpl(service: WarehouseService(client: authHttpClient), tokenStorage: tokenStorage)),),
-        BlocProvider(create: (context) => ProfileBloc(repository: ProfileRepositoryImpl(service: ProfileService())),),
-        BlocProvider(create: (context) => CatalogBloc(repository: CatalogRepositoryImpl(catalogService: CatalogService())),),
-        BlocProvider(create: (context) => RecoveryPasswordBloc(repository: RecoveryPasswordRepositoryImpl(service: RecoveryPasswordService())))
+        BlocProvider(
+          create: (context) => LoginBloc(repository: authRepository),
+        ),
+        BlocProvider(
+          create: (context) => RegisterBloc(repository: authRepository),
+        ),
+        BlocProvider(
+          create: (context) =>
+              AuthBloc(tokenStorage: tokenStorage)..add(const AppStarted()),
+        ),
+        BlocProvider(
+          create: (context) => StorageBloc(
+            repository: ProductRepositoryImpl(
+              service: ProductService(client: authHttpClient),
+              tokenStorage: tokenStorage,
+            ),
+            productTypeRepository: ProductTypeRepositoryImpl(productTypeService: ProductTypeService(client: authHttpClient)),
+            brandRepository: BrandRepositoryImpl(brandService: BrandService(client: authHttpClient)),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CareguideBloc(
+            repository: CareguideRepositoryImpl(
+              service: CareguideService(client: authHttpClient),
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => WarehouseBloc(
+            repository: WarehousesRepositoryImpl(
+              service: WarehouseService(client: authHttpClient),
+              tokenStorage: tokenStorage,
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ProfileBloc(
+            repository: ProfileRepositoryImpl(service: ProfileService()),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CatalogBloc(
+            repository: CatalogRepositoryImpl(catalogService: CatalogService()),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => RecoveryPasswordBloc(
+            repository: RecoveryPasswordRepositoryImpl(
+              service: RecoveryPasswordService(),
+            ),
+          ),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
         darkTheme: theme.dark(),
-        home: const SplashPage()
+        home: const SplashPage(),
       ),
     );
   }
