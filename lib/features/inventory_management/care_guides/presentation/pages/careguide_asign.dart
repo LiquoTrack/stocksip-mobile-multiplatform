@@ -35,7 +35,7 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
 
   Future<void> _loadProducts() async {
     try {
-      final accountId = await _storage.read(key: 'accountId');
+      final accountId = await _storage.read(key: 'accountId') ?? await _storage.read(key: 'account_id');
       if (accountId == null || accountId.isEmpty) {
         setState(() {
           _error = 'No account found';
@@ -113,7 +113,7 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: DropdownButtonFormField<String>(
-                            value: _selectedProductId,
+                            initialValue: _selectedProductId,
                             decoration: InputDecoration(
                               hintText: 'Select Product',
                               filled: true,
@@ -132,15 +132,27 @@ class _CareGuideAssignState extends State<CareGuideAssign> {
                               ),
                             ),
                             icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF471725)),
+                            isExpanded: true,
+                            menuMaxHeight: 320,
                             items: _products
                                 .map((p) => DropdownMenuItem(
                                       value: p.id,
                                       child: Text(p.name),
                                     ))
                                 .toList(),
-                            onChanged: (v) => setState(() => _selectedProductId = v),
+                            onChanged: _products.isEmpty ? null : (v) => setState(() => _selectedProductId = v),
                           ),
                         ),
+                        if (!_loading && _error == null && _products.isEmpty) ...[
+                          const SizedBox(height: 8),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'No products found. Please register a product first.',
+                              style: TextStyle(color: Color(0xFF9E9E9E)),
+                            ),
+                          )
+                        ],
                         const Spacer(),
                         SizedBox(
                           width: double.infinity,

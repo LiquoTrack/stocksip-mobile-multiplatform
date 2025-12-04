@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 import 'package:stocksip/core/constants/api_constants.dart';
 import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
+import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_dto.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_request_dto.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_wrapper_dto.dart';
 
@@ -56,7 +57,7 @@ class WarehouseService {
     }
   }
 
-  Future<bool> registerWarehouse(
+  Future<WarehouseDto> registerWarehouse(
     String accountId,
     WarehouseRequestDto dto,
   ) async {
@@ -93,7 +94,9 @@ class WarehouseService {
 
       if (response.statusCode == HttpStatus.ok ||
           response.statusCode == HttpStatus.created) {
-        return true;
+        final respStr = await response.stream.bytesToString();
+        final jsonResponse = jsonDecode(respStr);
+        return WarehouseDto.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to register warehouse: ${response.statusCode}');
       }
@@ -102,7 +105,7 @@ class WarehouseService {
     }
   }
 
-  Future<bool> updateWarehouse(
+  Future<WarehouseDto> updateWarehouse(
     String warehouseId,
     WarehouseRequestDto dto,
   ) async {
@@ -138,7 +141,9 @@ class WarehouseService {
       final response = await client.sendMultipart(request);
 
       if (response.statusCode == HttpStatus.ok) {
-        return true;
+        final respStr = await response.stream.bytesToString();
+        final jsonResponse = jsonDecode(respStr);
+        return WarehouseDto.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to update warehouse: ${response.statusCode}');
       }
