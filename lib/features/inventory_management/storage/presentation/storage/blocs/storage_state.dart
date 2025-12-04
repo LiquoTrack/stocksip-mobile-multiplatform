@@ -7,7 +7,7 @@ import 'package:stocksip/features/inventory_management/storage/domain/models/pro
 /// Used in state management to track and update the storage state.
 class StorageState {
   final Status status;
-  final String? message;
+  final String message;
   final ProductsWithCount products;
   final ProductResponse? selectedProduct;
 
@@ -22,7 +22,7 @@ class StorageState {
       totalCount: 0,
       maxTotalAllowed: 0,
     ),
-    this.message,
+    this.message = "",
     this.selectedProduct,
   });
 
