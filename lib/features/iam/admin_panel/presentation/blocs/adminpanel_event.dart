@@ -2,7 +2,8 @@ abstract class AdminPanelEvent {}
 
 class LoadSubUsers extends AdminPanelEvent {
   final String role;
-  LoadSubUsers(this.role);
+  final String? accountId;
+  LoadSubUsers(this.role, {this.accountId});
 }
 
 class ToggleSelectionMode extends AdminPanelEvent {
