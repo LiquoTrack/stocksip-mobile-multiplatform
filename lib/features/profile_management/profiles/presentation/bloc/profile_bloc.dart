@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/profile_management/profiles/domain/repositories/profile_repository.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 
 /// BLoC to manage profile-related events and states
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc() : super(const ProfileState()) {
+  final ProfileRepository _repository;
+
+  ProfileBloc({required ProfileRepository repository})
+      : _repository = repository,
+        super(const ProfileState()) {
     on<LoadProfileEvent>(_onLoadProfile);
     on<OnFirstNameChanged>(_onFirstNameChanged);
     on<OnLastNameChanged>(_onLastNameChanged);
@@ -25,26 +30,37 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      // TODO: Implement API call to load profile
-      // This is where you would fetch profile data from your service
-      
+      final profile = await _repository.getProfile();
       emit(
         state.copyWith(
           status: Status.success,
-          firstName: 'John',
-          lastName: 'Doe',
-          fullName: 'John Doe',
-          phoneNumber: '+1234567890',
-          contactNumber: '+0987654321',
-          assignedRole: 'Manager',
-          profilePictureUrl: '',
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          fullName: profile.fullName,
+          phoneNumber: profile.phoneNumber,
+          contactNumber: profile.contactNumber,
+          profilePictureUrl: profile.profilePictureUrl ?? '',
+          assignedRole: profile.assignedRole,
+          userId: profile.userId,
+          profileId: profile.id,
         ),
       );
     } catch (e) {
+      final errorMessage = e.toString();
+      String message = 'Failed to load profile: $errorMessage';
+      
+      if (errorMessage.contains('404') || errorMessage.contains('Profile not found')) {
+        message = 'No profile found. Please complete your profile first.';
+      } else if (errorMessage.contains('401') || errorMessage.contains('Unauthorized')) {
+        message = 'Session expired. Please login again.';
+      } else if (errorMessage.contains('network') || errorMessage.contains('Failed to establish')) {
+        message = 'Network connection error. Please check your internet.';
+      }
+      
       emit(
         state.copyWith(
           status: Status.failure,
-          message: 'Failed to load profile: ${e.toString()}',
+          message: message,
         ),
       );
     }
@@ -98,14 +114,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      // TODO: Implement API call to save profile
-      // This is where you would send the updated profile data to your service
-      
+      // First upload image if selected
+      String? imageUrl = state.profilePictureUrl;
+      if (state.selectedImageUri != null) {
+        imageUrl = await _repository.uploadProfilePicture(
+          profileId: state.profileId,
+          imagePath: state.selectedImageUri!,
+        );
+      }
+
+      // Then update profile
+      await _repository.updateProfile(
+        profileId: state.profileId,
+        firstName: state.firstName,
+        lastName: state.lastName,
+        phoneNumber: state.phoneNumber,
+        assignedRole: state.assignedRole,
+      );
+
       emit(
         state.copyWith(
           status: Status.success,
           isEditMode: false,
           selectedImageUri: null,
+          profilePictureUrl: imageUrl,
           message: 'Profile saved successfully',
         ),
       );
