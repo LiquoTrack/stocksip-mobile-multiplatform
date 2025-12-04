@@ -40,7 +40,7 @@ class AuthService {
   /// Registers a new user with the provided details.
   /// Returns a [Resource<String>] containing a success message upon successful registration.
   /// Throws an [HttpException] for non-200 HTTP responses.
-  Future<Resource<String>> register(String email, String password, String name, String businessName, String role) async {
+  Future<Resource<String>> register(String name, String email, String password, String role, String businessName) async {
 
     final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.signUp);
 

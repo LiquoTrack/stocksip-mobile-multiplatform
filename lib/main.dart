@@ -9,6 +9,9 @@ import 'package:stocksip/features/iam/login/presentation/blocs/auth_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/pages/splash_page.dart';
+import 'package:stocksip/features/iam/password_recovery/data/remote/service/recovery_password_service.dart';
+import 'package:stocksip/features/iam/password_recovery/data/repositories/recovery_password_repository_impl.dart';
+import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_bloc.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/services/warehouse_service.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/repositories/warehouses_repository_impl.dart';
@@ -56,6 +59,7 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => WarehouseBloc(repository: WarehousesRepositoryImpl(service: WarehouseService(client: authHttpClient), tokenStorage: tokenStorage)),),
         BlocProvider(create: (context) => ProfileBloc(repository: ProfileRepositoryImpl(service: ProfileService())),),
         BlocProvider(create: (context) => CatalogBloc(repository: CatalogRepositoryImpl(catalogService: CatalogService())),),
+        BlocProvider(create: (context) => RecoveryPasswordBloc(repository: RecoveryPasswordRepositoryImpl(service: RecoveryPasswordService())))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

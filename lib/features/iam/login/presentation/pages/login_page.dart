@@ -5,6 +5,7 @@ import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_event.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_state.dart';
 import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/iam/password_recovery/presentation/pages/send_email_page.dart';
 import 'package:stocksip/features/iam/register/presentation/pages/register_user_page.dart';
 import 'package:stocksip/shared/presentation/widgets/stocksip_title.dart';
 
@@ -129,7 +130,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
       
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SendEmailPage(),
+                      ),
+                    );
+                  },
                   child: const Text(
                     'Forgot Password?',
                     style: TextStyle(fontSize: 16),

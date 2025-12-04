@@ -1,24 +1,21 @@
-import 'package:stocksip/features/iam/password_recovery/domain/models/reset_password.dart';
-import 'package:stocksip/features/iam/password_recovery/domain/models/send_email.dart';
-import 'package:stocksip/features/iam/password_recovery/domain/models/verify_code.dart';
-
 abstract class RecoveryPasswordEvent {
   const RecoveryPasswordEvent();
 }
 
 class SendRecoveryEmailEvent extends RecoveryPasswordEvent {
-  final SendEmail email;
+  final String email;
   const SendRecoveryEmailEvent({required this.email});
 }
 
 class VerifyRecoveryCodeEvent extends RecoveryPasswordEvent {
-  final VerifyCode verifyCode;
-
-  const VerifyRecoveryCodeEvent({required this.verifyCode});
+  final String email;
+  final String code;
+  const VerifyRecoveryCodeEvent({required this.email, required this.code});
 }
 
 class ResetPasswordEvent extends RecoveryPasswordEvent {
-  final ResetPassword resetPassword;
+  final String email;
+  final String resetPassword;
 
-  const ResetPasswordEvent({required this.resetPassword});
+  const ResetPasswordEvent({required this.email, required this.resetPassword});
 }
