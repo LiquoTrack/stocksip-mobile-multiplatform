@@ -1,35 +1,31 @@
 import 'package:stocksip/core/enums/status.dart';
-import 'package:stocksip/features/inventory_management/care_guides/domain/entities/careguide_response.dart';
+import 'package:stocksip/features/inventory_management/care_guides/domain/models/careguide.dart';
+import 'package:stocksip/features/inventory_management/care_guides/domain/models/careguide_wrapper.dart';
 
-/// Represents the state of the careguide feature in the inventory management system.
-/// Includes the current status, a list of careguides, and an optional message.
-/// Used in state management to track and update the careguide state.
-class CareguideState{
+class CareguideState {
   final Status status;
-  final List<CareguideResponse> guides;
-  final String? message;
+  final CareGuideWrapper wrapper;
+  final String message;
+  final CareGuide? selected;
 
-  /// Creates a new instance of [CareguideState].
-  /// [status] indicates the current status of the careguide feature.
-  /// [guides] is a list of careguides.
-  /// [message] is an optional field for any relevant messages.
-  CareguideState({
+  const CareguideState({
     this.status = Status.initial,
-    this.guides = const [],
-    this.message,
+    this.wrapper = const CareGuideWrapper(count: 0, careGuides: []),
+    this.message = '',
+    this.selected,
   });
 
-  /// Creates a copy of the current [CareguideState] with optional new values.
-  /// This allows for immutability while updating specific fields.
   CareguideState copyWith({
     Status? status,
-    List<CareguideResponse>? guides,
+    CareGuideWrapper? wrapper,
     String? message,
+    CareGuide? selected,
   }) {
     return CareguideState(
       status: status ?? this.status,
-      guides: guides ?? this.guides,
-      message: message,
+      wrapper: wrapper ?? this.wrapper,
+      message: message ?? this.message,
+      selected: selected ?? this.selected,
     );
   }
 }

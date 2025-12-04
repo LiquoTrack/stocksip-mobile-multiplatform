@@ -1,148 +1,142 @@
 import 'package:flutter/material.dart';
-
-class CareGuideCardData {
-  final String id;
-  final String title;
-  final String? subtitle;
-  final String imageUrl;
-
-  const CareGuideCardData({
-    required this.id,
-    required this.title,
-    required this.imageUrl,
-    this.subtitle,
-  });
-}
+import 'package:stocksip/features/inventory_management/care_guides/domain/models/careguide.dart';
 
 class CareGuideCard extends StatelessWidget {
-  final CareGuideCardData data;
+  final CareGuide data;
   final VoidCallback? onTap;
   final VoidCallback? onAssign;
+  final VoidCallback? onEdit;
   final VoidCallback? onSeeGuide;
+  final bool isSelected;
+  final VoidCallback? onLongPress;
+  final bool selectionMode;
+  final VoidCallback? onTapSelect;
 
   const CareGuideCard({
     super.key,
     required this.data,
     this.onTap,
     this.onAssign,
+    this.onEdit,
     this.onSeeGuide,
+    this.isSelected = false,
+    this.onLongPress,
+    this.selectionMode = false,
+    this.onTapSelect,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Color background = const Color(0xFFFBF2E9);
-    final Color accent = const Color(0xFF471725);
-    final Color accentSecondary = const Color(0xFF9C2C3A);
-    final Color iconBg = const Color(0xFFEAD7C7);
+    final Color bg = selectionMode
+        ? (isSelected ? const Color(0xFFE0CACA) : const Color(0xFFE9DCDC))
+        : Colors.white;
+    final Color border = selectionMode
+        ? (isSelected ? const Color(0xFF4C1F24) : const Color(0xFFE0D4D4))
+        : const Color(0xFFE0D4D4);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isCompact = constraints.maxWidth < 340;
-        final content = Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return GestureDetector(
+      onLongPress: onLongPress,
+      onTap: selectionMode ? onTapSelect : onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: border),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Row(
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              alignment: Alignment.center,
-              child: Icon(Icons.local_cafe, color: accent, size: 24),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      data.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF6B6767),
-                          ),
-                    ),
-                    const SizedBox(height: 6),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton.icon(
-                        onPressed: onSeeGuide ?? onTap,
-                        icon: Icon(Icons.visibility_outlined, size: 18, color: accentSecondary),
-                        label: Text(
-                          'See Guide',
-                          style: TextStyle(fontWeight: FontWeight.w700, color: accentSecondary),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          minimumSize: const Size(88, 44),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
-                    ),
-                  ],
+            if (selectionMode)
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isSelected ? const Color(0xFF4C1F24) : Colors.white,
+                  border: Border.all(color: const Color(0xFF4C1F24), width: 2),
                 ),
+                child: isSelected
+                    ? const Icon(Icons.check, color: Colors.white, size: 16)
+                    : null,
               ),
+            if (selectionMode) const SizedBox(width: 12),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: const Color(0xFFEAD7C7),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.local_drink, color: Color(0xFF4C1F24), size: 24),
             ),
             const SizedBox(width: 12),
-            ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 96, minHeight: 48),
-              child: ElevatedButton(
-                onPressed: onAssign,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: accent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.productName.isNotEmpty ? data.productName : data.title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF2B000D),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  elevation: 0,
-                ),
-                child: const Text('Assign', style: TextStyle(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 2),
+                  Text(
+                    'See Guide',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
-            )
+            ),
+            if (!selectionMode)
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, color: Color(0xFF4C1F24)),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'see':
+                      onSeeGuide?.call();
+                      break;
+                    case 'assign':
+                      onAssign?.call();
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'see',
+                    child: Row(
+                      children: [
+                        Icon(Icons.visibility_outlined, color: Color(0xFF4C1F24)),
+                        SizedBox(width: 8),
+                        Text('Ver guía'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'assign',
+                    child: Row(
+                      children: [
+                        Icon(Icons.assignment_ind_outlined, color: Color(0xFF4C1F24)),
+                        SizedBox(width: 8),
+                        Text('Asignar'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
           ],
-        );
-
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 10.0),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(18.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: isCompact
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: content.children.sublist(0, content.children.length - 2),
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: content.children.last,
-                    ),
-                  ],
-                )
-              : content,
-        );
-      },
+        ),
+      ),
     );
   }
 }
