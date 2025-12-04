@@ -70,8 +70,8 @@ class MainApp extends StatelessWidget {
               service: ProductService(client: authHttpClient),
               tokenStorage: tokenStorage,
             ),
-            productTypeRepository: ProductTypeRepositoryImpl(productTypeService: ProductTypeService(client: authHttpClient)),
-            brandRepository: BrandRepositoryImpl(brandService: BrandService(client: authHttpClient)),
+            productTypeRepository: ProductTypeRepositoryImpl(productTypeService: ProductTypeService()),
+            brandRepository: BrandRepositoryImpl(brandService: BrandService()),
           ),
         ),
         BlocProvider(

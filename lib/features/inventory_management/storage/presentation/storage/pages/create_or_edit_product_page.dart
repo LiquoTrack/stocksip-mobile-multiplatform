@@ -7,9 +7,9 @@ import 'package:stocksip/features/inventory_management/storage/domain/models/pro
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
-import 'package:stocksip/features/inventory_management/warehouses/presentation/components/text_field.dart';
 import 'package:stocksip/shared/presentation/widgets/image_picker.dart';
 import 'package:stocksip/shared/presentation/widgets/spinner_field.dart';
+import 'package:stocksip/shared/presentation/widgets/text_field.dart';
 
 /// A page for creating or editing a product.
 class CreateOrEditProductPage extends StatefulWidget {

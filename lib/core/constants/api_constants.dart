@@ -114,11 +114,7 @@ class ApiConstants {
     return 'users/reset-password';
   }
 
-  static String getAllBrands() {
-    return 'brands';
-  }
+  static final String getAllBrands = 'brands';
 
-  static String getAllProductTypes() {
-    return 'product-types';
-  }
+  static final String getAllProductTypes = 'product-types';
 }

@@ -1,26 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:stocksip/core/constants/api_constants.dart';
-import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
 import 'package:stocksip/features/inventory_management/storage/data/models/product_type_dto.dart';
 
 /// Service class to handle product type-related API calls.
 class ProductTypeService {
-  final AuthHttpClient client;
-
-  /// Constructs a [ProductTypeService] instance with the given [client].
-  const ProductTypeService({required this.client});
 
   /// Fetches all product types from the API.
   /// Returns a list of [ProductTypeDto] instances upon successful retrieval.
   Future<List<ProductTypeDto>> getAllProductTypes() async {
     try {
       final uri = Uri.parse(
-        ApiConstants.baseUrl + ApiConstants.getAllProductTypes(),
+        ApiConstants.baseUrl + ApiConstants.getAllProductTypes,
       );
 
-      final response = await client.get(
+      final response = await http.get(
         uri,
         headers: {'Content-Type': 'application/json'},
       );
