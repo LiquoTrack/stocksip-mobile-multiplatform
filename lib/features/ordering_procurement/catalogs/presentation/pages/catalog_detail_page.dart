@@ -46,13 +46,12 @@ class _CatalogDetailPageState extends State<CatalogDetailPage> {
               if (catalog != null)
                 IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CatalogCreateEditPage(
-                          catalogId: catalog.id,
-                          isEditMode: true,
-                        ),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => CatalogCreateEditPage(
+                        catalogId: catalog.id,
+                        isEditMode: true,
                       ),
                     );
                   },

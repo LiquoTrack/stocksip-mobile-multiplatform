@@ -229,12 +229,11 @@ class _CatalogListPageState extends State<CatalogListPage> {
                   const SizedBox(height: 12.0),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CatalogCreateEditPage(
-                            isEditMode: false,
-                          ),
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => const CatalogCreateEditPage(
+                          isEditMode: false,
                         ),
                       );
                     },
