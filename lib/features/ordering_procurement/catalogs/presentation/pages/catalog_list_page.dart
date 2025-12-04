@@ -71,20 +71,6 @@ class _CatalogListPageState extends State<CatalogListPage> {
             ),
             drawer: const DrawerNavigation(),
             backgroundColor: const Color(0xFFF4ECEC),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CatalogCreateEditPage(
-                      isEditMode: false,
-                    ),
-                  ),
-                );
-              },
-              backgroundColor: const Color(0xFF5C1F2E),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
             body: state.status == Status.loading
                 ? const Center(
                     child: CircularProgressIndicator(
@@ -282,7 +268,7 @@ class _CatalogListPageState extends State<CatalogListPage> {
                 height: 120.0,
                 color: const Color(0xFFF4ECEC),
                 child: Image.asset(
-                  'assets/images/wines_banner.png',
+                  'assets/images/stocksip_logo.png',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Center(
