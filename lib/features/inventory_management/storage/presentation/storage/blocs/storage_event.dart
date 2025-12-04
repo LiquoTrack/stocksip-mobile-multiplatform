@@ -10,3 +10,10 @@ class GetProductsByAccountIdEvent extends StorageEvent {
 
   const GetProductsByAccountIdEvent();
 }
+
+/// Event to delete a product by its unique identifier.
+class DeleteProductByIdEvent extends StorageEvent {
+  final String productId;
+
+  const DeleteProductByIdEvent(this.productId);
+}

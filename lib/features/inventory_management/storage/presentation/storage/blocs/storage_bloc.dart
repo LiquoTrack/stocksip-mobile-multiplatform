@@ -17,38 +17,76 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
 
   StorageBloc({required this.repository}) : super(StorageState()) {
     on<GetProductsByAccountIdEvent>(_getProductsByAccountId);
+    on<DeleteProductByIdEvent>(_deleteProductById);
   }
 
+  /// Handles fetching products by account ID.
   FutureOr<void> _getProductsByAccountId(
-    GetProductsByAccountIdEvent event, 
-    Emitter<StorageState> emit
+    GetProductsByAccountIdEvent event,
+    Emitter<StorageState> emit,
   ) async {
     // Emit loading state
-    emit(state.copyWith(
-      status: Status.loading, 
-      message: "Fetching products..."
-    ));
+    emit(
+      state.copyWith(status: Status.loading, message: "Fetching products..."),
+    );
 
     try {
       /// Fetch products by account ID using the service.
-      final ProductsWithCount productResponse = await repository.getAllProductsByAccountId();
+      final ProductsWithCount productResponse = await repository
+          .getAllProductsByAccountId();
 
       /// Extract products from the response.
       final List<ProductResponse> products = productResponse.products;
 
       // Emit success state with fetched products
-      emit(state.copyWith(
-        status: Status.success, 
-        products: products,
-        message: "Products fetched successfully."
-      ));
-
+      emit(
+        state.copyWith(
+          status: Status.success,
+          products: products,
+          message: "Products fetched successfully.",
+        ),
+      );
     } catch (e) {
       // Emit error state in case of failure
-      emit(state.copyWith(
-        status: Status.failure, 
-        message: "Failed to fetch products: $e"
-      ));
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to fetch products: $e",
+        ),
+      );
+      return;
+    }
+  }
+
+  /// Handles the deletion of a product by its ID.
+  FutureOr<void> _deleteProductById(
+    DeleteProductByIdEvent event,
+    Emitter<StorageState> emit,
+  ) async {
+    // Emit loading state
+    emit(
+      state.copyWith(status: Status.loading, message: "Deleting product..."),
+    );
+
+    try {
+      /// Delete product by ID using the service.
+      await repository.deleteProduct(productId: event.productId);
+
+      // Emit success state after deletion
+      emit(
+        state.copyWith(
+          status: Status.success,
+          message: "Product deleted successfully.",
+        ),
+      );
+    } catch (e) {
+      // Emit error state in case of failure
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to delete product: $e",
+        ),
+      );
       return;
     }
   }

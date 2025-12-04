@@ -11,7 +11,7 @@ class ProductRequest {
   final String code;
   final int minimumStock;
   final double content;
-  final File image;
+  final File? image;
   final String? supplierId = "string";
 
   /// Constructs a ProductRequest instance with the given parameters.
@@ -23,6 +23,28 @@ class ProductRequest {
     required this.code,
     required this.minimumStock,
     required this.content,
-    required this.image,
+    this.image,
   });
+
+  ProductRequest copyWith({
+    String? name,
+    String? type,
+    String? brand,
+    double? unitPrice,
+    String? code,
+    int? minimumStock,
+    double? content,
+    File? image,
+  }) {
+    return ProductRequest(
+      name: name ?? this.name,
+      type: type ?? this.type,
+      brand: brand ?? this.brand,
+      unitPrice: unitPrice ?? this.unitPrice,
+      code: code ?? this.code,
+      minimumStock: minimumStock ?? this.minimumStock,
+      content: content ?? this.content,
+      image: image ?? this.image,
+    );
+  }
 }
