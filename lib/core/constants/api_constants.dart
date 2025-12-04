@@ -125,4 +125,10 @@ class ApiConstants {
   static String accountStatus(String accountId) {
     return 'accounts/$accountId/status';
   }
+    
+  static final String getAllPlans = 'plans';
+
+  static String createSubscription(String planId) {
+    return 'subscriptions/plan/$planId';
+  }
 }
