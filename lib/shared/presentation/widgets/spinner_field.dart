@@ -22,14 +22,11 @@ class CustomSpinnerField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label encima de la caja
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
-
         const SizedBox(height: 6),
 
         GestureDetector(
@@ -38,6 +35,7 @@ class CustomSpinnerField extends StatelessWidget {
               : () async {
                   final selected = await showModalBottomSheet<String>(
                     context: context,
+                    isScrollControlled: true,
                     useSafeArea: true,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
@@ -46,26 +44,44 @@ class CustomSpinnerField extends StatelessWidget {
                     ),
                     builder: (sheetContext) {
                       return SafeArea(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(height: 12),
-                            Text(
-                              label,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        child: SizedBox(
+                          height: MediaQuery.of(sheetContext).size.height * 0.5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
+
+                              // Label dentro del modal
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
-                            const Divider(),
-                            ...options.map(
-                              (option) => ListTile(
-                                title: Text(option),
-                                onTap: () => Navigator.pop(sheetContext, option),
+                              const SizedBox(height: 8),
+                              const Divider(height: 1),
+
+                              // Lista scrollable de opciones
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: options.length,
+                                  itemBuilder: (_, index) {
+                                    final option = options[index];
+                                    return ListTile(
+                                      title: Text(option),
+                                      onTap: () =>
+                                          Navigator.pop(sheetContext, option),
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -84,20 +100,26 @@ class CustomSpinnerField extends StatelessWidget {
               border: Border.all(color: Colors.grey.shade400),
               color: disabled ? Colors.grey.shade200 : Colors.white,
             ),
-
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  controller.text.isNotEmpty ? controller.text : hint,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: controller.text.isNotEmpty
-                        ? Colors.black
-                        : Colors.grey.shade500,
-                  ),
+                // Texto que se actualiza automáticamente
+                ValueListenableBuilder(
+                  valueListenable: controller,
+                  builder: (_, __, ___) {
+                    final value = controller.text;
+                    return Text(
+                      value.isNotEmpty ? value : hint,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color:
+                            value.isNotEmpty ? Colors.black : Colors.grey.shade500,
+                      ),
+                    );
+                  },
                 ),
 
+                // Icono de dropdown o spinner de carga si no hay opciones
                 disabled
                     ? const SizedBox(
                         width: 18,

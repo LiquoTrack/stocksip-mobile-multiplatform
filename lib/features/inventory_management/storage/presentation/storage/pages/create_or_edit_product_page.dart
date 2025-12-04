@@ -62,6 +62,9 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
       _contentController.text = widget.product!.content.toString();
     }
 
+    context.read<StorageBloc>().add(const GetAllBrandNamesEvent());
+    context.read<StorageBloc>().add(const GetAllProductTypeNamesEvent());
+
     for (var controller in _controllers) {
       controller.addListener(_updateButtonState);
     }
@@ -91,9 +94,6 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.message)));
-        }
-        if (state.status == Status.success) {
-          Navigator.pop(context);
         }
       },
       child: Padding(
