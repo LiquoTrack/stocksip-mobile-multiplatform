@@ -31,7 +31,7 @@ class _CareGuidePageState extends State<CareGuidePage> {
   }
 
   Future<void> _loadAccountAndFetch() async {
-    final accountId = await _storage.read(key: 'accountId');
+    final accountId = await _storage.read(key: 'accountId') ?? await _storage.read(key: 'account_id');
     if (!mounted) return;
     if (accountId != null && accountId.isNotEmpty) {
       final bloc = context.read<CareguideBloc>();

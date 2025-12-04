@@ -1,4 +1,6 @@
-import 'dart:ffi';
+import 'dart:io';
+
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse.dart';
 
 abstract class WarehouseEvent {
   const WarehouseEvent();
@@ -35,26 +37,30 @@ class OnWarehouseContryChanged extends WarehouseEvent {
 }
 
 class OnWarehouseCapacityChanged extends WarehouseEvent {
-  final Double capacity;
+  final double capacity;
   const OnWarehouseCapacityChanged({required this.capacity});
 }
 
 class OnMinTemperatureChanged extends WarehouseEvent {
-  final Double minTemperature;
+  final double minTemperature;
   const OnMinTemperatureChanged({required this.minTemperature});
 }
 
 class OnMaxTemperatureChanged extends WarehouseEvent {
-  final Double maxTemperature;
+  final double maxTemperature;
   const OnMaxTemperatureChanged({required this.maxTemperature});
 }
 
 class OnWarehouseCreated extends WarehouseEvent {
-  const OnWarehouseCreated();
+  final Warehouse warehouse;
+  final File? image;
+  const OnWarehouseCreated({required this.warehouse, this.image});
 }
 
 class OnWarehouseUpdated extends WarehouseEvent {
-  const OnWarehouseUpdated();
+  final Warehouse warehouse;
+  final File? image;
+  const OnWarehouseUpdated({required this.warehouse, this.image});
 }
 
 class OnWarehouseDeleted extends WarehouseEvent {
@@ -63,4 +69,13 @@ class OnWarehouseDeleted extends WarehouseEvent {
 
 class GetAllWarehouses extends WarehouseEvent {
   const GetAllWarehouses();
+}
+
+class OnValidateTemperatureRange extends WarehouseEvent {
+  final double minTemperature;
+  final double maxTemperature;
+  const OnValidateTemperatureRange({
+    required this.minTemperature,
+    required this.maxTemperature,
+  });
 }
