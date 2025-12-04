@@ -1,6 +1,6 @@
 class ApiConstants {
 
-  static final String baseUrl = 'https://stocksip-back-end.azurewebsites.net/api/v1/';
+  static final String baseUrl = 'http://10.0.2.2:5283/api/v1/';
 
   static final String signIn = 'sign-in';
 
@@ -88,5 +88,17 @@ class ApiConstants {
 
   static String deleteInventoryById(String inventoryId) {
     return 'inventories/$inventoryId';
+  }
+
+  static final String getMyProfile = 'profiles/me';
+
+  static final String createProfile = 'profiles';
+
+  static String getProfileById(String profileId) {
+    return 'profiles/$profileId';
+  }
+
+  static String updateProfile(String profileId) {
+    return 'profiles/$profileId';
   }
 }
