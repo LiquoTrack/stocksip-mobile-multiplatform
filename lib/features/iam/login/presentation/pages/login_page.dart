@@ -30,10 +30,10 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
-              );
+              );              
             case Status.failure:
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message ?? 'Unknown error')),
+                SnackBar(content: Text(state.message ?? 'Unknown error'), behavior: SnackBarBehavior.floating, backgroundColor: Colors.red,),
               );
             default:
           }

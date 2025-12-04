@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await repository.signIn(state.email, state.password);
       emit(state.copyWith(status: Status.success));
     } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+      emit(state.copyWith(status: Status.failure, message: "Login failed. Please check your credentials and try again."));
     }
   }
 }
