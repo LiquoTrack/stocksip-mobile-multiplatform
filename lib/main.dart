@@ -123,7 +123,7 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => LoginBloc(repository: authRepository)),
         BlocProvider(create: (context) => RegisterBloc(repository: authRepository)),
         BlocProvider(create: (context) => AuthBloc(tokenStorage: tokenStorage)..add(const AppStarted())),
-        BlocProvider(create: (context) => StorageBloc(repository: ProductRepositoryImpl(service: ProductService(client: authHttpClient), tokenStorage: tokenStorage))),
+        BlocProvider(create: (context) => StorageBloc(repository: ProductRepositoryImpl(service: ProductService(client: authHttpClient), tokenStorage: tokenStorage), productTypeRepository: ProductTypeRepositoryImpl(productTypeService: ProductTypeService()), brandRepository: BrandRepositoryImpl(brandService: BrandService()),)),
         BlocProvider(create: (context) => CareguideBloc(repository: CareguideRepositoryImpl(service: CareguideService(client: authHttpClient)))),
         BlocProvider(create: (context) => WarehouseBloc(repository: WarehousesRepositoryImpl(service: WarehouseService(client: authHttpClient), tokenStorage: tokenStorage)),),
         BlocProvider(create: (context) => ProfileBloc(repository: ProfileRepositoryImpl(service: ProfileService())),),
