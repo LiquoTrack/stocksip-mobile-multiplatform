@@ -7,6 +7,7 @@ import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
 import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_page.dart';
 import 'package:stocksip/features/inventory_management/warehouses/presentation/pages/warehouse_page.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/pages/storage_page.dart';
+import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
 class DrawerNavigation extends StatelessWidget {
@@ -121,7 +122,15 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.shield,
                     title: 'Admin Panel',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AdminPanelPage(),
+                        ),
+                      );
+                    },
                   ),
                   NavigationTile(
                     icon: Icons.person,
