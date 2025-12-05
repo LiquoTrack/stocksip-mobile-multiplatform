@@ -146,7 +146,7 @@ class _InventoryPageState extends State<InventoryPage> {
             heroTag: "btn_add",
             backgroundColor: const Color(0xFF2B000D),
             onPressed: () =>
-                _openDraggableForm(child: const InventoryAdditionPage()),
+                _openDraggableForm(child: InventoryAdditionPage(warehouseId: widget.warehouseId)),
             mini: true,
             child: const Icon(Icons.add, color: Colors.white),
           ),

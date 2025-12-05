@@ -6,7 +6,7 @@ import 'package:stocksip/features/inventory_management/storage/domain/models/pro
 /// Includes status, messages, inventories, products,
 class InventoryAdditionState {
   final Status status;
-  final String? message;
+  final String message;
 
   final List<InventoryResponse> inventories;
   final List<ProductResponse> products;
@@ -18,7 +18,7 @@ class InventoryAdditionState {
   /// Constructor for [InventoryAdditionState]
   const InventoryAdditionState({
     this.status = Status.initial,
-    this.message,
+    this.message = '',
     this.inventories = const [],
     this.products = const [],
     this.selectedProductId = '',
