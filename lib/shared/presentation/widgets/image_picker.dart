@@ -4,8 +4,13 @@ import 'package:image_picker/image_picker.dart';
 
 class ImagePickerField extends StatefulWidget {
   final Function(File?) onImageSelected;
+  final String? initialImageUrl;
 
-  const ImagePickerField({super.key, required this.onImageSelected});
+  const ImagePickerField({
+    super.key,
+    required this.onImageSelected,
+    this.initialImageUrl,
+  });
 
   @override
   State<ImagePickerField> createState() => _ImagePickerFieldState();
@@ -36,18 +41,36 @@ class _ImagePickerFieldState extends State<ImagePickerField> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey[300]!),
         ),
-        child: _selectedImage == null
-            ? Column(
+        child: _selectedImage != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(
+                  _selectedImage!,
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : widget.initialImageUrl != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  widget.initialImageUrl!,
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.camera_alt, size: 40, color: Colors.grey[500]),
                   const SizedBox(height: 8),
-                  Text('Select an image', style: TextStyle(color: Colors.grey[600])),
+                  Text(
+                    'Select an image',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
                 ],
-              )
-            : ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(_selectedImage!, width: double.infinity, height: 150, fit: BoxFit.cover),
               ),
       ),
     );

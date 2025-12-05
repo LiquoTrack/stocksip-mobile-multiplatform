@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:stocksip/core/storage/token_storage.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/mappers/warehouse_mapper.dart';
-import 'package:stocksip/features/inventory_management/warehouses/data/remote/models/warehouse_wrapper_dto.dart';
 import 'package:stocksip/features/inventory_management/warehouses/data/remote/services/warehouse_service.dart';
 import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse.dart';
+import 'package:stocksip/features/inventory_management/warehouses/domain/models/warehouse_wrapper.dart';
 import 'package:stocksip/features/inventory_management/warehouses/domain/repositories/warehouse_repository.dart';
 
 class WarehousesRepositoryImpl extends WarehouseRepository {
@@ -39,15 +39,15 @@ class WarehousesRepositoryImpl extends WarehouseRepository {
   }
 
   @override
-  Future<List<Warehouse>> fetchWarehouses() async {
+  Future<WarehouseWrapper> fetchWarehouses() async {
     try {
       final accountId = await tokenStorage.readAccountId();
       if (accountId == null) throw Exception('No accountId found');
 
-      final WarehouseWrapperDto wrapper = await service
+      final wrapperDto = await service
           .getWarehousesByAccountId(accountId);
 
-      return wrapper.warehouses.map((dto) => dto.toDomain()).toList();
+      return wrapperDto.toDomain();
     } catch (e) {
       throw Exception('Error fetching warehouses: $e');
     }

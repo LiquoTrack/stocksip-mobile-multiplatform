@@ -111,7 +111,7 @@ class _AddCatalogItemsPageState extends State<AddCatalogItemsPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      storageState.message ?? 'Failed to load products',
+                      storageState.message,
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center,
                     ),
