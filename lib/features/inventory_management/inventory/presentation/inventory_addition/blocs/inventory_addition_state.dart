@@ -12,6 +12,7 @@ class InventoryAdditionState {
   final List<ProductResponse> products;
 
   final String selectedProductId;
+  final String selectedInventoryProductId;
   final int quantityToAdd;
   final DateTime? expirationDate;
 
@@ -22,6 +23,7 @@ class InventoryAdditionState {
     this.inventories = const [],
     this.products = const [],
     this.selectedProductId = '',
+    this.selectedInventoryProductId = '',
     this.quantityToAdd = 0,
     this.expirationDate,
   });
@@ -33,6 +35,7 @@ class InventoryAdditionState {
     List<InventoryResponse>? inventories,
     List<ProductResponse>? products,
     String? selectedProductId,
+    String? selectedInventoryProductId,
     int? quantityToAdd,
     DateTime? expirationDate,
   }) {
@@ -44,6 +47,7 @@ class InventoryAdditionState {
       selectedProductId: selectedProductId ?? this.selectedProductId,
       quantityToAdd: quantityToAdd ?? this.quantityToAdd,
       expirationDate: expirationDate ?? this.expirationDate,
+      selectedInventoryProductId: selectedInventoryProductId ?? this.selectedInventoryProductId,
     );
   }
 }

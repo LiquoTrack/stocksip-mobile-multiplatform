@@ -5,7 +5,7 @@ import 'package:stocksip/features/inventory_management/inventory/domain/models/i
 /// Includes status, messages, inventories,
 class InventorySubtrackState {
   final Status status;
-  final String? message;
+  final String message;
 
   final List<InventoryResponse> inventories;
 
@@ -20,7 +20,7 @@ class InventorySubtrackState {
   /// Constructor for [InventorySubtrackState]
   const InventorySubtrackState({
     this.status = Status.initial,
-    this.message,
+    this.message = '',
     this.inventories = const [],
     this.currentQuantity = '',
     this.selectedProductId = '',
