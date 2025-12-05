@@ -69,7 +69,7 @@ class SaleorderPage extends StatelessWidget {
                       child: BlocBuilder<SaleorderBloc, SaleorderState>(
                         builder: (context, state) {
                           if (state.orders.isEmpty) {
-                            return const Center(child: Text('No orders yet'));
+                            return const Center(child: Text('No orders available'));
                           }
                           return ListView.separated(
                             itemCount: state.orders.length,
