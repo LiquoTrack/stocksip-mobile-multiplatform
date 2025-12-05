@@ -17,6 +17,12 @@ class UpdateSelectedProductEvent extends InventoryAdditionEvent {
   const UpdateSelectedProductEvent(this.productId);
 }
 
+class UpdateSelectedFromInventoryEvent extends InventoryAdditionEvent {
+  final bool fromInventory;
+
+  const UpdateSelectedFromInventoryEvent(this.fromInventory);
+}
+
 /// Event to update the quantity of the inventory item.
 class UpdateQuantityEvent extends InventoryAdditionEvent {
   final int quantity;

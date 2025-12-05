@@ -8,15 +8,25 @@ import 'package:stocksip/features/inventory_management/storage/domain/models/pro
 class ProductDoubleSelectorField extends StatelessWidget {
   final List<ProductResponse> products;
   final List<InventoryResponse> inventories;
+
   final String? selectedProductId;
-  final Function(String) onProductSelected;
+  final bool selectedFromInventory;
+
+  final void Function({
+    required String productId,
+    required bool fromInventory,
+    DateTime? expirationDate,
+    int? quantity,
+  })
+  onItemSelected;
 
   const ProductDoubleSelectorField({
     super.key,
     required this.products,
     required this.inventories,
     required this.selectedProductId,
-    required this.onProductSelected,
+    required this.selectedFromInventory,
+    required this.onItemSelected,
   });
 
   @override
@@ -33,17 +43,14 @@ class ProductDoubleSelectorField extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LEFT COLUMN: INVENTORY PRODUCTS
+            // LEFT COLUMN → INVENTORY
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     "Existing Inventory",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
                   const SizedBox(height: 8),
 
@@ -56,8 +63,15 @@ class ProductDoubleSelectorField extends StatelessWidget {
                     ...inventories.map(
                       (inv) => InventorySelectorCard(
                         inventory: inv,
-                        isSelected: selectedProductId == inv.productId,
-                        onTap: () => onProductSelected(inv.productId),
+                        isSelected:
+                            selectedProductId == inv.productId &&
+                            selectedFromInventory == true,
+                        onTap: () => onItemSelected(
+                          productId: inv.productId,
+                          fromInventory: true,
+                          expirationDate: inv.expirationDate,
+                          quantity: inv.currentStock,
+                        ),
                       ),
                     ),
                 ],
@@ -66,17 +80,14 @@ class ProductDoubleSelectorField extends StatelessWidget {
 
             const SizedBox(width: 16),
 
-            // RIGHT COLUMN: ALL PRODUCTS
+            // RIGHT COLUMN → ALL PRODUCTS
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     "All Products",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
                   const SizedBox(height: 8),
 
@@ -89,8 +100,15 @@ class ProductDoubleSelectorField extends StatelessWidget {
                     ...products.map(
                       (product) => ProductSelectorCard(
                         product: product,
-                        isSelected: selectedProductId == product.id,
-                        onTap: () => onProductSelected(product.id),
+                        isSelected:
+                            selectedProductId == product.id &&
+                            selectedFromInventory == false,
+                        onTap: () => onItemSelected(
+                          productId: product.id,
+                          fromInventory: false,
+                          expirationDate: null,
+                          quantity: null,
+                        ),
                       ),
                     ),
                 ],

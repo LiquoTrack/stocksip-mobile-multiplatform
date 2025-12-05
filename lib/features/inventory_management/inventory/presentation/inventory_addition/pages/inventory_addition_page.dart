@@ -7,6 +7,7 @@ import 'package:stocksip/features/inventory_management/inventory/presentation/in
 import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_addition/widgets/product_double_selector_field.dart';
 import 'package:stocksip/shared/presentation/widgets/text_field.dart';
 import 'package:stocksip/shared/presentation/widgets/writable_date_field.dart';
+import 'package:intl/intl.dart';
 
 class InventoryAdditionPage extends StatefulWidget {
   final String warehouseId;
@@ -26,6 +27,8 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
       TextEditingController();
 
   String selectedProductId = '';
+  bool selectedFromInventory = false;
+
   bool _isButtonEnabled = false;
   bool _waitingForSubmitResult = false;
 
@@ -33,7 +36,8 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
   void initState() {
     super.initState();
 
-    _controllers = [_stockToAddController, _expirationDateController];
+    // Sólo campos obligatorios
+    _controllers = [_stockToAddController];
 
     context.read<InventoryAdditionBloc>().add(
       LoadProductListEvent(widget.warehouseId),
@@ -47,10 +51,11 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
   }
 
   void _updateButtonState() {
-    final allFilled = _controllers.every((c) => c.text.isNotEmpty);
-
+    final stockFilled = _stockToAddController.text.isNotEmpty;
     final currentState = context.read<InventoryAdditionBloc>().state;
-    final shouldEnable = allFilled && currentState.status != Status.failure;
+
+    final shouldEnable = stockFilled && currentState.status != Status.failure;
+
     if (shouldEnable != _isButtonEnabled) {
       setState(() {
         _isButtonEnabled = shouldEnable;
@@ -100,12 +105,9 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Add Products',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 24),
@@ -115,13 +117,57 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
                     return ProductDoubleSelectorField(
                       products: state.products,
                       inventories: state.inventories,
-                      selectedProductId: state.selectedProductId,
-                      onProductSelected: (id) {
-                        context.read<InventoryAdditionBloc>().add(
-                          UpdateSelectedProductEvent(id),
-                        );
-                        _updateButtonState();
-                      },
+                      selectedProductId: selectedProductId,
+                      selectedFromInventory: selectedFromInventory,
+
+                      // 🔥 Callback actualizado
+                      onItemSelected:
+                          ({
+                            required String productId,
+                            required bool fromInventory,
+                            DateTime? expirationDate,
+                            int? quantity,
+                          }) {
+                            setState(() {
+                              selectedProductId = productId;
+                              selectedFromInventory = fromInventory;
+                            });
+
+                            final bloc = context.read<InventoryAdditionBloc>();
+
+                            // 1. Actualiza producto seleccionado
+                            bloc.add(UpdateSelectedProductEvent(productId));
+
+                            // 2. Actualiza si viene de inventario
+                            bloc.add(
+                              UpdateSelectedFromInventoryEvent(fromInventory),
+                            );
+
+                            // 3. Si selecciona INVENTARIO → precargar datos
+                            if (fromInventory) {
+                              if (expirationDate != null) {
+                                _expirationDateController.text = DateFormat(
+                                  'yyyy-MM-dd',
+                                ).format(expirationDate);
+                              } else {
+                                _expirationDateController.clear();
+                              }
+
+                              bloc.add(
+                                UpdateExpirationDateEvent(expirationDate),
+                              );
+
+                              if (quantity != null) {
+                                bloc.add(UpdateQuantityEvent(quantity));
+                              }
+                            } else {
+                              // Selección desde productos → limpiar fecha
+                              _expirationDateController.clear();
+                              bloc.add(UpdateExpirationDateEvent(null));
+                            }
+
+                            _updateButtonState();
+                          },
                     );
                   },
                 ),
@@ -130,16 +176,13 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
 
                 CustomTextField(
                   controller: _stockToAddController,
-                  label: 'Stock To add',
+                  label: 'Stock to add',
                   hint: 'Enter the quantity to add',
                 ),
 
                 const SizedBox(height: 16),
 
-                WritableDateField(
-                  controller: _expirationDateController,
-                  onChanged: (_) => _updateButtonState(),
-                ),
+                WritableDateField(controller: _expirationDateController),
 
                 const SizedBox(height: 24),
 
@@ -156,9 +199,9 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Add to Warehouse',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         color: Colors.white,
@@ -186,7 +229,7 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
 
     _waitingForSubmitResult = true;
 
-    context.read<InventoryAdditionBloc>().add(
+    bloc.add(
       SubmitInventoryAdditionEvent(
         warehouseId: widget.warehouseId,
         productId: currentState.selectedProductId,
@@ -198,9 +241,10 @@ class _InventoryAdditionPageState extends State<InventoryAdditionPage> {
 
   @override
   void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
+    for (var c in _controllers) {
+      c.dispose();
     }
+    _expirationDateController.dispose();
     super.dispose();
   }
 }

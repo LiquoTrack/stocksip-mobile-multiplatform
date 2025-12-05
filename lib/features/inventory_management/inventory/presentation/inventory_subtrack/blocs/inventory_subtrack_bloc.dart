@@ -20,6 +20,7 @@ class InventorySubtrackBloc
     on<LoadProductListToSubtrackEvent>(_loadProductsListToSubtrack);
     on<UpdateSelectedProductToSubtrackEvent>(_updateSelectedProductToSubtrack);
     on<UpdateQuantityToSubtrackEvent>(_updateQuantityToSubtrack);
+    on<ValidateStockToSubtrackEvent>(_validateStockToSubtrack);
     on<SubmitInventorySubtrackEvent>(_submitInventorySubtrackForm);
     on<ClearSubtrackFormEvent>(_clearSubtrackForm);
   }
@@ -138,5 +139,28 @@ class InventorySubtrackBloc
         expirationDate: null,
       ),
     );
+  }
+
+  /// Validates the stock to subtrack input
+  FutureOr<void> _validateStockToSubtrack(
+    ValidateStockToSubtrackEvent event,
+    Emitter<InventorySubtrackState> emit,
+  ) {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      final quantity = int.tryParse(event.stockInput);
+      if (quantity == null || quantity <= 0) {
+        throw Exception('Please enter a valid quantity to subtract');
+      }
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          quantityToSubtract: quantity,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: Status.failure, message: e.toString()));
+    }
   }
 }

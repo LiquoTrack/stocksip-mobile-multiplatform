@@ -32,6 +32,13 @@ class UpdateExpirationDateToSubtrackEvent extends InventorySubtrackEvent {
   const UpdateExpirationDateToSubtrackEvent(this.expirationDate);
 }
 
+/// Event to validate the stock to subtrack input.
+class ValidateStockToSubtrackEvent extends InventorySubtrackEvent {
+  final String stockInput;
+
+  const ValidateStockToSubtrackEvent(this.stockInput);
+}
+
 /// Event to submit the inventory subtrack form.
 class SubmitInventorySubtrackEvent extends InventorySubtrackEvent {
   final String warehouseId;
