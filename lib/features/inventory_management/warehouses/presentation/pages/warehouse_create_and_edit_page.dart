@@ -120,6 +120,7 @@ class _CreateAndEditWarehousePageState
                 ),
                 const SizedBox(height: 16),
                 ImagePickerField(
+                  initialImageUrl: widget.warehouse?.imageUrl,
                   onImageSelected: (file) => _selectedImage = file,
                 ),
                 const SizedBox(height: 16),
