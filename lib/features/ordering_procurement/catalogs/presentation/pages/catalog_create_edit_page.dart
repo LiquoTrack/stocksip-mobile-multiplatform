@@ -689,43 +689,98 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                                                   fontSize: 11.0,
                                                 ),
                                               ),
-                                              const SizedBox(height: 4.0),
-                                              TextField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  hintText:
-                                                      'Enter quantity',
-                                                  filled: true,
-                                                  fillColor: Colors.white,
-                                                  border:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6.0),
-                                                    borderSide: BorderSide
-                                                        .none,
+                                              const SizedBox(height: 8.0),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Colors.grey[300]!,
                                                   ),
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 8.0,
-                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                 ),
-                                                onChanged: (value) {
-                                                  final stock =
-                                                      int.tryParse(value) ?? 1;
-                                                  setState(() {
-                                                    _selectedItems[
-                                                        product.id] = stock;
-                                                  });
-                                                },
-                                                controller:
-                                                    TextEditingController(
-                                                  text: _selectedItems[
-                                                          product.id]
-                                                      .toString(),
+                                                child: Row(
+                                                  children: [
+                                                    // Decrease Button
+                                                    SizedBox(
+                                                      width: 40,
+                                                      child: IconButton(
+                                                        icon: const Icon(
+                                                          Icons.remove,
+                                                          size: 18,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            final current =
+                                                                _selectedItems[
+                                                                    product
+                                                                        .id] ??
+                                                                    1;
+                                                            if (current > 1) {
+                                                              _selectedItems[
+                                                                  product
+                                                                      .id] =
+                                                                  current - 1;
+                                                            }
+                                                          });
+                                                        },
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        constraints:
+                                                            const BoxConstraints(),
+                                                      ),
+                                                    ),
+                                                    // Text Display
+                                                    Expanded(
+                                                      child: Center(
+                                                        child: Text(
+                                                          (_selectedItems[
+                                                                  product
+                                                                      .id] ??
+                                                              1)
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16.0,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    // Increase Button
+                                                    SizedBox(
+                                                      width: 40,
+                                                      child: IconButton(
+                                                        icon: const Icon(
+                                                          Icons.add,
+                                                          size: 18,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            final current =
+                                                                _selectedItems[
+                                                                    product
+                                                                        .id] ??
+                                                                    1;
+                                                            if (current <
+                                                                product
+                                                                    .totalStockInStore) {
+                                                              _selectedItems[
+                                                                  product
+                                                                      .id] =
+                                                                  current + 1;
+                                                            }
+                                                          });
+                                                        },
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        constraints:
+                                                            const BoxConstraints(),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
