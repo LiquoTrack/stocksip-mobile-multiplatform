@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:stocksip/core/constants/api_constants.dart';
 import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
 import 'package:stocksip/features/payment_and_subscriptions/subscription/data/remote/models/account_subscription_response_dto.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/data/remote/models/create_subscriptions_response.dart';
 import 'package:stocksip/features/payment_and_subscriptions/subscription/data/remote/models/initial_susbcription_request_dto.dart';
-import 'package:stocksip/features/payment_and_subscriptions/subscription/data/remote/models/subscription_response_dto.dart';
 import 'package:stocksip/features/payment_and_subscriptions/subscription/data/remote/models/upgrade_subscription_request_dto.dart';
 import 'package:stocksip/features/payment_and_subscriptions/subscription/data/remote/models/upgrade_subscription_response_dto.dart';
 
