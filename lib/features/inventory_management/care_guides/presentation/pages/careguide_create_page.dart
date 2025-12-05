@@ -17,12 +17,12 @@ class CareguideCreatePage extends StatelessWidget {
       fontWeight: FontWeight.w600,
     );
 
-    final _formKey = GlobalKey<FormState>();
-    String? _selectedProduct;
-    final _typeCtrl = TextEditingController();
-    final _commentsCtrl = TextEditingController();
-    final _minTempCtrl = TextEditingController();
-    final _maxTempCtrl = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    String? selectedProduct;
+    final typeCtrl = TextEditingController();
+    final commentsCtrl = TextEditingController();
+    final minTempCtrl = TextEditingController();
+    final maxTempCtrl = TextEditingController();
 
     return SafeArea(
       child: Container(
@@ -43,7 +43,7 @@ class CareguideCreatePage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               child: StatefulBuilder(
                 builder: (context, setState) => Form(
-                  key: _formKey,
+                  key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -84,14 +84,14 @@ class CareguideCreatePage extends StatelessWidget {
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           ),
-                          value: _selectedProduct,
+                          initialValue: selectedProduct,
                           hint: const Text('Select Product'),
                           items: const [
                             DropdownMenuItem(value: 'Wine', child: Text('Wine')),
                             DropdownMenuItem(value: 'Whisky', child: Text('Whisky')),
                             DropdownMenuItem(value: 'Soda', child: Text('Soda')),
                           ],
-                          onChanged: (v) => setState(() => _selectedProduct = v),
+                          onChanged: (v) => setState(() => selectedProduct = v),
                           validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
                         ),
                       ),
@@ -106,7 +106,7 @@ class CareguideCreatePage extends StatelessWidget {
                           border: Border.all(color: const Color(0xFFE0D4D4)),
                         ),
                         child: TextFormField(
-                          controller: _typeCtrl,
+                          controller: typeCtrl,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -126,7 +126,7 @@ class CareguideCreatePage extends StatelessWidget {
                           border: Border.all(color: const Color(0xFFE0D4D4)),
                         ),
                         child: TextFormField(
-                          controller: _commentsCtrl,
+                          controller: commentsCtrl,
                           maxLines: 3,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -149,7 +149,7 @@ class CareguideCreatePage extends StatelessWidget {
                                 border: Border.all(color: const Color(0xFFE0D4D4)),
                               ),
                               child: TextFormField(
-                                controller: _minTempCtrl,
+                                controller: minTempCtrl,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
@@ -169,7 +169,7 @@ class CareguideCreatePage extends StatelessWidget {
                                 border: Border.all(color: const Color(0xFFE0D4D4)),
                               ),
                               child: TextFormField(
-                                controller: _maxTempCtrl,
+                                controller: maxTempCtrl,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
@@ -188,21 +188,21 @@ class CareguideCreatePage extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (!(_formKey.currentState?.validate() ?? false)) return;
+                            if (!(formKey.currentState?.validate() ?? false)) return;
                             
                             final accountId = await TokenStorage().readAccountId() ?? '';
                             if (accountId.isEmpty) return;
 
-                            final minT = int.tryParse(_minTempCtrl.text.trim()) ?? 0;
-                            final maxT = int.tryParse(_maxTempCtrl.text.trim()) ?? 0;
+                            final minT = int.tryParse(minTempCtrl.text.trim()) ?? 0;
+                            final maxT = int.tryParse(maxTempCtrl.text.trim()) ?? 0;
 
                             final cg = CareGuide(
                               id: '',
                               accountId: accountId,
-                              typeOfLiquor: _typeCtrl.text.trim(),
-                              productName: _selectedProduct ?? '',
-                              title: _typeCtrl.text.trim(),
-                              summary: _commentsCtrl.text.trim(),
+                              typeOfLiquor: typeCtrl.text.trim(),
+                              productName: selectedProduct ?? '',
+                              title: typeCtrl.text.trim(),
+                              summary: commentsCtrl.text.trim(),
                               recommendedMinTemperature: minT,
                               recommendedMaxTemperature: maxT,
                               createdAt: '',

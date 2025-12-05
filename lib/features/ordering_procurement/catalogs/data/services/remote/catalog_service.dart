@@ -27,7 +27,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs',
+        '${ApiConstants.baseUrl}catalogs',
       );
 
       final http.Response response = await http.get(
@@ -67,7 +67,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/published',
+        '${ApiConstants.baseUrl}catalogs/published',
       );
 
       final http.Response response = await http.get(
@@ -107,7 +107,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'accounts/$accountId/catalogs',
+        '${ApiConstants.baseUrl}accounts/$accountId/catalogs',
       );
 
       final http.Response response = await http.get(
@@ -147,7 +147,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/with-business?accountId=$accountId',
+        '${ApiConstants.baseUrl}catalogs/with-business?accountId=$accountId',
       );
 
       final http.Response response = await http.get(
@@ -184,7 +184,7 @@ class CatalogService {
         throw HttpException('Token not found');
       }
 
-      final Uri uri = Uri.parse(ApiConstants.baseUrl + 'catalogs/$catalogId');
+      final Uri uri = Uri.parse('${ApiConstants.baseUrl}catalogs/$catalogId');
 
       final http.Response response = await http.get(
         uri,
@@ -230,7 +230,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'accounts/$accountId/catalogs',
+        '${ApiConstants.baseUrl}accounts/$accountId/catalogs',
       );
 
       final request = CreateCatalogRequest(
@@ -280,7 +280,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/$catalogId',
+        '${ApiConstants.baseUrl}catalogs/$catalogId',
       );
 
       final request = UpdateCatalogRequest(
@@ -330,7 +330,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/$catalogId/items',
+        '${ApiConstants.baseUrl}catalogs/$catalogId/items',
       );
 
       final request = AddCatalogItemRequest(
@@ -374,7 +374,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/$catalogId/items/$productId',
+        '${ApiConstants.baseUrl}catalogs/$catalogId/items/$productId',
       );
 
       final http.Response response = await http.delete(
@@ -408,7 +408,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/$catalogId/publications',
+        '${ApiConstants.baseUrl}catalogs/$catalogId/publications',
       );
 
       final http.Response response = await http.put(
@@ -439,7 +439,7 @@ class CatalogService {
       }
 
       final Uri uri = Uri.parse(
-        ApiConstants.baseUrl + 'catalogs/$catalogId/publications',
+        '${ApiConstants.baseUrl}catalogs/$catalogId/publications',
       );
 
       final http.Response response = await http.delete(

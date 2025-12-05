@@ -307,7 +307,7 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                         onChanged: (value) {
                           setState(() => _isPublished = value);
                         },
-                        activeColor: const Color(0xFFE8B4BE),
+                        activeThumbColor: const Color(0xFFE8B4BE),
                       ),
                     ],
                   ),
@@ -552,7 +552,7 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                               ),
                               const SizedBox(height: 4.0),
                               Text(
-                                storageState.message,
+                                storageState.message ?? 'Unknown error',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
