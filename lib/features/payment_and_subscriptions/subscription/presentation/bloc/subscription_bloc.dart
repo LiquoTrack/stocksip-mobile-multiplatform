@@ -54,8 +54,8 @@ Future<void> _onCreateInitialSubscription(
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      await repository.fetchSubscriptionByAccountId();
-      emit(state.copyWith(status: Status.success));
+      final accountSubscription = await repository.fetchSubscriptionByAccountId();
+      emit(state.copyWith(status: Status.success, accountSubscription: accountSubscription));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
