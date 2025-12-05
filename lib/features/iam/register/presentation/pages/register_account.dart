@@ -43,6 +43,7 @@ class RegisterAccountPage extends StatelessWidget {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             Positioned(
