@@ -13,7 +13,7 @@ import 'package:stocksip/features/inventory_management/storage/presentation/stor
 
 /// Bloc to manage storage-related events and states in the inventory management feature.
 /// Handles fetching products by account ID and updating the state accordingly.
-/// Uses the [ProductService] to interact with the data layer.
+/// Uses the [ProductService] to interact w, required ProductTypeRepositoryImpl productTypeRepositoryith the data layer.
 /// Extends [Bloc] with [StorageEvent] and [StorageState].
 class StorageBloc extends Bloc<StorageEvent, StorageState> {
   final ProductRepository repository;

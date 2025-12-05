@@ -7,11 +7,11 @@ class PlanCard extends StatelessWidget {
   final VoidCallback onSelect;
 
   const PlanCard({
-    Key? key,
+    super.key,
     required this.plan,
     required this.isSelected,
     required this.onSelect,
-  }) : super(key: key);
+  });
 
   bool get isPopular => plan.paymentFrequency == 'Monthly';
 
@@ -201,10 +201,10 @@ class FeatureItem extends StatelessWidget {
   final Color textColor;
 
   const FeatureItem({
-    Key? key,
+    super.key,
     required this.text,
     required this.textColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

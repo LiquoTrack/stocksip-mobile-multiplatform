@@ -125,12 +125,7 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
       emit(state.copyWith(status: Status.loading));
 
       final warehouses = await repository.fetchWarehouses();
-
-      final wrapper = state.warehouseWrapper.copyWith(
-        warehouses: warehouses,
-        total: warehouses.length,
-      );
-      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper));
+      emit(state.copyWith(status: Status.success, warehouseWrapper: warehouses));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, messsage: e.toString()));
     }
@@ -199,12 +194,7 @@ class WarehouseBloc extends Bloc<WarehouseEvent, WarehouseState> {
 
       final warehouses = await repository.fetchWarehouses();
 
-      final wrapper = state.warehouseWrapper.copyWith(
-        warehouses: warehouses,
-        total: warehouses.length,
-      );
-
-      emit(state.copyWith(status: Status.success, warehouseWrapper: wrapper, messsage: 'Warehouse updated successfully'));
+      emit(state.copyWith(status: Status.success, warehouseWrapper: warehouses, messsage: 'Warehouse updated successfully'));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, messsage: e.toString()));
     }

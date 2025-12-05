@@ -10,10 +10,10 @@ class ChoosePlanScreen extends StatefulWidget {
   final VoidCallback? onBack;
 
   const ChoosePlanScreen({
-    Key? key,
+    super.key,
     this.onContinue,
     this.onBack,
-  }) : super(key: key);
+  });
 
   @override
   State<ChoosePlanScreen> createState() => _ChoosePlanScreenState();
@@ -23,7 +23,11 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<PlanBloc>().add(const GetAllPlansEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<PlanBloc>().add(const GetAllPlansEvent());
+      }
+    });
   }
 
   @override
@@ -186,6 +190,9 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             child: ElevatedButton(
               onPressed: state.selectedPlan != null
                   ? () {
+                      print('>>> [ChoosePlanScreen] Continue button pressed');
+                      print('>>> [ChoosePlanScreen] onContinue callback: ${widget.onContinue}');
+                      print('>>> [ChoosePlanScreen] selectedPlan: ${state.selectedPlan?.planType}');
                       widget.onContinue?.call(state.selectedPlan);
                     }
                   : null,

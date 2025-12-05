@@ -112,33 +112,85 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     SaveProfileEvent event,
     Emitter<ProfileState> emit,
   ) async {
+    // Validate required fields
+    if (state.firstName.isEmpty) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: 'First Name is required',
+        ),
+      );
+      return;
+    }
+
+    if (state.lastName.isEmpty) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: 'Last Name is required',
+        ),
+      );
+      return;
+    }
+
+    if (state.phoneNumber.isEmpty) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: 'Phone Number is required',
+        ),
+      );
+      return;
+    }
+
+    if (state.assignedRole.isEmpty) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: 'Assigned Role is required',
+        ),
+      );
+      return;
+    }
+
+    // Backend ALWAYS requires ProfilePicture as an actual file
+    // User must always select an image (new or existing)
+    if (state.selectedImageUri == null || state.selectedImageUri!.isEmpty) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: 'Please select an image to update your profile',
+        ),
+      );
+      return;
+    }
+
     emit(state.copyWith(status: Status.loading));
     try {
-      // First upload image if selected
-      String? imageUrl = state.profilePictureUrl;
-      if (state.selectedImageUri != null) {
-        imageUrl = await _repository.uploadProfilePicture(
-          profileId: state.profileId,
-          imagePath: state.selectedImageUri!,
-        );
-      }
-
-      // Then update profile
-      await _repository.updateProfile(
+      // Use the combined method that handles both data and image in one request
+      await _repository.updateProfileWithImage(
         profileId: state.profileId,
         firstName: state.firstName,
         lastName: state.lastName,
         phoneNumber: state.phoneNumber,
         assignedRole: state.assignedRole,
+        imagePath: state.selectedImageUri,
       );
+
+      // Reload profile to get the latest data from server
+      final refreshedProfile = await _repository.getProfile();
 
       emit(
         state.copyWith(
           status: Status.success,
           isEditMode: false,
           selectedImageUri: null,
-          profilePictureUrl: imageUrl,
-          message: 'Profile saved successfully',
+          firstName: refreshedProfile.firstName,
+          lastName: refreshedProfile.lastName,
+          phoneNumber: refreshedProfile.phoneNumber,
+          assignedRole: refreshedProfile.assignedRole,
+          profilePictureUrl: refreshedProfile.profilePictureUrl ?? state.profilePictureUrl,
+          message: 'Profile updated successfully',
         ),
       );
     } catch (e) {
