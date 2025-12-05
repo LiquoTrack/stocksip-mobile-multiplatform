@@ -12,9 +12,10 @@ class LoadProductListToSubtrackEvent extends InventorySubtrackEvent {
 
 /// Event to update the selected product for the inventory item.
 class UpdateSelectedProductToSubtrackEvent extends InventorySubtrackEvent {
+  final String? inventoryId;
   final String? productId;
 
-  const UpdateSelectedProductToSubtrackEvent(this.productId);
+  const UpdateSelectedProductToSubtrackEvent(this.productId, this.inventoryId);
 }
 
 /// Event to update the quantity to subtract of the inventory item.
