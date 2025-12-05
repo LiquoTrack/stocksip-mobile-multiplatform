@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
+import 'package:stocksip/features/inventory_management/storage/presentation/product_detail/pages/product_detail_page.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_event.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/blocs/storage_state.dart';
@@ -38,32 +40,32 @@ class _StoragePageState extends State<StoragePage> {
       backgroundColor: const Color(0xFFF3E9E7),
       body: BlocListener<StorageBloc, StorageState>(
         listener: (context, state) {
-          // Loading state
           if (state.status == Status.success && state.message.isNotEmpty) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
           }
 
           if (state.status == Status.failure && state.message.isNotEmpty) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text("Error"),
+                content: Text(state.message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  ),
+                ],
+              ),
+            );
           }
         },
         child: BlocBuilder<StorageBloc, StorageState>(
           builder: (context, state) {
             if (state.status == Status.loading) {
               return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state.status == Status.failure) {
-              return Center(
-                child: Text(
-                  state.message,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
             }
 
             final products = state.products.products;
@@ -73,7 +75,6 @@ class _StoragePageState extends State<StoragePage> {
                 children: [
                   _buildHeader(state, products.length),
                   const SizedBox(height: 12),
-
                   if (products.isEmpty)
                     _buildEmptyState(context)
                   else
@@ -81,25 +82,24 @@ class _StoragePageState extends State<StoragePage> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.72,
-                          ),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.72,
+                      ),
                       itemCount: products.length,
                       itemBuilder: (context, index) {
                         final product = products[index];
 
                         return ProductCard(
                           product: product,
-                          onStartSelecting: () {
-                            setState(() => isSelecting = true);
-                          },
-                          onStopSelecting: () {
-                            setState(() => isSelecting = false);
-                          },
+                          onTap: () => _openProductDetail(product: product),
+                          onEdit: () => _openDraggableForm(
+                            child: CreateOrEditProductPage(product: product),
+                          ),
+                          onStartSelecting: () => setState(() => isSelecting = true),
+                          onStopSelecting: () => setState(() => isSelecting = false),
                         );
                       },
                     ),
@@ -109,7 +109,6 @@ class _StoragePageState extends State<StoragePage> {
           },
         ),
       ),
-
       floatingActionButton: isSelecting
           ? null
           : FloatingActionButton(
@@ -185,6 +184,21 @@ class _StoragePageState extends State<StoragePage> {
             );
           },
         );
+      },
+    );
+  }
+
+  void _openProductDetail({required ProductResponse product}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return ProductDetailPage(productId: product.id);
       },
     );
   }

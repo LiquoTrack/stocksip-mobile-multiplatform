@@ -8,7 +8,6 @@ class ProductUpdateRequestDto {
   final double unitPrice;
   final String code;
   final int minimumStock;
-  final double content;
   final File? imageFile;
 
   /// Constructs a [ProductUpdateRequestDto] instance with the given parameters.
@@ -17,7 +16,6 @@ class ProductUpdateRequestDto {
     required this.unitPrice,
     required this.code,
     required this.minimumStock,
-    required this.content,
     this.imageFile,
   });
 
@@ -28,7 +26,6 @@ class ProductUpdateRequestDto {
       unitPrice: request.unitPrice,
       code: request.code,
       minimumStock: request.minimumStock,
-      content: request.content,
       imageFile: request.image,
     );
   }

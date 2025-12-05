@@ -1,23 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
+import 'package:stocksip/features/inventory_management/inventory/domain/models/inventory_response.dart';
 
-/// A card widget that displays product information and handles user interactions.
-class ProductCard extends StatelessWidget {
-  final ProductResponse product;
+/// A card widget that displays inventory information and handles user interactions.
+class InventoryCard extends StatelessWidget {
+  final InventoryResponse inventory;
   final VoidCallback? onTap;
-  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onStartSelecting;
   final VoidCallback? onStopSelecting;
 
-  const ProductCard({
+  const InventoryCard({
     super.key,
-    required this.product,
+    required this.inventory,
     this.onTap,
     this.onStartSelecting,
     this.onStopSelecting,
-    this.onEdit,
     this.onDelete,
   });
 
@@ -47,14 +45,9 @@ class ProductCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.edit),
-                      title: const Text("Edit product"),
-                      onTap: () => Navigator.pop(sheetContext, "edit"),
-                    ),
-                    ListTile(
                       leading: const Icon(Icons.delete, color: Colors.red),
                       title: const Text(
-                        "Delete product",
+                        "Delete inventory record",
                         style: TextStyle(color: Colors.red),
                       ),
                       onTap: () => Navigator.pop(sheetContext, "delete"),
@@ -69,9 +62,6 @@ class ProductCard extends StatelessWidget {
 
             if (!context.mounted) return;
 
-            if (option == "edit") {
-              if (onEdit != null) onEdit!();
-            }
             if (option == "delete") {
               if (onDelete != null) onDelete!();
             }
@@ -80,7 +70,7 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CachedNetworkImage(
-                imageUrl: product.imageUrl,
+                imageUrl: inventory.imageUrl,
                 width: double.infinity,
                 height: 120,
                 fit: BoxFit.cover,
@@ -90,9 +80,10 @@ class ProductCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(product.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text("${product.totalStockInStore} units in stock"),
-                    Text("${product.content} ml"),
+                    Text(inventory.productName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text("${inventory.currentStock} units"),
+                    if (inventory.expirationDate != null) Text("${inventory.expirationDate}")
+                    else const Text("No expiration date"),
                   ],
                 ),
               ),

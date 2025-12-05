@@ -13,6 +13,8 @@ import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_
 import 'package:stocksip/features/order_management/salesorder/presentation/pages/supplier_orders_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
+import '../../../features/order_management/salesorder/presentation/pages/supplier_orders_page.dart';
+
 class DrawerNavigation extends StatelessWidget {
   const DrawerNavigation({super.key});
 
@@ -27,10 +29,10 @@ class DrawerNavigation extends StatelessWidget {
               height: 120,
               padding: EdgeInsets.symmetric(
                 horizontal:
-                    MediaQuery.of(context).size.width *
+                MediaQuery.of(context).size.width *
                     0.04,
                 vertical:
-                    MediaQuery.of(context).size.height *
+                MediaQuery.of(context).size.height *
                     0.02,
               ),
               color: const Color(0xFF2B000D),

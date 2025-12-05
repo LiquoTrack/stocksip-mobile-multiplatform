@@ -4,13 +4,13 @@ import 'package:stocksip/features/inventory_management/inventory/domain/models/i
 /// Represents the state of the inventory management feature.
 class InventoryState {
   final Status status;
-  final String? message;
+  final String message;
   final List<InventoryResponse> inventories;
 
   /// Creates an instance of [InventoryState].
   const InventoryState({
     this.status = Status.initial,
-    this.message,
+    this.message = '',
     this.inventories = const [],
   });
 
