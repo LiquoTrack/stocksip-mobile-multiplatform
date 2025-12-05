@@ -24,7 +24,11 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<PlanBloc>().add(const GetAllPlansEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<PlanBloc>().add(const GetAllPlansEvent());
+      }
+    });
   }
 
   @override
