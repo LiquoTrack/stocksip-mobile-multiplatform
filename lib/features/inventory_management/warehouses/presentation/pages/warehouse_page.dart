@@ -97,7 +97,7 @@ class _WarehousePageState extends State<WarehousePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => InventoryPage(),
+                                    builder: (_) => InventoryPage(warehouseId: warehouse.warehouseId),
                                   ),
                                 );
                               },
