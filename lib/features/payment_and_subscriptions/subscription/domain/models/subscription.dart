@@ -3,14 +3,14 @@ class Subscription {
   final String accountId;
   final String planId;
   final String? preferenceId;
-  final String initPoint;
+  final String? initPoint;
   final bool isPaymentLaunched;
 
   const Subscription({
     required this.accountId,
     required this.planId,
     this.preferenceId,
-    required this.initPoint,
+    this.initPoint,
     required this.isPaymentLaunched,
   });
 

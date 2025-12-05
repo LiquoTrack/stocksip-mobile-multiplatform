@@ -37,7 +37,7 @@ class SubscriptionRepositoryImpl extends SubscriptionRepository {
         planId: selectPlanId,
         preferenceId: response.preferenceId,
         initPoint: response.initPoint,
-        isPaymentLaunched: true,
+        isPaymentLaunched: response.initPoint != null,
       );
 
     } catch (e) {

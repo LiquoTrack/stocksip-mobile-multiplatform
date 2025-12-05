@@ -1,19 +1,19 @@
 class CreateSubscriptionResponse {
-  final String preferenceId;
-  final String initPoint;
-  final String message;
+  final String? preferenceId;
+  final String? initPoint;
+  final String? message;
 
   CreateSubscriptionResponse({
-    required this.preferenceId,
-    required this.initPoint,
-    required this.message,
+    this.preferenceId,
+    this.initPoint,
+    this.message,
   });
 
   factory CreateSubscriptionResponse.fromJson(Map<String, dynamic> json) {
     return CreateSubscriptionResponse(
-      preferenceId: json['preferenceId'],
-      initPoint: json['initPoint'],
-      message: json['message'],
+      preferenceId: json['preferenceId'] as String?,
+      initPoint: json['initPoint'] as String?,
+      message: json['message'] as String?,
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stocksip/core/interceptor/auth_http_cliente.dart';
+import 'package:stocksip/core/router/go_router.dart';
 import 'package:stocksip/core/storage/token_storage.dart';
 import 'package:stocksip/core/ui/theme.dart';
 import 'package:stocksip/features/iam/login/data/repositories/auth_repository_impl.dart';
@@ -8,7 +9,6 @@ import 'package:stocksip/features/iam/login/presentation/blocs/auth_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/auth_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/login_bloc.dart';
-import 'package:stocksip/features/iam/login/presentation/pages/splash_page.dart';
 import 'package:stocksip/features/iam/password_recovery/data/remote/service/recovery_password_service.dart';
 import 'package:stocksip/features/iam/password_recovery/data/repositories/recovery_password_repository_impl.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_bloc.dart';
@@ -204,11 +204,11 @@ class MainApp extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
         darkTheme: theme.dark(),
-        home: const SplashPage(),
+        routerConfig: appRouter,
       ),
     );
   }

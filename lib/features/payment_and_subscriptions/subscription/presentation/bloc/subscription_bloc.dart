@@ -14,20 +14,39 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<OnUpgradeSubscription>(_onUpgradeSubscription);
   }
 
-  Future<void> _onCreateInitialSubscription(
-    OnCreateInitialSubscription event,
-    Emitter<SubscriptionState> emit,
-  ) async {
-    emit(state.copyWith(status: Status.loading));
-    try {
-      final subscription = await repository.createInitialSubscription(
-        selectPlanId: event.selectedPlanId,
-      );
-      emit(state.copyWith(status: Status.success, subscription: subscription));
-    } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+Future<void> _onCreateInitialSubscription(
+  OnCreateInitialSubscription event,
+  Emitter<SubscriptionState> emit,
+) async {
+  emit(state.copyWith(status: Status.loading));
+
+  try {
+    final subscription = await repository.createInitialSubscription(
+      selectPlanId: event.selectedPlanId,
+    );
+
+    if (subscription.initPoint == null) {
+      emit(state.copyWith(
+        status: Status.success,
+        subscription: subscription,
+        message: "Subscription created successfully (free plan)",
+      ));
+      return;
     }
+
+    emit(state.copyWith(
+      status: Status.success,
+      subscription: subscription,
+      message: "Subscription created successfully",
+    ));
+  } catch (e) {
+    emit(state.copyWith(
+      status: Status.failure,
+      message: "Failed to create subscription: ${e.toString()}",
+    ));
   }
+}
+
 
   Future<void> _onGetSubscriptionByAccountId(
     GetSubscriptionByAccountId event,
@@ -54,7 +73,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       );
       emit(state.copyWith(status: Status.success, subscription: subscription));
     } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to upgrade subscription",
+        ),
+      );
     }
   }
 }
