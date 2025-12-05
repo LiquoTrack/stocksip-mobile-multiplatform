@@ -14,7 +14,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final InventoryRepository repository;
 
   /// Constructor for [InventoryBloc].
-  InventoryBloc(this.repository) : super(const InventoryState()) {
+  InventoryBloc({required this.repository}) : super(const InventoryState()) {
     on<GetInventoriesByWarehouseIdEvent>(_getInventoriesByWarehouseId);
     on<DeleteInventoryEvent>(_deleteInventory);
   }

@@ -135,7 +135,7 @@ class ProductService {
       request.fields['Type'] = dto.type;
       request.fields['Brand'] = dto.brand;
       request.fields['UnitPrice'] = dto.unitPrice.toString();
-      request.fields['MoneyCode'] = dto.code;
+      request.fields['Code'] = dto.code;
       request.fields['MinimumStock'] = dto.minimumStock.toString();
       request.fields['Content'] = dto.content.toString();
       request.fields['SupplierId'] = dto.supplierId ?? 'string';
@@ -188,13 +188,12 @@ class ProductService {
       );
 
       /// Create multipart request
-      var request = http.MultipartRequest('POST', uri);
+      var request = http.MultipartRequest('PUT', uri);
 
       request.fields['Name'] = dto.name;
       request.fields['UnitPrice'] = dto.unitPrice.toString();
-      request.fields['MoneyCode'] = dto.code;
+      request.fields['Code'] = dto.code;
       request.fields['MinimumStock'] = dto.minimumStock.toString();
-      request.fields['Content'] = dto.content.toString();
 
       if (dto.imageFile != null) {
         var stream = http.ByteStream(dto.imageFile!.openRead());

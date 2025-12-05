@@ -22,6 +22,7 @@ class CreateOrEditProductPage extends StatefulWidget {
       _CreateOrEditProductPageState();
 }
 
+
 class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
   final _formKey = GlobalKey<FormState>();
 
@@ -35,8 +36,8 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
   final TextEditingController _contentController = TextEditingController();
 
   File? _selectedImage;
-
   bool _isButtonEnabled = false;
+  bool _waitingForSubmitResult = false;
 
   @override
   void initState() {
@@ -90,10 +91,28 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
 
     return BlocListener<StorageBloc, StorageState>(
       listener: (context, state) {
-        if (state.message.isNotEmpty) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+        if (!_waitingForSubmitResult) return; 
+
+        if (state.status == Status.success) {
+          _waitingForSubmitResult = false;
+          Navigator.pop(context, true);
+        }
+
+        if (state.status == Status.failure && state.message.isNotEmpty) {
+          _waitingForSubmitResult = false;
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text("Error"),
+              content: Text(state.message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
         }
       },
       child: Padding(
@@ -229,8 +248,8 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
     final minimumStock = int.tryParse(_minimumStockController.text) ?? 0;
 
     context.read<StorageBloc>().add(
-      OnValidateMinimumStock(minimumStock: minimumStock),
-    );
+          OnValidateMinimumStock(minimumStock: minimumStock),
+        );
 
     final currentState = context.read<StorageBloc>().state;
     if (currentState.status == Status.failure) return;
@@ -249,14 +268,16 @@ class _CreateOrEditProductPageState extends State<CreateOrEditProductPage> {
       imageUrl: widget.product?.imageUrl ?? '',
     );
 
+    _waitingForSubmitResult = true;
+
     if (widget.product == null) {
       context.read<StorageBloc>().add(
-        OnProductCreatedEvent(product: product, imageFile: _selectedImage),
-      );
+            OnProductCreatedEvent(product: product, imageFile: _selectedImage),
+          );
     } else {
       context.read<StorageBloc>().add(
-        OnProductUpdatedEvent(product: product, imageFile: _selectedImage),
-      );
+            OnProductUpdatedEvent(product: product, imageFile: _selectedImage),
+          );
     }
   }
 

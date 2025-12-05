@@ -31,6 +31,13 @@ class UpdateExpirationDateEvent extends InventoryAdditionEvent {
   const UpdateExpirationDateEvent(this.expirationDate);
 }
 
+/// Event to validate the stock to add input.
+class OnValidateStockToAddEvent extends InventoryAdditionEvent {
+  final String stockToAdd;
+
+  const OnValidateStockToAddEvent(this.stockToAdd);
+}
+
 /// Event to submit the inventory addition form.
 class SubmitInventoryAdditionEvent extends InventoryAdditionEvent {
   final String warehouseId;

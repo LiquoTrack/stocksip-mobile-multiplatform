@@ -6,7 +6,7 @@ class InventoryResponse {
   final String productName;
   final String productType;
   final String productBrand;
-  final String unitPrice;
+  final double unitPrice;
   final String currencyCode;
   final int minimumStock;
   final String imageUrl;

@@ -7,7 +7,7 @@ class InventoryResponseDto {
   final String productName;
   final String productType;
   final String productBrand;
-  final String unitPrice;
+  final double unitPrice;
   final String currencyCode;
   final int minimumStock;
   final String imageUrl;
@@ -36,20 +36,20 @@ class InventoryResponseDto {
   /// Creates an instance of [InventoryResponseDto] from a JSON map.
   factory InventoryResponseDto.fromJson(Map<String, dynamic> json) {
     return InventoryResponseDto(
-      id: json['inventoryId'] as String,
-      productId: json['productId'] as String,
-      productName: json['name'] as String,
-      productType: json['type'] as String,
-      productBrand: json['brand'] as String,
-      unitPrice: json['unitPrice'] as String,
-      currencyCode: json['moneyCode'] as String,
-      minimumStock: json['minimumStock'] as int,
-      imageUrl: json['imageUrl'] as String,
-      currentState: json['currentState'] as String,
-      currentStock: json['quantity'] as int,
-      warehouseId: json['warehouseId'] as String,
+      id: json['inventoryId'],
+      productId: json['productId'],
+      productName: json['name'],
+      productType: json['type'],
+      productBrand: json['brand'],
+      unitPrice: (json['unitPrice'] as num).toDouble(),
+      currencyCode: json['moneyCode'],
+      minimumStock: json['minimumStock'],
+      imageUrl: json['imageUrl'],
+      currentState: json['currentState'],
+      currentStock: json['quantity'],
+      warehouseId: json['warehouseId'],
       expirationDate: json['expirationDate'] != null
-          ? DateTime.parse(json['expirationDate'] as String)
+          ? DateTime.parse(json['expirationDate'])
           : null,
     );
   }

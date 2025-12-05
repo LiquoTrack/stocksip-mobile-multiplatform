@@ -13,8 +13,9 @@ class LoadProductAndWarehouseListToTransferEvent extends InventoryTransferEvent 
 /// Event to update the selected product for the inventory item.
 class UpdateSelectedProductToTransferEvent extends InventoryTransferEvent {
   final String? productId;
+  final String? inventoryId;
 
-  const UpdateSelectedProductToTransferEvent(this.productId);
+  const UpdateSelectedProductToTransferEvent(this.productId, this.inventoryId);
 }
 
 /// Event to update the selected warehouse for the inventory transfer.
