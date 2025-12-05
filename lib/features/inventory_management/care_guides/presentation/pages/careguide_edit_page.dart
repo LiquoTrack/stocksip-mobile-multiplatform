@@ -25,13 +25,13 @@ class CareGuideEditPage extends StatelessWidget {
       fontWeight: FontWeight.w600,
     );
 
-    final _formKey = GlobalKey<FormState>();
-    final _titleCtrl = TextEditingController(text: careGuide.title);
-    final _summaryCtrl = TextEditingController(text: careGuide.summary);
-    final _minTempCtrl = TextEditingController(text: careGuide.recommendedMinTemperature.toString());
-    final _maxTempCtrl = TextEditingController(text: careGuide.recommendedMaxTemperature.toString());
-    final _storagePlaceCtrl = TextEditingController();
-    final _generalRecCtrl = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    final titleCtrl = TextEditingController(text: careGuide.title);
+    final summaryCtrl = TextEditingController(text: careGuide.summary);
+    final minTempCtrl = TextEditingController(text: careGuide.recommendedMinTemperature.toString());
+    final maxTempCtrl = TextEditingController(text: careGuide.recommendedMaxTemperature.toString());
+    final storagePlaceCtrl = TextEditingController();
+    final generalRecCtrl = TextEditingController();
 
     return SafeArea(
       child: Container(
@@ -52,7 +52,7 @@ class CareGuideEditPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               child: StatefulBuilder(
                 builder: (context, setState) => Form(
-                  key: _formKey,
+                  key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -88,7 +88,7 @@ class CareGuideEditPage extends StatelessWidget {
                           border: Border.all(color: const Color(0xFFE0D4D4)),
                         ),
                         child: TextFormField(
-                          controller: _titleCtrl,
+                          controller: titleCtrl,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -108,7 +108,7 @@ class CareGuideEditPage extends StatelessWidget {
                           border: Border.all(color: const Color(0xFFE0D4D4)),
                         ),
                         child: TextFormField(
-                          controller: _summaryCtrl,
+                          controller: summaryCtrl,
                           maxLines: 3,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -131,7 +131,7 @@ class CareGuideEditPage extends StatelessWidget {
                                 border: Border.all(color: const Color(0xFFE0D4D4)),
                               ),
                               child: TextFormField(
-                                controller: _minTempCtrl,
+                                controller: minTempCtrl,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
@@ -151,7 +151,7 @@ class CareGuideEditPage extends StatelessWidget {
                                 border: Border.all(color: const Color(0xFFE0D4D4)),
                               ),
                               child: TextFormField(
-                                controller: _maxTempCtrl,
+                                controller: maxTempCtrl,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
@@ -175,7 +175,7 @@ class CareGuideEditPage extends StatelessWidget {
                           border: Border.all(color: const Color(0xFFE0D4D4)),
                         ),
                         child: TextFormField(
-                          controller: _storagePlaceCtrl,
+                          controller: storagePlaceCtrl,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -194,7 +194,7 @@ class CareGuideEditPage extends StatelessWidget {
                           border: Border.all(color: const Color(0xFFE0D4D4)),
                         ),
                         child: TextFormField(
-                          controller: _generalRecCtrl,
+                          controller: generalRecCtrl,
                           maxLines: 3,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -209,7 +209,7 @@ class CareGuideEditPage extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (!(_formKey.currentState?.validate() ?? false)) return;
+                            if (!(formKey.currentState?.validate() ?? false)) return;
                             
                             try {
                               final repository = CareguideRepositoryImpl(
@@ -219,16 +219,16 @@ class CareGuideEditPage extends StatelessWidget {
                               await repository.updateCareGuide(
                                 careGuideId: careGuide.id,
                                 careGuide: careGuide.copyWith(
-                                  title: _titleCtrl.text.trim(),
-                                  summary: _summaryCtrl.text.trim(),
-                                  recommendedMinTemperature: int.tryParse(_minTempCtrl.text.trim()) ?? 0,
-                                  recommendedMaxTemperature: int.tryParse(_maxTempCtrl.text.trim()) ?? 0,
+                                  title: titleCtrl.text.trim(),
+                                  summary: summaryCtrl.text.trim(),
+                                  recommendedMinTemperature: int.tryParse(minTempCtrl.text.trim()) ?? 0,
+                                  recommendedMaxTemperature: int.tryParse(maxTempCtrl.text.trim()) ?? 0,
                                 ),
-                                recommendedPlaceStorage: _storagePlaceCtrl.text.trim().isNotEmpty 
-                                    ? _storagePlaceCtrl.text.trim() 
+                                recommendedPlaceStorage: storagePlaceCtrl.text.trim().isNotEmpty 
+                                    ? storagePlaceCtrl.text.trim() 
                                     : null,
-                                generalRecommendation: _generalRecCtrl.text.trim().isNotEmpty 
-                                    ? _generalRecCtrl.text.trim() 
+                                generalRecommendation: generalRecCtrl.text.trim().isNotEmpty 
+                                    ? generalRecCtrl.text.trim() 
                                     : null,
                               );
 
