@@ -27,8 +27,6 @@ class SupplierOrderCard extends StatelessWidget {
           return const Color(0xFFD1ECF1); // Soft cyan/light blue
         case 'shipped':
           return const Color(0xFFD4EDDA); // Soft green
-        case 'delivering':
-          return const Color(0xFFE2D4F0); // Soft purple
         case 'received':
         case 'completed':
           return const Color(0xFFD4EDDA); // Soft green
@@ -50,8 +48,6 @@ class SupplierOrderCard extends StatelessWidget {
           return const Color(0xFF0C5460); // Dark cyan text
         case 'shipped':
           return const Color(0xFF155724); // Dark green text
-        case 'delivering':
-          return const Color(0xFF5A1A7D); // Dark purple text
         case 'received':
         case 'completed':
           return const Color(0xFF155724); // Dark green text
