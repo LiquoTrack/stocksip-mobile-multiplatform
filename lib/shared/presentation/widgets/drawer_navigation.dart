@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stocksip/core/storage/token_storage.dart'; 
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/auth_bloc.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/auth_event.dart';
@@ -12,6 +13,10 @@ import 'package:stocksip/features/ordering_procurement/catalogs/presentation/pag
 import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
 import 'package:stocksip/features/order_management/salesorder/presentation/pages/supplier_orders_page.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
+// ignore: unused_import
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_state.dart';
+import 'package:stocksip/features/alerts_and_notification/alerts/presentation/pages/alerts_page.dart';
+import 'package:stocksip/features/iam/login/domain/models/auth_status.dart';
 
 class DrawerNavigation extends StatelessWidget {
   const DrawerNavigation({super.key});
@@ -20,18 +25,14 @@ class DrawerNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFF2B000D),
+        color: const Color(0xFF2B000D),
         child: Column(
           children: [
             Container(
               height: 120,
               padding: EdgeInsets.symmetric(
-                horizontal:
-                    MediaQuery.of(context).size.width *
-                    0.04,
-                vertical:
-                    MediaQuery.of(context).size.height *
-                    0.02,
+                horizontal: MediaQuery.of(context).size.width * 0.04,
+                vertical: MediaQuery.of(context).size.height * 0.02,
               ),
               color: const Color(0xFF2B000D),
               alignment: Alignment.centerLeft,
@@ -67,7 +68,6 @@ class DrawerNavigation extends StatelessWidget {
               ),
             ),
 
-
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -75,12 +75,52 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.home,
                     title: 'Home',
-                    onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage())),
+                    onTap: () => Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => const HomePage())),
                   ),
+                  
+                  // --- CORRECCIÓN EN NOTIFICACIONES ---
+                  NavigationTile(
+                    icon: Icons.notifications,
+                    title: 'Notifications',
+                    onTap: () async { // 1. Marcamos como async
+                      Navigator.pop(context);
+                      
+                      final authState = context.read<AuthBloc>().state;
+
+                      if (authState.status == AuthStatus.authenticated) {
+                        // 2. Obtenemos el ID directamente del almacenamiento
+                        final tokenStorage = TokenStorage();
+                        final accountId = await tokenStorage.readAccountId();
+
+                        if (accountId != null && context.mounted) {
+                           Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AlertsPage(
+                                accountId: accountId // 3. Usamos el ID recuperado
+                              ),
+                            ),
+                          );
+                        } else if (context.mounted) {
+                           ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Error: No se encontró el Account ID.'))
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Error: Debes iniciar sesión.'))
+                        );
+                      }
+                    },
+                  ),
+                  // ----------------------------------------
+
                   NavigationTile(
                     icon: Icons.warehouse,
                     title: 'Warehouse',
-                    onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WarehousePage())),
+                    onTap: () => Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => WarehousePage())),
                   ),
                   NavigationTile(
                     icon: Icons.menu_book,
@@ -101,7 +141,8 @@ class DrawerNavigation extends StatelessWidget {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const SupplierOrdersPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const SupplierOrdersPage()),
                       );
                     },
                   ),
@@ -110,12 +151,11 @@ class DrawerNavigation extends StatelessWidget {
                     title: 'Products',
                     onTap: () => Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => StoragePage(
-                        onNavigate: (String route) {
-                        },
-                        onLogout: () {
-                        },
-                      )),
+                      MaterialPageRoute(
+                          builder: (context) => StoragePage(
+                                onNavigate: (String route) {},
+                                onLogout: () {},
+                              )),
                     ),
                   ),
                   NavigationTile(
@@ -123,7 +163,8 @@ class DrawerNavigation extends StatelessWidget {
                     title: 'Catalog',
                     onTap: () => Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const CatalogListPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const CatalogListPage()),
                     ),
                   ),
                   NavigationTile(
@@ -165,7 +206,8 @@ class DrawerNavigation extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (context) => const LoginPage()));
                   context.read<AuthBloc>().add(const LogOut());
                 },
               ),

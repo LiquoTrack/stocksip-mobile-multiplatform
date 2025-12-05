@@ -25,7 +25,9 @@ import 'package:stocksip/features/profile_management/profiles/presentation/bloc/
 import 'package:stocksip/features/ordering_procurement/catalogs/data/repositories/catalog_repository_impl.dart';
 import 'package:stocksip/features/ordering_procurement/catalogs/data/services/remote/catalog_service.dart';
 import 'package:stocksip/features/ordering_procurement/catalogs/presentation/bloc/catalog_bloc.dart';
-
+import 'package:stocksip/features/alerts_and_notification/alerts/data/remote/services/alerts_service.dart';
+import 'package:stocksip/features/alerts_and_notification/alerts/data/repositories/alerts_repository_impl.dart';
+import 'package:stocksip/features/alerts_and_notification/alerts/presentation/blocs/alerts_bloc.dart';
 void main() {
   runApp(const MainApp());
 }
@@ -56,6 +58,10 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => WarehouseBloc(repository: WarehousesRepositoryImpl(service: WarehouseService(client: authHttpClient), tokenStorage: tokenStorage)),),
         BlocProvider(create: (context) => ProfileBloc(repository: ProfileRepositoryImpl(service: ProfileService())),),
         BlocProvider(create: (context) => CatalogBloc(repository: CatalogRepositoryImpl(catalogService: CatalogService())),),
+        BlocProvider(create: (context) => AlertsBloc(repository: AlertsRepositoryImpl(service: AlertsService(client: authHttpClient),
+      ),
+    ),
+  ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

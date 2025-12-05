@@ -9,7 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.5.0
+  http: ^1.5.0    
+  equatable: ^2.0.5
   flutter_bloc: ^9.1.1
   shared_preferences: ^2.5.3
   flutter_secure_storage: ^9.2.4

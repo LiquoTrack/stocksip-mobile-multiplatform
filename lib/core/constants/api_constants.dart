@@ -101,4 +101,9 @@ class ApiConstants {
   static String updateProfile(String profileId) {
     return 'profiles/$profileId';
   }
+
+  static String getAlertsByAccountId(String accountId) {
+    return 'accounts/$accountId/alerts';
+  }
+  
 }
