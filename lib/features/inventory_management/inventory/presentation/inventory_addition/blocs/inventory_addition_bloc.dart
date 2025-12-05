@@ -17,7 +17,7 @@ class InventoryAdditionBloc extends Bloc<InventoryAdditionEvent, InventoryAdditi
 
   /// Constructor for [InventoryAdditionBloc]
   /// Takes [inventoryRepository] and [productRepository] as parameters
-  InventoryAdditionBloc(this.inventoryRepository, this.productRepository) : super(const InventoryAdditionState()) {
+  InventoryAdditionBloc({required this.inventoryRepository, required this.productRepository}) : super(const InventoryAdditionState()) {
     on<LoadProductListEvent>(_loadProductList);
     on<UpdateSelectedProductEvent>(_updateSelectedProduct);
     on<UpdateQuantityEvent>(_updateQuantity);
