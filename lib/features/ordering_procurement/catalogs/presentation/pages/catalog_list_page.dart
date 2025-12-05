@@ -203,13 +203,24 @@ class _CatalogListPageState extends State<CatalogListPage> {
 
   Widget _buildBannerCard(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(16.0),
       ),
-      color: const Color(0xFFB8838E),
+      color: const Color(0xFFD4A5B0),
       child: Container(
-        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0),
+          gradient: LinearGradient(
+            colors: [
+              const Color.fromARGB(255, 167, 99, 115),
+              const Color(0xFFE8B4BE),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        padding: const EdgeInsets.all(20.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -219,14 +230,23 @@ class _CatalogListPageState extends State<CatalogListPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Create Your Own Catalog',
+                    'Showcase Your Collection',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 6.0),
+                  const Text(
+                    'Build and manage curated product catalogs',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 14.0),
                   ElevatedButton(
                     onPressed: () {
                       showModalBottomSheet(
@@ -240,15 +260,16 @@ class _CatalogListPageState extends State<CatalogListPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF5C1F2E),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(24.0),
                       ),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                        vertical: 8.0,
+                        horizontal: 28.0,
+                        vertical: 10.0,
                       ),
+                      elevation: 2,
                     ),
                     child: const Text(
-                      'New Catalog',
+                      '+ New Catalog',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.0,
@@ -259,22 +280,22 @@ class _CatalogListPageState extends State<CatalogListPage> {
                 ],
               ),
             ),
-            const SizedBox(width: 16.0),
+            const SizedBox(width: 12.0),
             ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(14.0),
               child: Container(
-                width: 120.0,
-                height: 120.0,
-                color: const Color(0xFFF4ECEC),
+                width: 160.0,
+                height: 160.0,
+                color: Colors.transparent,
                 child: Image.asset(
-                  'assets/images/stocksip_logo.png',
-                  fit: BoxFit.cover,
+                  'assets/images/image117.png',
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Center(
                       child: Icon(
                         Icons.wine_bar,
-                        size: 48.0,
-                        color: Colors.grey[400],
+                        size: 60.0,
+                        color: Colors.grey[300],
                       ),
                     );
                   },

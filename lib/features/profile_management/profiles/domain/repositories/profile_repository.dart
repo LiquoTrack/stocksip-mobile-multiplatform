@@ -14,6 +14,16 @@ abstract class ProfileRepository {
     required String assignedRole,
   });
 
+  /// Updates profile with optional image upload in a single request
+  Future<Profile> updateProfileWithImage({
+    required String profileId,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+    required String assignedRole,
+    String? imagePath,
+  });
+
   /// Uploads a profile picture for the user
   Future<String> uploadProfilePicture({
     required String profileId,

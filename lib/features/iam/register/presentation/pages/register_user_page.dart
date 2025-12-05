@@ -40,6 +40,7 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             Positioned(
