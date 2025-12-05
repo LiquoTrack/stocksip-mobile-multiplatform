@@ -35,4 +35,10 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/stocksip_logo.png
+    - assets/images/image117.png
+    - assets/images/vino1.png
+    - assets/images/nota1.png
+    - assets/images/perfil1.png
+    - assets/images/guide1.png
+    - assets/images/coheteespacial1.png
     - assets/lottie/stocksip_splash.json
