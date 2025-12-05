@@ -39,8 +39,11 @@ class _LoginPageState extends State<LoginPage> {
                     MaterialPageRoute(
                       builder: (context) => ChoosePlanScreen(
                         onContinue: (selectedPlan) async {
+                          print('>>> [LoginPage] onContinue called with plan: ${selectedPlan.planType}');
                           await tokenStorage.markLoginComplete();
+                          print('>>> [LoginPage] markLoginComplete() called');
                           if (mounted) {
+                            print('>>> [LoginPage] Navigating to /home');
                             Navigator.pushReplacementNamed(context, '/home');
                           }
                         },

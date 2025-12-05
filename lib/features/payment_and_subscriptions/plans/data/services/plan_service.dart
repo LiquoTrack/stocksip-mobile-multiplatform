@@ -14,19 +14,26 @@ class PlanService {
         ApiConstants.baseUrl + ApiConstants.getAllPlans,
       );
 
+      print('>>> [PlanService] GET $uri');
+
       final response = await client.get(
         uri,
         headers: {'Content-Type': 'application/json'},
       );
 
+      print('>>> [PlanService] Status: ${response.statusCode}');
+      print('>>> [PlanService] Response: ${response.body}');
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         final List<dynamic> data = json is List ? json : (json['data'] ?? []);
+        print('>>> [PlanService] Plans count: ${data.length}');
         return data.map((item) => PlanDto.fromJson(item as Map<String, dynamic>)).toList();
       }
 
       throw Exception('Unexpected HTTP Status: ${response.statusCode}');
     } catch (e) {
+      print('>>> [PlanService] Error: $e');
       throw Exception('Fetching plans failed: $e');
     }
   }
