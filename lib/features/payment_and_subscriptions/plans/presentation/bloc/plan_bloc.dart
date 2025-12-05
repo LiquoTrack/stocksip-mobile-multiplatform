@@ -15,18 +15,14 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     GetAllPlansEvent event,
     Emitter<PlanState> emit,
   ) async {
-    print('>>> [PlanBloc] GetAllPlansEvent triggered');
     emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
-      print('>>> [PlanBloc] Fetching plans from repository');
       final plans = await repository.getAllPlans();
-      print('>>> [PlanBloc] Plans fetched: ${plans.length}');
       emit(state.copyWith(
         plans: plans,
         isLoading: false,
       ));
     } catch (e) {
-      print('>>> [PlanBloc] Error: $e');
       emit(state.copyWith(
         isLoading: false,
         errorMessage: e.toString(),
