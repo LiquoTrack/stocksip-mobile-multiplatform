@@ -71,7 +71,7 @@ class _WarehousePageState extends State<WarehousePage> {
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  _buildHeader(state, warehouses.length),
+                  _buildHeader(state),
                   const SizedBox(height: 12),
 
                   if (warehouses.isEmpty)
@@ -239,7 +239,7 @@ class _WarehousePageState extends State<WarehousePage> {
     );
   }
 
-  Widget _buildHeader(WarehouseState state, int current) {
+  Widget _buildHeader(WarehouseState state) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -248,7 +248,7 @@ class _WarehousePageState extends State<WarehousePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Current: $current",
+            "Current: ${state.warehouseWrapper.total}",
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           Text(

@@ -44,7 +44,7 @@ class InventoryTransferBloc
         state.copyWith(
           status: Status.success,
           inventories: inventories,
-          warehouses: warehouses,
+          warehouses: warehouses.warehouses,
         ),
       );
     } catch (e) {

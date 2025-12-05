@@ -114,9 +114,22 @@ class ApiConstants {
     return 'users/reset-password';
   }
 
+  static String accountSubscriptions(String accountId) {
+    return 'accounts/$accountId/subscriptions';
+  }
+
+  static String upgradeSubscription(String accountId, String subscriptionId) {
+    return 'accounts/$accountId/subscriptions/$subscriptionId';
+  }
+
+  static String accountStatus(String accountId) {
+    return 'accounts/$accountId/status';
+  }
+    
   static final String getAllBrands = 'brands';
 
   static final String getAllProductTypes = 'product-types';
+  
   static final String getAllPlans = 'plans';
 
   static String createSubscription(String planId) {
