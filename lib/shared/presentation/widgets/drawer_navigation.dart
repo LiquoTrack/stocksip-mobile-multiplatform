@@ -100,7 +100,7 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.subscriptions,
                     title: 'Subscriptions',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/subscriptions'),
                   ),
                   NavigationTile(
                     icon: Icons.shield,
