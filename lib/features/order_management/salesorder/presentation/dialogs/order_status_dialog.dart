@@ -194,7 +194,7 @@ class _OrderStatusDialogState extends State<OrderStatusDialog> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: DragTarget<String>(
-                      onWillAccept: (data) {
+                      onWillAcceptWithDetails: (data) {
                         setState(() {
                           draggedStatus = status;
                         });
@@ -205,7 +205,7 @@ class _OrderStatusDialogState extends State<OrderStatusDialog> {
                           draggedStatus = null;
                         });
                       },
-                      onAccept: (data) {
+                      onAcceptWithDetails: (data) {
                         setState(() {
                           selectedStatus = status;
                           draggedStatus = null;
