@@ -248,14 +248,31 @@ class _CatalogListPageState extends State<CatalogListPage> {
                   ),
                   const SizedBox(height: 14.0),
                   ElevatedButton(
-                    onPressed: () {
-                      showModalBottomSheet(
+                    onPressed: () async {
+                      final newCatalogId = await showModalBottomSheet<String>(
                         context: context,
                         isScrollControlled: true,
                         builder: (context) => const CatalogCreateEditPage(
                           isEditMode: false,
                         ),
                       );
+                      
+                      // If a new catalog was created, open it in edit mode
+                      if (newCatalogId != null && mounted) {
+                        // Small delay to ensure the modal is fully closed
+                        await Future.delayed(const Duration(milliseconds: 150));
+                        
+                        if (mounted) {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) => CatalogCreateEditPage(
+                              isEditMode: true,
+                              catalogId: newCatalogId,
+                            ),
+                          );
+                        }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF5C1F2E),
