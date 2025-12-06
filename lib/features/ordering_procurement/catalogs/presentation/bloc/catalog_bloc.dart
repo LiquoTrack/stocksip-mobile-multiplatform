@@ -209,6 +209,7 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
         state.copyWith(
           status: Status.success,
           catalogs: updatedCatalogs,
+          selectedCatalog: catalog,
           message: 'Catalog created successfully',
         ),
       );
