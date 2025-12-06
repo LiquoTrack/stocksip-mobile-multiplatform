@@ -102,6 +102,10 @@ class ApiConstants {
     return 'profiles/$profileId';
   }
 
+  static String getAlertsByAccountId(String accountId) {
+    return 'accounts/$accountId/alerts';
+  }
+  
   static String sendRecoveryCode() {
     return 'users/recovery-code';
   }
@@ -129,6 +133,7 @@ class ApiConstants {
   static final String getAllBrands = 'brands';
 
   static final String getAllProductTypes = 'product-types';
+
   static final String getAllPlans = 'plans';
 
   static String createSubscription(String planId) {

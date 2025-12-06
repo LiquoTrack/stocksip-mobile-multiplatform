@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:stocksip/features/alerts_and_notification/alerts/presentation/pages/alerts_page.dart';
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
 import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
 import 'package:stocksip/features/iam/login/presentation/pages/login_page.dart';
@@ -56,6 +57,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/subscriptions',
       builder: (context, state) => const SubscriptionsPage(),
+    ),
+    GoRoute(
+      path: '/alerts', 
+      builder: (context, state) => const AlertsPage(),
     ),
   ],
 );
