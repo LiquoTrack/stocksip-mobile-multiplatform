@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/plan_bloc.dart';
-import '../bloc/plan_event.dart';
-import '../bloc/plan_state.dart';
-import '../widgets/plan_card.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stocksip/core/enums/status.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/widgets/plan_card.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/bloc/plan_bloc.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/bloc/plan_event.dart';
+import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/bloc/plan_state.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/bloc/subscription_event.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/bloc/subscription_state.dart';
+import 'app_web_view_page.dart';
 
 class ChoosePlanScreen extends StatefulWidget {
   final Function(dynamic)? onContinue;
   final VoidCallback? onBack;
 
-  const ChoosePlanScreen({
-    super.key,
-    this.onContinue,
-    this.onBack,
-  });
+  const ChoosePlanScreen({super.key, this.onContinue, this.onBack});
 
   @override
   State<ChoosePlanScreen> createState() => _ChoosePlanScreenState();
@@ -45,56 +47,98 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             ],
           ),
         ),
-        child: BlocBuilder<PlanBloc, PlanState>(
-          builder: (context, state) {
-            return SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 40,
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<SubscriptionBloc, SubscriptionState>(
+              listener: (context, state) {
+                if (state.status == Status.loading) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 20),
-                        // Header
-                        Text(
-                          'Choose Plan',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: Colors.white,
-                            fontSize: 36,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          width: 140,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [
-                                Color(0xFFFF6B35),
-                                Color(0xFFFFA726),
-                              ],
+                  );
+                } else if (state.status == Status.failure) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message ?? "Error creating subscription"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else if (state.status == Status.success) {
+                  Navigator.pop(context);
+                  if (state.subscription?.initPoint != null && state.subscription!.initPoint!.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PaymentWebView(url: state.subscription!.initPoint!),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Subscribed successfully!"),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );                    
+                    widget.onContinue?.call(state.subscription);
+                    context.go('/home');
+                  }
+                }
+              },
+            ),
+          ],
+          child: BlocBuilder<PlanBloc, PlanState>(
+            builder: (context, state) {
+              return SafeArea(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 40,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+                          Text(
+                            'Choose Plan',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1,
                             ),
-                            borderRadius: BorderRadius.circular(2),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 20),
+                          Container(
+                            width: 140,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Color(0xFFFF6B35),
+                                  Color(0xFFFFA726),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildContent(context, state),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Expanded(child: _buildContent(context, state)),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -102,12 +146,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
 
   Widget _buildContent(BuildContext context, PlanState state) {
     if (state.isLoading) {
-      return Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 3,
-          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF6B35)),
-        ),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (state.errorMessage != null) {
@@ -119,10 +158,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             child: Text(
               state.errorMessage ?? 'Unknown error occurred',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
           const SizedBox(height: 24),
@@ -154,7 +190,6 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
       return Center(
         child: Text(
           'No plans available.',
-          textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white.withOpacity(0.7),
             fontSize: 16,
@@ -170,16 +205,14 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
           Expanded(
             child: ListView.separated(
               itemCount: state.plans.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 20),
+              separatorBuilder: (_, __) => const SizedBox(height: 20),
               itemBuilder: (context, index) {
                 final plan = state.plans[index];
                 return PlanCard(
                   plan: plan,
                   isSelected: state.selectedPlan?.id == plan.id,
                   onSelect: () {
-                    context.read<PlanBloc>().add(
-                      SelectPlanEvent(plan: plan),
-                    );
+                    context.read<PlanBloc>().add(SelectPlanEvent(plan: plan));
                   },
                 );
               },
@@ -190,10 +223,11 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             child: ElevatedButton(
               onPressed: state.selectedPlan != null
                   ? () {
-                      print('>>> [ChoosePlanScreen] Continue button pressed');
-                      print('>>> [ChoosePlanScreen] onContinue callback: ${widget.onContinue}');
-                      print('>>> [ChoosePlanScreen] selectedPlan: ${state.selectedPlan?.planType}');
-                      widget.onContinue?.call(state.selectedPlan);
+                      final plan = state.selectedPlan!;
+
+                      context
+                          .read<SubscriptionBloc>()
+                          .add(OnCreateInitialSubscription(plan.id!));
                     }
                   : null,
               style: ElevatedButton.styleFrom(

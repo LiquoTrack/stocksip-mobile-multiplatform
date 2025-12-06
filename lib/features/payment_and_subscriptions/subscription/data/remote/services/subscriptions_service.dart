@@ -71,7 +71,7 @@ class SubscriptionsService {
       final Uri uri = Uri.parse(
         "${ApiConstants.baseUrl}/${ApiConstants.upgradeSubscription(accountId, subscriptionId)}",
       );
-      final response = await client.post(
+      final response = await client.put(
         uri,
         body: jsonEncode(request.toJson()),
         headers: {'Content-Type': 'application/json'},

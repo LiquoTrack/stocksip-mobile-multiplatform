@@ -9,6 +9,7 @@ class AccountSubscription {
   final int maxUsers;
   final int maxProducts;
   final int maxWarehouses;
+  final String? initPoint;
 
   const AccountSubscription({
     required this.subscriptionId,
@@ -20,6 +21,7 @@ class AccountSubscription {
     required this.maxUsers,
     required this.maxProducts,
     required this.maxWarehouses,
+    this.initPoint,
   });
 
   AccountSubscription copyWith({
@@ -32,6 +34,7 @@ class AccountSubscription {
     int? maxUsers,
     int? maxProducts,
     int? maxWarehouses,
+    String? initPoint,
   }) {
     return AccountSubscription(
       subscriptionId: subscriptionId ?? this.subscriptionId,
@@ -43,6 +46,7 @@ class AccountSubscription {
       maxUsers: maxUsers ?? this.maxUsers,
       maxProducts: maxProducts ?? this.maxProducts,
       maxWarehouses: maxWarehouses ?? this.maxWarehouses,
+      initPoint: initPoint ?? this.initPoint,
     );
   }
 }

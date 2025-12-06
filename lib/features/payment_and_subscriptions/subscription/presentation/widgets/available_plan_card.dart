@@ -4,20 +4,17 @@ import 'package:stocksip/features/payment_and_subscriptions/plans/domain/models/
 class AvailablePlanCard extends StatelessWidget {
   final Plan plan;
   final bool isSelected;
-
   const AvailablePlanCard({
     super.key,
     required this.plan,
     this.isSelected = false,
   });
-
   @override
   Widget build(BuildContext context) {
     final borderColor = isSelected ? Colors.orange : Colors.white24;
     final gradient = isSelected
         ? const LinearGradient(colors: [Color(0xFF3D1520), Color(0xFF2B0D15)])
         : const LinearGradient(colors: [Color(0xFF1F0009), Color(0xFF1A0008)]);
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
