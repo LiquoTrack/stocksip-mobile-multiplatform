@@ -75,8 +75,11 @@ class SaleorderService {
 
         if (accountId != null) {
           final filteredOrders = orders.where((order) {
-            final matches = order.supplierId == accountId;
-            print('>>> [SaleorderService] Order ${order.orderCode}: supplierId=${order.supplierId}, accountId=$accountId, matches=$matches');
+            // Show orders where current user is either the buyer or the supplier
+            final isBuyer = order.buyer == accountId;
+            final isSupplier = order.supplierId == accountId;
+            final matches = isBuyer || isSupplier;
+            print('>>> [SaleorderService] Order ${order.orderCode}: buyer=${order.buyer}, supplierId=${order.supplierId}, accountId=$accountId, isBuyer=$isBuyer, isSupplier=$isSupplier, matches=$matches');
             return matches;
           }).toList();
           print('>>> [SaleorderService] Filtered orders count: ${filteredOrders.length} (from ${orders.length})');
