@@ -8,45 +8,41 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final SubscriptionRepository repository;
 
   SubscriptionBloc({required this.repository})
-    : super(const SubscriptionState()) {
+      : super(const SubscriptionState()) {
     on<OnCreateInitialSubscription>(_onCreateInitialSubscription);
     on<GetSubscriptionByAccountId>(_onGetSubscriptionByAccountId);
     on<OnUpgradeSubscription>(_onUpgradeSubscription);
+    on<ClearInitPoint>(_onClearInitPoint);
   }
 
-Future<void> _onCreateInitialSubscription(
-  OnCreateInitialSubscription event,
-  Emitter<SubscriptionState> emit,
-) async {
-  emit(state.copyWith(status: Status.loading));
+  Future<void> _onCreateInitialSubscription(
+    OnCreateInitialSubscription event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      final subscription = await repository.createInitialSubscription(
+        selectPlanId: event.selectedPlanId,
+      );
 
-  try {
-    final subscription = await repository.createInitialSubscription(
-      selectPlanId: event.selectedPlanId,
-    );
-
-    if (subscription.initPoint == null) {
-      emit(state.copyWith(
-        status: Status.success,
-        subscription: subscription,
-        message: "Subscription created successfully (free plan)",
-      ));
-      return;
+      emit(
+        state.copyWith(
+          status: Status.success,
+          subscription: subscription,
+          message: subscription.initPoint != null
+              ? "payment_required"
+              : "subscription_created",
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          message: "Failed to create subscription: $e",
+        ),
+      );
     }
-
-    emit(state.copyWith(
-      status: Status.success,
-      subscription: subscription,
-      message: "Subscription created successfully",
-    ));
-  } catch (e) {
-    emit(state.copyWith(
-      status: Status.failure,
-      message: "Failed to create subscription: ${e.toString()}",
-    ));
   }
-}
-
 
   Future<void> _onGetSubscriptionByAccountId(
     GetSubscriptionByAccountId event,
@@ -54,10 +50,18 @@ Future<void> _onCreateInitialSubscription(
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      final accountSubscription = await repository.fetchSubscriptionByAccountId();
-      emit(state.copyWith(status: Status.success, accountSubscription: accountSubscription));
+      final accountSubscription =
+          await repository.fetchSubscriptionByAccountId();
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          accountSubscription: accountSubscription,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
+      emit(
+        state.copyWith(status: Status.failure, message: e.toString()));
     }
   }
 
@@ -65,20 +69,39 @@ Future<void> _onCreateInitialSubscription(
     OnUpgradeSubscription event,
     Emitter<SubscriptionState> emit,
   ) async {
+
     emit(state.copyWith(status: Status.loading));
+
     try {
       final subscription = await repository.upgradeSubscription(
         event.subscriptionId,
         event.newPlanId,
       );
-      emit(state.copyWith(status: Status.success, subscription: subscription));
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          subscription: subscription,
+          initPoint: subscription.initPoint,
+          message: subscription.initPoint != null
+              ? "payment_required"
+              : "upgrade_success",
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(
           status: Status.failure,
-          message: "Failed to upgrade subscription",
+          message: "Failed to upgrade subscription: $e",
         ),
       );
     }
   }
+
+  Future<void> _onClearInitPoint(
+    ClearInitPoint event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    emit(state.copyWith(subscription: state.subscription?.copyWith(initPoint: null)));
+  }  
 }

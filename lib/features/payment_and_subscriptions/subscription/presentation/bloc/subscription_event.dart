@@ -16,3 +16,7 @@ class OnUpgradeSubscription extends SubscriptionEvent {
   final String newPlanId;
   const OnUpgradeSubscription(this.subscriptionId, this.newPlanId);
 }
+
+class ClearInitPoint extends SubscriptionEvent {
+  const ClearInitPoint();
+}

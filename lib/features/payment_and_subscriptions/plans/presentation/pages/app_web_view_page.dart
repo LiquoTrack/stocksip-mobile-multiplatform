@@ -31,11 +31,13 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             final url = request.url;
 
             if (url.startsWith('stocksip://payment/congrats')) {
+              Navigator.of(context).pop();
               context.go('/payment-success');
               return NavigationDecision.prevent;
             }
 
             if (url.startsWith('stocksip://payment/failure')) {
+              Navigator.of(context).pop();
               context.go('/payment-failure');
               return NavigationDecision.prevent;
             }
