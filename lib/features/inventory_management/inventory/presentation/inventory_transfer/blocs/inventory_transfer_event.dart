@@ -56,6 +56,13 @@ class ExecuteInventoryTransferEvent extends InventoryTransferEvent {
   });
 }
 
+/// Event to validate the stock to transfer input.
+class ValidateStockToTransferEvent extends InventoryTransferEvent {
+  final String stockToTransfer;
+
+  const ValidateStockToTransferEvent(this.stockToTransfer);
+}
+
 /// Event to clear the inventory transfer form.
 class ClearTransferFormEvent extends InventoryTransferEvent {
   const ClearTransferFormEvent();
