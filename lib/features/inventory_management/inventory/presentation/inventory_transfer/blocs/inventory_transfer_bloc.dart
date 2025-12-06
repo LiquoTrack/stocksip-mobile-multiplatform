@@ -25,7 +25,6 @@ class InventoryTransferBloc
     on<UpdateSelectedProductToTransferEvent>(_onUpdateSelectedProduct);
     on<UpdateSelectedWarehouseToTransferEvent>(_onUpdateSelectedWarehouse);
     on<UpdateQuantityToTransferEvent>(_onUpdateQuantityToTransfer);
-    on<UpdateExpirationDateToTransferEvent>(_onUpdateExpirationDate);
     on<ExecuteInventoryTransferEvent>(_onExecuteInventoryTransfer);
     on<ClearTransferFormEvent>(_onClearTransferForm);
   }
@@ -35,7 +34,7 @@ class InventoryTransferBloc
     LoadProductAndWarehouseListToTransferEvent event,
     Emitter<InventoryTransferState> emit,
   ) async {
-    emit(state.copyWith(status: Status.initial));
+    emit(state.copyWith(status: Status.initial, message: 'Loading inventories and warehouses...'));
     try {
       final inventories = await inventoryRepository
           .getAllInventoriesByWarehouseId(warehouseId: event.warehouseId);
@@ -45,7 +44,7 @@ class InventoryTransferBloc
         state.copyWith(
           status: Status.success,
           inventories: inventories,
-          warehouses: warehouses,
+          warehouses: warehouses.warehouses,
         ),
       );
     } catch (e) {
@@ -59,12 +58,39 @@ class InventoryTransferBloc
   ) async {
     emit(state.copyWith(status: Status.initial));
     try {
+
+      if (event.productId == null || event.inventoryId == null) {
+        throw Exception('Product ID and Inventory ID cannot be null');
+      }
+
+      final inventory = await inventoryRepository.getInventoryById(
+        inventoryId: event.inventoryId!,
+      );
+
+      if (inventory.expirationDate == null) {
+        emit(
+          state.copyWith(
+            status: Status.success,
+            selectedProductId: event.productId,
+            selectedInventoryId: event.inventoryId,
+            expirationDate: null,
+            currentQuantity: inventory.currentStock.toString(),
+          ),
+        );
+        return;
+      }
+
       emit(
         state.copyWith(
           status: Status.success,
           selectedProductId: event.productId,
+          selectedInventoryId: event.inventoryId,
+          expirationDate: inventory.expirationDate,
+          currentQuantity: inventory.currentStock.toString(),
         ),
       );
+      return;
+
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
@@ -99,24 +125,6 @@ class InventoryTransferBloc
         state.copyWith(
           status: Status.success,
           quantityToTransfer: event.quantityToTransfer,
-        ),
-      );
-    } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
-    }
-  }
-
-  /// Update the expiration date of the inventory item.
-  FutureOr<void> _onUpdateExpirationDate(
-    UpdateExpirationDateToTransferEvent event,
-    Emitter<InventoryTransferState> emit,
-  ) async {
-    emit(state.copyWith(status: Status.initial));
-    try {
-      emit(
-        state.copyWith(
-          status: Status.success,
-          expirationDate: event.expirationDate,
         ),
       );
     } catch (e) {
@@ -164,6 +172,7 @@ class InventoryTransferBloc
       message: null,
       selectedProductId: '',
       selectedWarehouseId: '',
+      selectedInventoryId: '',
       quantityToTransfer: 0,
       expirationDate: null,
     ));

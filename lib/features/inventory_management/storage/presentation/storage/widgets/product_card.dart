@@ -6,6 +6,8 @@ import 'package:stocksip/features/inventory_management/storage/domain/models/pro
 class ProductCard extends StatelessWidget {
   final ProductResponse product;
   final VoidCallback? onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
   final VoidCallback? onStartSelecting;
   final VoidCallback? onStopSelecting;
 
@@ -15,6 +17,8 @@ class ProductCard extends StatelessWidget {
     this.onTap,
     this.onStartSelecting,
     this.onStopSelecting,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -66,10 +70,10 @@ class ProductCard extends StatelessWidget {
             if (!context.mounted) return;
 
             if (option == "edit") {
-              // abrir formulario
+              if (onEdit != null) onEdit!();
             }
             if (option == "delete") {
-              // eliminar producto
+              if (onDelete != null) onDelete!();
             }
           },
           child: Column(

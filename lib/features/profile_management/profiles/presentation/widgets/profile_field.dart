@@ -22,7 +22,7 @@ class ProfileField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          '$label *',
           style: const TextStyle(
             color: Color(0xFF4A1B2A),
             fontSize: 14.0,
@@ -55,11 +55,20 @@ class ProfileField extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 borderSide: const BorderSide(
-                  color: Color(0xFFD1C4C4),
+                  color: Color(0xFF5C1F2E),
+                  width: 2.0,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                  width: 2.0,
                 ),
               ),
               filled: true,
               fillColor: Colors.white,
+              hintText: 'Required field',
             ),
             style: const TextStyle(
               color: Color(0xFF4A1B2A),

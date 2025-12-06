@@ -35,14 +35,15 @@ class ProductResponseDto {
   /// Creates an instance of [ProductResponseDto] from a JSON map.
   factory ProductResponseDto.fromJson(Map<String, dynamic> json) {
     return ProductResponseDto(
-      id: json['id'] as String? ?? '',
+      id: json['id'] as String? ?? json['productId'] as String? ?? '',
       name: json['name'] as String? ?? '',
       type: json['type'] as String? ?? '',
       brand: json['brand'] as String? ?? '',
       unitPrice: (json['unitPrice'] as num?)?.toDouble() ?? 0.0,
       code: json['code'] as String? ?? '',
       minimumStock: (json['minimumStock'] as num?)?.toInt() ?? 0,
-      totalStockInStore: (json['totalStockInStore'] as num?)?.toInt() ?? 0,
+      // Try to get stock from 'quantity' field (for inventory responses) or 'totalStockInStore' field
+      totalStockInStore: (json['quantity'] as num?)?.toInt() ?? (json['totalStockInStore'] as num?)?.toInt() ?? 0,
       content: (json['content'] as num?)?.toDouble() ?? 0.0,
       imageUrl: json['imageUrl'] as String? ?? '',
       supplierId: json['supplierId'] as String?,

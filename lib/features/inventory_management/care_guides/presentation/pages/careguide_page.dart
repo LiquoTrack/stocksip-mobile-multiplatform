@@ -25,7 +25,7 @@ class CareGuidePage extends StatefulWidget {
 class _CareGuidePageState extends State<CareGuidePage> {
   final _searchCtrl = TextEditingController();
   bool _selectionMode = false;
-  List<String> _selectedIds = [];
+  final List<String> _selectedIds = [];
 
   @override
   void initState() {

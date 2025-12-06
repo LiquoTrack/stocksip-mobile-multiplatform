@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:stocksip/features/order_management/salesorder/domain/models/saleorder.dart';
+import 'package:stocksip/features/order_management/salesorder/presentation/blocs/saleorder_bloc.dart';
+import 'package:stocksip/features/order_management/salesorder/presentation/dialogs/order_status_dialog.dart';
 
 class SupplierOrderCard extends StatelessWidget {
   final Saleorder order;
-  const SupplierOrderCard({super.key, required this.order});
+  final SaleorderBloc bloc;
+  const SupplierOrderCard({super.key, required this.order, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +19,43 @@ class SupplierOrderCard extends StatelessWidget {
 
     Color statusBg(String s) {
       switch (s.toLowerCase()) {
-        case 'received':
-        case 'completed':
-          return const Color(0xFFB7F0C1);
         case 'pending':
         case 'draft':
-          return const Color(0xFFFFE79A);
+        case 'processing':
+          return const Color(0xFFFFF3CD); // Soft yellow
+        case 'confirmed':
+          return const Color(0xFFD1ECF1); // Soft cyan/light blue
+        case 'shipped':
+          return const Color(0xFFD4EDDA); // Soft green
+        case 'received':
+        case 'completed':
+          return const Color(0xFFD4EDDA); // Soft green
+        case 'canceled':
+        case 'cancelled':
+          return const Color(0xFFF8D7DA); // Soft red
         default:
-          return const Color(0xFFE0E0E0);
+          return const Color(0xFFFFF3CD); // Default to soft yellow for unknown statuses
       }
     }
 
     Color statusText(String s) {
       switch (s.toLowerCase()) {
-        case 'received':
-        case 'completed':
-          return const Color(0xFF0D6B33);
         case 'pending':
         case 'draft':
-          return const Color(0xFF2B000D);
+        case 'processing':
+          return const Color(0xFF856404); // Dark yellow/brown text
+        case 'confirmed':
+          return const Color(0xFF0C5460); // Dark cyan text
+        case 'shipped':
+          return const Color(0xFF155724); // Dark green text
+        case 'received':
+        case 'completed':
+          return const Color(0xFF155724); // Dark green text
+        case 'canceled':
+        case 'cancelled':
+          return const Color(0xFF721C24); // Dark red text
         default:
-          return const Color(0xFF444444);
+          return const Color(0xFF856404); // Default dark text for unknown statuses
       }
     }
 
@@ -79,7 +98,16 @@ class SupplierOrderCard extends StatelessWidget {
                     side: const BorderSide(color: Color(0xFFDDDDDD)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => OrderStatusDialog(
+                        orderId: order.id,
+                        currentStatus: order.status,
+                        bloc: bloc,
+                      ),
+                    );
+                  },
                   child: const Text('Change Status'),
                 ),
                 const SizedBox(width: 12),
@@ -100,13 +128,6 @@ class SupplierOrderCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            if (order.buyer.isNotEmpty) ...[
-              Text(
-                'Owner email: ${order.buyer}',
-                style: const TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(height: 4),
-            ],
             Text(
               'Generated at: ${order.receiptDate?.toLocal().toString().split(' ').first ?? '-'}',
               style: const TextStyle(color: Colors.grey),

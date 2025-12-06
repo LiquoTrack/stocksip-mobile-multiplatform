@@ -17,6 +17,12 @@ class UpdateSelectedProductEvent extends InventoryAdditionEvent {
   const UpdateSelectedProductEvent(this.productId);
 }
 
+class UpdateSelectedFromInventoryEvent extends InventoryAdditionEvent {
+  final bool fromInventory;
+
+  const UpdateSelectedFromInventoryEvent(this.fromInventory);
+}
+
 /// Event to update the quantity of the inventory item.
 class UpdateQuantityEvent extends InventoryAdditionEvent {
   final int quantity;
@@ -29,6 +35,13 @@ class UpdateExpirationDateEvent extends InventoryAdditionEvent {
   final DateTime? expirationDate;
 
   const UpdateExpirationDateEvent(this.expirationDate);
+}
+
+/// Event to validate the stock to add input.
+class OnValidateStockToAddEvent extends InventoryAdditionEvent {
+  final String stockToAdd;
+
+  const OnValidateStockToAddEvent(this.stockToAdd);
 }
 
 /// Event to submit the inventory addition form.

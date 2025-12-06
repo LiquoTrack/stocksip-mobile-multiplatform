@@ -6,22 +6,24 @@ import 'package:stocksip/features/inventory_management/storage/domain/models/pro
 /// Includes status, messages, inventories, products,
 class InventoryAdditionState {
   final Status status;
-  final String? message;
+  final String message;
 
   final List<InventoryResponse> inventories;
   final List<ProductResponse> products;
 
   final String selectedProductId;
+  final String selectedInventoryProductId;
   final int quantityToAdd;
   final DateTime? expirationDate;
 
   /// Constructor for [InventoryAdditionState]
   const InventoryAdditionState({
     this.status = Status.initial,
-    this.message,
+    this.message = '',
     this.inventories = const [],
     this.products = const [],
     this.selectedProductId = '',
+    this.selectedInventoryProductId = '',
     this.quantityToAdd = 0,
     this.expirationDate,
   });
@@ -33,6 +35,7 @@ class InventoryAdditionState {
     List<InventoryResponse>? inventories,
     List<ProductResponse>? products,
     String? selectedProductId,
+    String? selectedInventoryProductId,
     int? quantityToAdd,
     DateTime? expirationDate,
   }) {
@@ -44,6 +47,7 @@ class InventoryAdditionState {
       selectedProductId: selectedProductId ?? this.selectedProductId,
       quantityToAdd: quantityToAdd ?? this.quantityToAdd,
       expirationDate: expirationDate ?? this.expirationDate,
+      selectedInventoryProductId: selectedInventoryProductId ?? this.selectedInventoryProductId,
     );
   }
 }
