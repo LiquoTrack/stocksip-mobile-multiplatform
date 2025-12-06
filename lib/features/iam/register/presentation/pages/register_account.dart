@@ -14,23 +14,36 @@ class RegisterAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status,
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         switch (state.status) {
           case Status.success:
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) =>  LoginPage()),
-            );            
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? 'Registration successful'),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+            break;
           case Status.failure:
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message ?? 'Unknown error')),
+              SnackBar(
+                content: Text(state.message ?? 'Unknown error'),
+                backgroundColor: Colors.red,
+              ),
             );
+            break;
           default:
+            break;
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             Positioned(
@@ -68,7 +81,11 @@ class RegisterAccountPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          BlocSelector<RegisterBloc, RegisterState, AccountRole>(
+                          BlocSelector<
+                            RegisterBloc,
+                            RegisterState,
+                            AccountRole
+                          >(
                             selector: (state) => state.accountRole,
                             builder: (context, selectedRole) {
                               return Row(
@@ -76,13 +93,15 @@ class RegisterAccountPage extends StatelessWidget {
                                   Expanded(
                                     child: FilledButton(
                                       style: FilledButton.styleFrom(
-                                        backgroundColor: selectedRole ==
+                                        backgroundColor:
+                                            selectedRole ==
                                                 AccountRole.liquorstoreowner
                                             ? const Color(0xFF914852)
                                             : Colors.transparent,
                                         foregroundColor: Colors.white,
                                         side: BorderSide(
-                                          color: selectedRole ==
+                                          color:
+                                              selectedRole ==
                                                   AccountRole.liquorstoreowner
                                               ? Colors.transparent
                                               : const Color(0xFF914852),
@@ -91,11 +110,11 @@ class RegisterAccountPage extends StatelessWidget {
                                       ),
                                       onPressed: () {
                                         context.read<RegisterBloc>().add(
-                                              OnAccountRoleChanged(
-                                                accountRole:
-                                                    AccountRole.liquorstoreowner,
-                                              ),
-                                            );
+                                          OnAccountRoleChanged(
+                                            accountRole:
+                                                AccountRole.liquorstoreowner,
+                                          ),
+                                        );
                                       },
                                       child: const FittedBox(
                                         fit: BoxFit.scaleDown,
@@ -110,13 +129,14 @@ class RegisterAccountPage extends StatelessWidget {
                                   Expanded(
                                     child: FilledButton(
                                       style: FilledButton.styleFrom(
-                                        backgroundColor: selectedRole ==
-                                                AccountRole.supplier
+                                        backgroundColor:
+                                            selectedRole == AccountRole.supplier
                                             ? const Color(0xFF914852)
                                             : Colors.transparent,
                                         foregroundColor: Colors.white,
                                         side: BorderSide(
-                                          color: selectedRole ==
+                                          color:
+                                              selectedRole ==
                                                   AccountRole.supplier
                                               ? Colors.transparent
                                               : const Color(0xFF914852),
@@ -125,10 +145,10 @@ class RegisterAccountPage extends StatelessWidget {
                                       ),
                                       onPressed: () {
                                         context.read<RegisterBloc>().add(
-                                              OnAccountRoleChanged(
-                                                  accountRole:
-                                                      AccountRole.supplier),
-                                            );
+                                          OnAccountRoleChanged(
+                                            accountRole: AccountRole.supplier,
+                                          ),
+                                        );
                                       },
                                       child: const Text('Supplier'),
                                     ),
@@ -154,9 +174,10 @@ class RegisterAccountPage extends StatelessWidget {
                                   TextField(
                                     onChanged: (value) {
                                       context.read<RegisterBloc>().add(
-                                            OnBusinessNameChanged(
-                                                businessName: value),
-                                          );
+                                        OnBusinessNameChanged(
+                                          businessName: value,
+                                        ),
+                                      );
                                     },
                                     decoration: InputDecoration(
                                       hintText: 'Business Name',
@@ -169,11 +190,13 @@ class RegisterAccountPage extends StatelessWidget {
                                         0.9,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25.0),
+                                        borderRadius: BorderRadius.circular(
+                                          25.0,
+                                        ),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               );
                             },
@@ -194,8 +217,8 @@ class RegisterAccountPage extends StatelessWidget {
                                   onPressed: isFormValid
                                       ? () {
                                           context.read<RegisterBloc>().add(
-                                                Register(),
-                                              );
+                                            Register(),
+                                          );
                                         }
                                       : null,
                                   child: const Text(

@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:stocksip/features/home/presentation/pages/home_page.dart';
-import 'package:stocksip/features/inventorymanagement/careguides/presentation/pages/careguide_page.dart';
-import 'package:stocksip/features/inventorymanagement/storage/presentation/storage/pages/storage_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_bloc.dart';
+import 'package:stocksip/features/iam/login/presentation/blocs/auth_event.dart';
 import 'package:stocksip/shared/presentation/widgets/navigation_item.dart';
 
 class DrawerNavigation extends StatelessWidget {
   const DrawerNavigation({super.key});
 
+  void _navigate(BuildContext context, String route) {
+    Navigator.pop(context);
+    Future.microtask(() {
+      if (context.mounted) {
+        context.go(route);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFF2B000D),
+        color: const Color(0xFF2B000D),
         child: Column(
           children: [
             Container(
               height: 120,
               padding: EdgeInsets.symmetric(
-                horizontal:
-                    MediaQuery.of(context).size.width *
-                    0.04,
-                vertical:
-                    MediaQuery.of(context).size.height *
-                    0.02,
+                horizontal: MediaQuery.of(context).size.width * 0.04,
+                vertical: MediaQuery.of(context).size.height * 0.02,
               ),
               color: const Color(0xFF2B000D),
               alignment: Alignment.centerLeft,
@@ -57,7 +63,6 @@ class DrawerNavigation extends StatelessWidget {
                 ],
               ),
             ),
-
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -65,70 +70,51 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.home,
                     title: 'Home',
-                    onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage())),
+                    onTap: () => _navigate(context, '/home'),
                   ),
                   NavigationTile(
                     icon: Icons.warehouse,
                     title: 'Warehouse',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/warehouse'),
                   ),
                   NavigationTile(
                     icon: Icons.menu_book,
                     title: 'Care Guides',
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CareGuidePage(),
-                        ),
-                      );
-                    },
+                    onTap: () => _navigate(context, '/care-guides'),
                   ),
                   NavigationTile(
                     icon: Icons.shopping_cart,
                     title: 'Orders',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/orders'),
                   ),
                   NavigationTile(
                     icon: Icons.inventory,
                     title: 'Products',
-                    onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => StoragePage(
-                        onNavigate: (String route) {
-                          
-                        },
-                        onLogout: () {
-                          // Handle logout
-                        },
-                      )),
-                    ),
+                    onTap: () => _navigate(context, '/storage'),
                   ),
                   NavigationTile(
                     icon: Icons.local_offer,
                     title: 'Catalog',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/catalog'),
                   ),
                   NavigationTile(
                     icon: Icons.subscriptions,
                     title: 'Subscriptions',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/subscriptions'),
                   ),
                   NavigationTile(
                     icon: Icons.shield,
                     title: 'Admin Panel',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/admin-panel'),
                   ),
                   NavigationTile(
                     icon: Icons.person,
                     title: 'Profile',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/profile'),
                   ),
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: ListTile(
@@ -138,7 +124,9 @@ class DrawerNavigation extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
+                  context.read<AuthBloc>().add(const LogOut());
+                  context.go('/sign-in');
                 },
               ),
             ),
