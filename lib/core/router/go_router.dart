@@ -11,6 +11,7 @@ import 'package:stocksip/features/ordering_procurement/catalogs/presentation/pag
 import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/pages/choose_plan_screen.dart';
 import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/pages/congrast_page.dart';
 import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/pages/failure_page.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/pages/subscriptions_page.dart';
 import 'package:stocksip/features/profile_management/profiles/presentation/pages/profile_page.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -23,7 +24,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/payment-failure',
       builder: (context, state) => const FailurePage(),
-    ),    
+    ),
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/choose-plan',
@@ -51,6 +52,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/care-guides',
       builder: (context, state) => const CareGuidePage(),
+    ),
+    GoRoute(
+      path: '/subscriptions',
+      builder: (context, state) => const SubscriptionsPage(),
     ),
   ],
 );

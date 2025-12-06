@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:stocksip/features/inventory_management/storage/presentation/storage/pages/storage_page.dart';
 import 'package:stocksip/features/inventory_management/care_guides/presentation/pages/careguide_page.dart';
 import 'package:stocksip/features/ordering_procurement/catalogs/presentation/pages/catalog_list_page.dart';
-import 'package:stocksip/features/payment_and_subscriptions/plans/presentation/pages/choose_plan_screen.dart';
 import 'package:stocksip/features/iam/admin_panel/presentation/pages/adminpanel_page.dart';
+import 'package:stocksip/features/payment_and_subscriptions/subscription/presentation/pages/subscriptions_page.dart';
 import 'package:stocksip/shared/presentation/widgets/drawer_navigation.dart';
 
 class HomePage extends StatefulWidget {
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ChoosePlanScreen(),
+                                builder: (context) => const SubscriptionsPage(),
                               ),
                             );
                           },

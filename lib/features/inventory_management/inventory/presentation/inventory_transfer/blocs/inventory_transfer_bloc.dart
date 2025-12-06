@@ -26,6 +26,7 @@ class InventoryTransferBloc
     on<UpdateSelectedWarehouseToTransferEvent>(_onUpdateSelectedWarehouse);
     on<UpdateQuantityToTransferEvent>(_onUpdateQuantityToTransfer);
     on<ExecuteInventoryTransferEvent>(_onExecuteInventoryTransfer);
+    on<ValidateStockToTransferEvent>(_validateStockToTransfer);
     on<ClearTransferFormEvent>(_onClearTransferForm);
   }
 
@@ -34,7 +35,12 @@ class InventoryTransferBloc
     LoadProductAndWarehouseListToTransferEvent event,
     Emitter<InventoryTransferState> emit,
   ) async {
-    emit(state.copyWith(status: Status.initial, message: 'Loading inventories and warehouses...'));
+    emit(
+      state.copyWith(
+        status: Status.initial,
+        message: 'Loading inventories and warehouses...',
+      ),
+    );
     try {
       final inventories = await inventoryRepository
           .getAllInventoriesByWarehouseId(warehouseId: event.warehouseId);
@@ -58,7 +64,6 @@ class InventoryTransferBloc
   ) async {
     emit(state.copyWith(status: Status.initial));
     try {
-
       if (event.productId == null || event.inventoryId == null) {
         throw Exception('Product ID and Inventory ID cannot be null');
       }
@@ -90,7 +95,6 @@ class InventoryTransferBloc
         ),
       );
       return;
-
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
@@ -139,7 +143,6 @@ class InventoryTransferBloc
   ) async {
     emit(state.copyWith(status: Status.initial));
     try {
-      
       final request = InventoryTransferRequest(
         destinationWarehouseId: event.destinationWarehouseId,
         quantityToTransfer: event.quantityToTransfer,
@@ -167,14 +170,49 @@ class InventoryTransferBloc
     ClearTransferFormEvent event,
     Emitter<InventoryTransferState> emit,
   ) async {
-    emit(state.copyWith(
-      status: Status.initial,
-      message: null,
-      selectedProductId: '',
-      selectedWarehouseId: '',
-      selectedInventoryId: '',
-      quantityToTransfer: 0,
-      expirationDate: null,
-    ));
+    emit(
+      state.copyWith(
+        status: Status.initial,
+        message: null,
+        selectedProductId: '',
+        selectedWarehouseId: '',
+        selectedInventoryId: '',
+        quantityToTransfer: 0,
+        expirationDate: null,
+      ),
+    );
+  }
+
+  FutureOr<void> _validateStockToTransfer(
+    event,
+    Emitter<InventoryTransferState> emit,
+  ) {
+    emit(state.copyWith(status: Status.initial));
+    try {
+      final quantity = int.tryParse(event.quantityText);
+      if (quantity == null || quantity <= 0) {
+        throw Exception('Please enter a valid quantity to transfer.');
+      }
+
+      final currentQty = int.tryParse(state.currentQuantity);
+      if (currentQty == null) {
+        throw Exception('Current quantity is invalid.');
+      }
+
+      if (quantity > currentQty) {
+        throw Exception(
+          'Quantity to transfer exceeds current stock of $currentQty.',
+        );
+      }
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          message: 'Quantity to transfer is valid.',
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: Status.failure, message: e.toString()));
+    }
   }
 }

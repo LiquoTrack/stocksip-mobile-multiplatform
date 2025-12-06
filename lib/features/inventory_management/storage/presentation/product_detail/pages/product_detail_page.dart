@@ -102,7 +102,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     const SizedBox(height: 16),
 
                     // Name & Price
-                    // Nombre y precio con sombreado
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
@@ -114,7 +113,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withAlpha(25),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),

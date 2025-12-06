@@ -145,8 +145,9 @@ class _InventoryPageState extends State<InventoryPage> {
           FloatingActionButton(
             heroTag: "btn_add",
             backgroundColor: const Color(0xFF2B000D),
-            onPressed: () =>
-                _openDraggableForm(child: InventoryAdditionPage(warehouseId: widget.warehouseId)),
+            onPressed: () => _openDraggableForm(
+              child: InventoryAdditionPage(warehouseId: widget.warehouseId),
+            ),
             mini: true,
             child: const Icon(Icons.add, color: Colors.white),
           ),
@@ -157,8 +158,9 @@ class _InventoryPageState extends State<InventoryPage> {
           FloatingActionButton(
             heroTag: "btn_subtract",
             backgroundColor: const Color(0xFF2B000D),
-            onPressed: () =>
-                _openDraggableForm(child: const InventorySubtrackPage()),
+            onPressed: () => _openDraggableForm(
+              child: InventorySubtrackPage(warehouseId: widget.warehouseId),
+            ),
             mini: true,
             child: const Icon(Icons.remove, color: Colors.white),
           ),
@@ -170,7 +172,7 @@ class _InventoryPageState extends State<InventoryPage> {
             heroTag: "btn_transfer",
             backgroundColor: const Color(0xFF2B000D),
             onPressed: () =>
-                _openDraggableForm(child: const InventoryTransferPage()),
+                _openDraggableForm(child: InventoryTransferPage(warehouseId: widget.warehouseId)),
             mini: true,
             child: const Icon(Icons.swap_horiz, color: Colors.white),
           ),
@@ -198,8 +200,8 @@ class _InventoryPageState extends State<InventoryPage> {
     );
   }
 
-  void _openDraggableForm({required Widget child}) {
-    showModalBottomSheet(
+  void _openDraggableForm({required Widget child}) async {
+    final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -223,6 +225,12 @@ class _InventoryPageState extends State<InventoryPage> {
         );
       },
     );
+
+    if (result == true) {
+      context.read<InventoryBloc>().add(
+        GetInventoriesByWarehouseIdEvent(widget.warehouseId),
+      );
+    }
   }
 
   void _openInventoryDetail({required InventoryResponse inventory}) {

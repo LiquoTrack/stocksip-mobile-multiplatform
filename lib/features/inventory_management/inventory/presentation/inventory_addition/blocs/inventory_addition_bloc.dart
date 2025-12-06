@@ -23,6 +23,7 @@ class InventoryAdditionBloc
   }) : super(const InventoryAdditionState()) {
     on<LoadProductListEvent>(_loadProductList);
     on<UpdateSelectedProductEvent>(_updateSelectedProduct);
+    on<UpdateSelectedFromInventoryEvent>(_updateSelectedInventory);
     on<UpdateQuantityEvent>(_updateQuantity);
     on<UpdateExpirationDateEvent>(_updateExpirationDate);
     on<OnValidateStockToAddEvent>(_onValidateStockToAdd);
@@ -175,5 +176,8 @@ class InventoryAdditionBloc
         ),
       );
     }
+  }
+
+  FutureOr<void> _updateSelectedInventory(event, Emitter<InventoryAdditionState> emit) {
   }
 }
