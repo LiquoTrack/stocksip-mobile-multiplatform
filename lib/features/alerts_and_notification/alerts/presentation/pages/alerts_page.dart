@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/alerts_and_notification/alerts/presentation/blocs/alerts_bloc.dart';
 import 'package:stocksip/features/alerts_and_notification/alerts/presentation/blocs/alerts_event.dart';
 import 'package:stocksip/features/alerts_and_notification/alerts/presentation/blocs/alerts_state.dart';
 
 class AlertsPage extends StatefulWidget {
-  // Asumimos que pasas el accountId al abrir esta página
-  final String accountId; 
 
-  const AlertsPage({super.key, required this.accountId});
+  const AlertsPage({super.key});
 
   @override
   State<AlertsPage> createState() => _AlertsPageState();
@@ -18,23 +17,22 @@ class _AlertsPageState extends State<AlertsPage> {
   @override
   void initState() {
     super.initState();
-    // Disparar la carga de alertas al iniciar la pantalla
-    context.read<AlertsBloc>().add(LoadAlerts(accountId: widget.accountId));
+    context.read<AlertsBloc>().add(LoadAlerts());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notificaciones')),
+      appBar: AppBar(title: const Text('Alerts & Notifications')),
       body: BlocBuilder<AlertsBloc, AlertsState>(
         builder: (context, state) {
-          if (state is AlertsLoading) {
+          if (state.status == Status.loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is AlertsError) {
+          } else if (state.status == Status.failure) {
             return Center(child: Text('Error: ${state.message}'));
-          } else if (state is AlertsLoaded) {
+          } else if (state.status == Status.success) {
             if (state.alerts.isEmpty) {
-              return const Center(child: Text('No tienes notificaciones.'));
+              return const Center(child: Text('No alerts generated for this account!'));
             }
             return ListView.builder(
               itemCount: state.alerts.length,
@@ -54,7 +52,7 @@ class _AlertsPageState extends State<AlertsPage> {
                         Text(alert.message),
                         const SizedBox(height: 4),
                         Text(
-                          'Tipo: ${alert.type}',
+                          'Type: ${alert.type}',
                           style: const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
@@ -64,7 +62,7 @@ class _AlertsPageState extends State<AlertsPage> {
               },
             );
           }
-          return const Center(child: Text('Cargando notificaciones...'));
+          return const Center(child: Text('Loading notifications...'));
         },
       ),
     );

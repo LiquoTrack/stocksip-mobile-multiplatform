@@ -1,31 +1,28 @@
-import 'package:equatable/equatable.dart';
+import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/features/alerts_and_notification/alerts/domain/models/alert.dart';
 
-abstract class AlertsState extends Equatable {
-  const AlertsState();
-  
-  @override
-  List<Object> get props => [];
-}
-
-class AlertsInitial extends AlertsState {}
-
-class AlertsLoading extends AlertsState {}
-
-class AlertsLoaded extends AlertsState {
+/// Represents the state of alerts in the application.
+class AlertsState {
   final List<Alert> alerts;
 
-  const AlertsLoaded({required this.alerts});
-
-  @override
-  List<Object> get props => [alerts];
-}
-
-class AlertsError extends AlertsState {
   final String message;
+  final Status status;
+  
+  const AlertsState({
+    this.alerts = const [],
+    this.message = '',
+    this.status = Status.initial,
+  });
 
-  const AlertsError({required this.message});
-
-  @override
-  List<Object> get props => [message];
+  AlertsState copyWith({
+    List<Alert>? alerts,
+    String? message,
+    Status? status,
+  }) {
+    return AlertsState(
+      alerts: alerts ?? this.alerts,
+      message: message ?? this.message,
+      status: status ?? this.status,
+    );
+  }
 }

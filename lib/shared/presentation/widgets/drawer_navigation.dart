@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:stocksip/core/storage/token_storage.dart'; 
 import 'package:stocksip/features/home/presentation/pages/home_page.dart';
 import 'package:stocksip/features/iam/login/presentation/blocs/auth_bloc.dart';
@@ -20,6 +21,15 @@ import 'package:stocksip/features/iam/login/domain/models/auth_status.dart';
 
 class DrawerNavigation extends StatelessWidget {
   const DrawerNavigation({super.key});
+
+  void _navigate(BuildContext context, String route) {
+    Navigator.pop(context);
+    Future.microtask(() {
+      if (context.mounted) {
+        context.go(route);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +77,6 @@ class DrawerNavigation extends StatelessWidget {
                 ],
               ),
             ),
-
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -75,128 +84,56 @@ class DrawerNavigation extends StatelessWidget {
                   NavigationTile(
                     icon: Icons.home,
                     title: 'Home',
-                    onTap: () => Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => const HomePage())),
+                    onTap: () => _navigate(context, '/home'),
                   ),
-                  
-                  // --- CORRECCIÓN EN NOTIFICACIONES ---
                   NavigationTile(
                     icon: Icons.notifications,
                     title: 'Notifications',
-                    onTap: () async { // 1. Marcamos como async
-                      Navigator.pop(context);
-                      
-                      final authState = context.read<AuthBloc>().state;
-
-                      if (authState.status == AuthStatus.authenticated) {
-                        // 2. Obtenemos el ID directamente del almacenamiento
-                        final tokenStorage = TokenStorage();
-                        final accountId = await tokenStorage.readAccountId();
-
-                        if (accountId != null && context.mounted) {
-                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AlertsPage(
-                                accountId: accountId // 3. Usamos el ID recuperado
-                              ),
-                            ),
-                          );
-                        } else if (context.mounted) {
-                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Error: No se encontró el Account ID.'))
-                          );
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Error: Debes iniciar sesión.'))
-                        );
-                      }
-                    },
+                    onTap: () => _navigate(context, '/alerts'),
                   ),
-                  // ----------------------------------------
-
                   NavigationTile(
                     icon: Icons.warehouse,
                     title: 'Warehouse',
-                    onTap: () => Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => WarehousePage())),
+                    onTap: () => _navigate(context, '/warehouse'),
                   ),
                   NavigationTile(
                     icon: Icons.menu_book,
                     title: 'Care Guides',
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CareGuidePage(),
-                        ),
-                      );
-                    },
+                    onTap: () => _navigate(context, '/care-guides'),
                   ),
                   NavigationTile(
                     icon: Icons.shopping_cart,
                     title: 'Orders',
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SupplierOrdersPage()),
-                      );
-                    },
+                    onTap: () => _navigate(context, '/orders'),
                   ),
                   NavigationTile(
                     icon: Icons.inventory,
                     title: 'Products',
-                    onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StoragePage(
-                                onNavigate: (String route) {},
-                                onLogout: () {},
-                              )),
-                    ),
+                    onTap: () => _navigate(context, '/storage'),
                   ),
                   NavigationTile(
                     icon: Icons.local_offer,
                     title: 'Catalog',
-                    onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CatalogListPage()),
-                    ),
+                    onTap: () => _navigate(context, '/catalog'),
                   ),
                   NavigationTile(
                     icon: Icons.subscriptions,
                     title: 'Subscriptions',
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => _navigate(context, '/subscriptions'),
                   ),
                   NavigationTile(
                     icon: Icons.shield,
                     title: 'Admin Panel',
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdminPanelPage(),
-                        ),
-                      );
-                    },
+                    onTap: () => _navigate(context, '/admin-panel'),
                   ),
                   NavigationTile(
                     icon: Icons.person,
                     title: 'Profile',
-                    onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ProfilePage()),
-                    ),
+                    onTap: () => _navigate(context, '/profile'),
                   ),
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: ListTile(
@@ -206,9 +143,9 @@ class DrawerNavigation extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                  Navigator.of(context).pop();
                   context.read<AuthBloc>().add(const LogOut());
+                  context.go('/sign-in');
                 },
               ),
             ),
