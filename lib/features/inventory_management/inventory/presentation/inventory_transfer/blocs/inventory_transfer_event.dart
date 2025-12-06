@@ -13,8 +13,9 @@ class LoadProductAndWarehouseListToTransferEvent extends InventoryTransferEvent 
 /// Event to update the selected product for the inventory item.
 class UpdateSelectedProductToTransferEvent extends InventoryTransferEvent {
   final String? productId;
+  final String? inventoryId;
 
-  const UpdateSelectedProductToTransferEvent(this.productId);
+  const UpdateSelectedProductToTransferEvent(this.productId, this.inventoryId);
 }
 
 /// Event to update the selected warehouse for the inventory transfer.
@@ -53,6 +54,13 @@ class ExecuteInventoryTransferEvent extends InventoryTransferEvent {
     required this.quantityToTransfer,
     this.expirationDate,
   });
+}
+
+/// Event to validate the stock to transfer input.
+class ValidateStockToTransferEvent extends InventoryTransferEvent {
+  final String stockToTransfer;
+
+  const ValidateStockToTransferEvent(this.stockToTransfer);
 }
 
 /// Event to clear the inventory transfer form.

@@ -12,6 +12,7 @@ class SaleorderDto {
   final String buyer;
   final DeliveryProposalDto? deliveryProposal;
   final String supplierId;
+  final String? accountId;
 
   const SaleorderDto({
     required this.id,
@@ -25,6 +26,7 @@ class SaleorderDto {
     required this.buyer,
     required this.deliveryProposal,
     required this.supplierId,
+    this.accountId,
   });
 
   factory SaleorderDto.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class SaleorderDto {
               (json['deliveryProposal'] as Map).cast<String, dynamic>())
           : null,
       supplierId: (json['supplierId'] ?? '').toString(),
+      accountId: (json['accountId'])?.toString(),
     );
   }
 

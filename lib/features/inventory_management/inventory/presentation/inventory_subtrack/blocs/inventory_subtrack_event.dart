@@ -12,9 +12,10 @@ class LoadProductListToSubtrackEvent extends InventorySubtrackEvent {
 
 /// Event to update the selected product for the inventory item.
 class UpdateSelectedProductToSubtrackEvent extends InventorySubtrackEvent {
+  final String? inventoryId;
   final String? productId;
 
-  const UpdateSelectedProductToSubtrackEvent(this.productId);
+  const UpdateSelectedProductToSubtrackEvent(this.productId, this.inventoryId);
 }
 
 /// Event to update the quantity to subtract of the inventory item.
@@ -29,6 +30,13 @@ class UpdateExpirationDateToSubtrackEvent extends InventorySubtrackEvent {
   final DateTime? expirationDate;
 
   const UpdateExpirationDateToSubtrackEvent(this.expirationDate);
+}
+
+/// Event to validate the stock to subtrack input.
+class ValidateStockToSubtrackEvent extends InventorySubtrackEvent {
+  final String stockInput;
+
+  const ValidateStockToSubtrackEvent(this.stockInput);
 }
 
 /// Event to submit the inventory subtrack form.

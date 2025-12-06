@@ -1,136 +1,101 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:stocksip/features/inventory_management/storage/domain/models/product_response.dart';
 
-/// A card widget that displays product information including image, name, stock, and price.
-/// It is clickable and triggers the [onClick] callback when tapped.
-/// Parameters:
-/// - [product]: The product data to display.
-/// - [onClick]: The callback function to execute when the card is tapped.
+/// A card widget that displays product information and handles user interactions.
 class ProductCard extends StatelessWidget {
   final ProductResponse product;
-  final VoidCallback onClick;
+  final VoidCallback? onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onStartSelecting;
+  final VoidCallback? onStopSelecting;
 
   const ProductCard({
-    super.key, 
-    required this.product, 
-    required this.onClick
+    super.key,
+    required this.product,
+    this.onTap,
+    this.onStartSelecting,
+    this.onStopSelecting,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onClick,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        color: const Color(0xFFFFFFFF),
-        elevation: 6,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(
-            color: Color(0xFFE0E0E0),
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: SizedBox(
-          width: double.infinity,
-          height: 200,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          onLongPress: () async {
+            if (onStartSelecting != null) onStartSelecting!();
+
+            final option = await showModalBottomSheet<String>(
+              context: context,
+              useSafeArea: true,
+              showDragHandle: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              builder: (sheetContext) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.edit),
+                      title: const Text("Edit product"),
+                      onTap: () => Navigator.pop(sheetContext, "edit"),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.delete, color: Colors.red),
+                      title: const Text(
+                        "Delete product",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      onTap: () => Navigator.pop(sheetContext, "delete"),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              },
+            );
+
+            if (onStopSelecting != null) onStopSelecting!();
+
+            if (!context.mounted) return;
+
+            if (option == "edit") {
+              if (onEdit != null) onEdit!();
+            }
+            if (option == "delete") {
+              if (onDelete != null) onDelete!();
+            }
+          },
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔹 Imagen
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-                child: Image.network(
-                  product.imageUrl,
-                  width: double.infinity,
-                  height: 120,
-                  fit: BoxFit.cover,
-                ),
+              CachedNetworkImage(
+                imageUrl: product.imageUrl,
+                width: double.infinity,
+                height: 120,
+                fit: BoxFit.cover,
               ),
-
-              // Divider
-              const Divider(
-                color: Color(0xFFE0E0E0),
-                height: 1,
-                thickness: 1,
-              ),
-
-              // Product Info
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Product Name
-                    Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      child: Text(
-                        product.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4A1B2A),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    // Total Stock and Price
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Total Stock
-                        Row(
-                          children: [
-                            const Text(
-                              "Stock: ",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF9E9E9E),
-                              ),
-                            ),
-                            Text(
-                              product.totalStockInStore.toString(),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF4A1B2A),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Unit Price
-                        Row(
-                          children: [
-                            const Text(
-                              "Price: ",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF9E9E9E),
-                              ),
-                            ),
-                            Text(
-                              "${product.code} ${product.unitPrice}",
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF4A1B2A),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    Text(product.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text("${product.totalStockInStore} units in stock"),
+                    Text("${product.content} ml"),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

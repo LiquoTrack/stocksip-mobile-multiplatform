@@ -5,13 +5,14 @@ import 'package:stocksip/features/inventory_management/inventory/domain/models/i
 /// Includes status, messages, inventories,
 class InventorySubtrackState {
   final Status status;
-  final String? message;
+  final String message;
 
   final List<InventoryResponse> inventories;
 
   final String currentQuantity;
 
   final String selectedProductId;
+  final String selectedInventoryId;
   final int quantityToSubtract;
   final DateTime? expirationDate;
   final String exitReason;
@@ -19,10 +20,11 @@ class InventorySubtrackState {
   /// Constructor for [InventorySubtrackState]
   const InventorySubtrackState({
     this.status = Status.initial,
-    this.message,
+    this.message = '',
     this.inventories = const [],
     this.currentQuantity = '',
     this.selectedProductId = '',
+    this.selectedInventoryId = '',
     this.quantityToSubtract = 0,
     this.expirationDate,
     this.exitReason = '',
@@ -35,6 +37,7 @@ class InventorySubtrackState {
     List<InventoryResponse>? inventories,
     String? currentQuantity,
     String? selectedProductId,
+    String? selectedInventoryId,
     int? quantityToSubtract,
     DateTime? expirationDate,
     String? exitReason,
@@ -45,6 +48,7 @@ class InventorySubtrackState {
       inventories: inventories ?? this.inventories,
       currentQuantity: currentQuantity ?? this.currentQuantity,
       selectedProductId: selectedProductId ?? this.selectedProductId,
+      selectedInventoryId: selectedInventoryId ?? this.selectedInventoryId,
       quantityToSubtract: quantityToSubtract ?? this.quantityToSubtract,
       expirationDate: expirationDate ?? this.expirationDate,
       exitReason: exitReason ?? this.exitReason,

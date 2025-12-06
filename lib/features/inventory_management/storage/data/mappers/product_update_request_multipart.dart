@@ -8,9 +8,8 @@ extension ProductUpdateRequestMultipart on ProductUpdateRequestDto {
 
     request.fields['name'] = name;
     request.fields['unitPrice'] = unitPrice.toString();
-    request.fields['moneyCode'] = code;
+    request.fields['code'] = code;
     request.fields['minimumStock'] = minimumStock.toString();
-    request.fields['content'] = content.toString();
 
     if (imageFile != null) {
       request.files.add(

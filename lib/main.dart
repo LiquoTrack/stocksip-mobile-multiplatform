@@ -63,7 +63,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     MaterialTheme theme = MaterialTheme(TextTheme());
 
     final authHttpClient = AuthHttpClient();
@@ -219,11 +218,11 @@ class MainApp extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
         darkTheme: theme.dark(),
-        home: const SplashPage()
+        routerConfig: appRouter,
       ),
     );
   }

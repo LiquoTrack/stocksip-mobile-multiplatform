@@ -94,16 +94,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     Register event,
     Emitter<RegisterState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: Status.loading, message: null));
     try {
-      await repository.signUp(
+      final result = await repository.signUp(
         state.username,
         state.email,
         state.password,
         state.accountRole.toApi(),
-        state.businessName
+        state.businessName,
       );
-      emit(state.copyWith(status: Status.success));
+
+      emit(state.copyWith(status: Status.success, message: result.data));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }

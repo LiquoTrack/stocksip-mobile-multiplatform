@@ -133,7 +133,7 @@ class ApiConstants {
   static final String getAllBrands = 'brands';
 
   static final String getAllProductTypes = 'product-types';
-  
+
   static final String getAllPlans = 'plans';
 
   static String createSubscription(String planId) {

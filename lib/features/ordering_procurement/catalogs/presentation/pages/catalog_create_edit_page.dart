@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stocksip/core/enums/status.dart';
 import 'package:stocksip/core/storage/token_storage.dart';
@@ -36,6 +37,7 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
   String? _selectedWarehouseId;
   final Map<String, int> _selectedItems = {};
   bool _isButtonEnabled = false;
+  bool _hasNavigatedAfterCreate = false;
 
   @override
   void initState() {
@@ -109,6 +111,7 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
     }
 
     if (widget.isEditMode && widget.catalogId != null) {
+      // EDIT MODE: Update and add items
       context.read<CatalogBloc>().add(
             UpdateCatalog(
               catalogId: widget.catalogId!,
@@ -128,7 +131,11 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
       }
 
       _addSelectedItems(widget.catalogId!);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } else {
+      // CREATE MODE: Only create catalog, then navigate to edit
       final tokenStorage = TokenStorage();
       final accountId = await tokenStorage.readAccountId();
 
@@ -141,23 +148,12 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                 contactEmail: email,
               ),
             );
-
-        Future.delayed(const Duration(milliseconds: 500), () {
-          final catalogId = context.read<CatalogBloc>().state.selectedCatalog?.id;
-          if (catalogId != null) {
-            _addSelectedItems(catalogId);
-          }
-        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error: Account ID not found')),
         );
         return;
       }
-    }
-
-    if (mounted) {
-      Navigator.pop(context);
     }
   }
 
@@ -182,7 +178,21 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
   Widget build(BuildContext context) {
     return BlocListener<CatalogBloc, CatalogState>(
       listener: (context, state) {
-        if (state.message != null) {
+        // Handle success message for catalog creation
+        if (!widget.isEditMode && 
+            !_hasNavigatedAfterCreate &&
+            state.status == Status.success && 
+            state.selectedCatalog != null &&
+            state.message != null &&
+            state.message!.contains('created successfully')) {
+          // Mark that we're navigating to prevent duplicate calls
+          _hasNavigatedAfterCreate = true;
+          
+          // Close the modal and return the catalog ID
+          if (mounted) {
+            Navigator.pop(context, state.selectedCatalog!.id);
+          }
+        } else if (state.message != null && !state.message!.contains('created successfully')) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message!)),
           );
@@ -312,16 +322,20 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                     ],
                   ),
                 ),
-              Text(
-                'Select Warehouse',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
-              ),
-              const SizedBox(height: 8),
-              BlocBuilder<WarehouseBloc, WarehouseState>(
+              if (widget.isEditMode)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Select Warehouse',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    BlocBuilder<WarehouseBloc, WarehouseState>(
                 builder: (context, warehouseState) {
                   final warehouses = warehouseState.warehouseWrapper.warehouses;
 
@@ -455,292 +469,407 @@ class _CatalogCreateEditPageState extends State<CatalogCreateEditPage> {
                   );
                 },
               ),
+                  ],
+                ),
               const SizedBox(height: 20),
-              Text(
-                'Add Items (Optional)',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                onChanged: (value) {
-                  setState(() => _searchQuery = value);
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search products',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              if (_selectedWarehouseId == null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.warehouse_outlined,
-                          size: 48,
-                          color: Colors.grey[400],
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          'Select a warehouse first',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 4.0),
-                        Text(
-                          'Choose a warehouse to see available products',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+              if (widget.isEditMode)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Add Items (Optional)',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[700],
+                      ),
                     ),
-                  ),
-                )
-              else
-                BlocBuilder<StorageBloc, StorageState>(
-                  builder: (context, storageState) {
-                    if (storageState.status == Status.loading) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 24.0),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.grey[400]!,
-                            ),
-                          ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      onChanged: (value) {
+                        setState(() => _searchQuery = value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Search products',
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
                         ),
-                      );
-                    }
-
-                    if (storageState.status == Status.failure) {
-                      return Padding(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 12.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    if (_selectedWarehouseId == null)
+                      Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24.0),
                         child: Center(
                           child: Column(
                             children: [
                               Icon(
-                                Icons.error_outline,
+                                Icons.warehouse_outlined,
                                 size: 48,
                                 color: Colors.grey[400],
                               ),
                               const SizedBox(height: 8.0),
                               Text(
-                                'Error loading products',
-                                style:
-                                    Theme.of(context).textTheme.bodyMedium,
+                                'Select a warehouse first',
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(height: 4.0),
                               Text(
-                                storageState.message ?? 'Unknown error',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Colors.red,
+                                'Choose a warehouse to see available products',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.grey[600],
                                     ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ),
-                      );
-                    }
-
-                    final filteredProducts = storageState.products.products
-                        .where((product) => product.name
-                            .toLowerCase()
-                            .contains(_searchQuery.toLowerCase()))
-                        .toList();
-
-                    if (filteredProducts.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 24.0),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.shopping_bag_outlined,
-                                size: 48,
-                                color: Colors.grey[400],
+                      )
+                    else
+                      BlocBuilder<StorageBloc, StorageState>(
+                        builder: (context, storageState) {
+                          if (storageState.status == Status.loading) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24.0),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.grey[400]!,
+                                  ),
+                                ),
                               ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                _searchQuery.isEmpty
-                                    ? 'No products available'
-                                    : 'No products found',
-                                style:
-                                    Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
+                            );
+                          }
 
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: filteredProducts.length,
-                      itemBuilder: (context, index) {
-                        final product = filteredProducts[index];
-                        final isSelected =
-                            _selectedItems.containsKey(product.id);
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color(0xFFE8B4BE).withOpacity(0.1)
-                                  : Colors.white,
-                              border: Border.all(
-                                color: Colors.grey[300]!,
-                                width: 1,
+                          if (storageState.status == Status.failure) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24.0),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      size: 48,
+                                      color: Colors.grey[400],
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      'Error loading products',
+                                      style:
+                                          Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    Text(
+                                      storageState.message.isNotEmpty ? storageState.message : 'Unknown error',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Colors.red,
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
+                            );
+                          }
+
+                          final filteredProducts = storageState.products.products
+                              .where((product) => product.name
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase()))
+                              .toList();
+
+                          if (filteredProducts.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24.0),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.shopping_bag_outlined,
+                                      size: 48,
+                                      color: Colors.grey[400],
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      _searchQuery.isEmpty
+                                          ? 'No products available'
+                                          : 'No products found',
+                                      style:
+                                          Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: filteredProducts.length,
+                            itemBuilder: (context, index) {
+                              final product = filteredProducts[index];
+                              final isSelected =
+                                  _selectedItems.containsKey(product.id);
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? const Color(0xFFE8B4BE).withOpacity(0.1)
+                                        : Colors.white,
+                                    border: Border.all(
+                                      color: Colors.grey[300]!,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Column(
                                     children: [
-                                      Checkbox(
-                                        value: isSelected,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            if (value == true) {
-                                              _selectedItems[product.id] = 1;
-                                            } else {
-                                              _selectedItems
-                                                  .remove(product.id);
-                                            }
-                                          });
-                                        },
-                                        activeColor: const Color(0xFF5C1F2E),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                      Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Row(
                                           children: [
-                                            Text(
-                                              product.name,
-                                              style: const TextStyle(
-                                                color: Color(0xFF8B4C5C),
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                            Checkbox(
+                                              value: isSelected,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  if (value == true) {
+                                                    _selectedItems[product.id] = 1;
+                                                  } else {
+                                                    _selectedItems
+                                                        .remove(product.id);
+                                                  }
+                                                });
+                                              },
+                                              activeColor: const Color(0xFF5C1F2E),
                                             ),
-                                            const SizedBox(height: 4.0),
-                                            Text(
-                                              '\$${product.unitPrice.toStringAsFixed(2)}',
-                                              style: const TextStyle(
-                                                color: Color(0xFF8B4C5C),
-                                                fontSize: 12.0,
-                                                fontWeight: FontWeight.bold,
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    product.name,
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF8B4C5C),
+                                                      fontSize: 14.0,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  const SizedBox(height: 4.0),
+                                                  Text(
+                                                    '\$${product.unitPrice.toStringAsFixed(2)}',
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF8B4C5C),
+                                                      fontSize: 12.0,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                if (isSelected)
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        12.0, 0, 12.0, 12.0),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 40.0),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                      if (isSelected)
+                                        Container(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              12.0, 0, 12.0, 12.0),
+                                          child: Row(
                                             children: [
-                                              Text(
-                                                'Available: ${product.totalStockInStore}',
-                                                style: const TextStyle(
-                                                  color: Color(0xFFE8B4BE),
-                                                  fontSize: 11.0,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4.0),
-                                              TextField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  hintText:
-                                                      'Enter quantity',
-                                                  filled: true,
-                                                  fillColor: Colors.white,
-                                                  border:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6.0),
-                                                    borderSide: BorderSide
-                                                        .none,
-                                                  ),
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 8.0,
-                                                  ),
-                                                ),
-                                                onChanged: (value) {
-                                                  final stock =
-                                                      int.tryParse(value) ?? 1;
-                                                  setState(() {
-                                                    _selectedItems[
-                                                        product.id] = stock;
-                                                  });
-                                                },
-                                                controller:
-                                                    TextEditingController(
-                                                  text: _selectedItems[
-                                                          product.id]
-                                                      .toString(),
+                                              const SizedBox(width: 40.0),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Available: ${product.totalStockInStore}',
+                                                      style: const TextStyle(
+                                                        color: Color(0xFFE8B4BE),
+                                                        fontSize: 11.0,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8.0),
+                                                    Row(
+                                                      children: [
+                                                        // Decrease Button
+                                                        SizedBox(
+                                                          width: 40,
+                                                          child: IconButton(
+                                                            icon: const Icon(
+                                                              Icons.remove,
+                                                              size: 18,
+                                                            ),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                final current =
+                                                                    _selectedItems[
+                                                                        product
+                                                                            .id] ??
+                                                                        1;
+                                                                if (current > 1) {
+                                                                  _selectedItems[
+                                                                      product
+                                                                          .id] =
+                                                                      current - 1;
+                                                                }
+                                                              });
+                                                            },
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            constraints:
+                                                                const BoxConstraints(),
+                                                          ),
+                                                        ),
+                                                        // Text Input Field
+                                                        Expanded(
+                                                          child: TextField(
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            inputFormatters: [
+                                                              FilteringTextInputFormatter
+                                                                  .digitsOnly,
+                                                            ],
+                                                            controller:
+                                                                TextEditingController(
+                                                              text: (_selectedItems[
+                                                                      product
+                                                                          .id] ??
+                                                                  1)
+                                                                  .toString(),
+                                                            ),
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                if (value
+                                                                    .isEmpty) {
+                                                                  _selectedItems[
+                                                                      product
+                                                                          .id] =
+                                                                      1;
+                                                                } else {
+                                                                  final quantity =
+                                                                      int.tryParse(
+                                                                              value) ??
+                                                                          1;
+                                                                  if (quantity >
+                                                                          0 &&
+                                                                      quantity <=
+                                                                          product
+                                                                              .totalStockInStore) {
+                                                                    _selectedItems[
+                                                                        product
+                                                                            .id] =
+                                                                        quantity;
+                                                                  } else if (quantity >
+                                                                      product
+                                                                          .totalStockInStore) {
+                                                                    _selectedItems[
+                                                                        product
+                                                                            .id] =
+                                                                        product
+                                                                            .totalStockInStore;
+                                                                  }
+                                                                }
+                                                              });
+                                                            },
+                                                            textAlign:
+                                                                TextAlign.center,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText: '1',
+                                                              filled: true,
+                                                              fillColor:
+                                                                  Colors.white,
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: Colors
+                                                                      .grey[300]!,
+                                                                ),
+                                                              ),
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                horizontal: 8.0,
+                                                                vertical: 8.0,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        // Increase Button
+                                                        SizedBox(
+                                                          width: 40,
+                                                          child: IconButton(
+                                                            icon: const Icon(
+                                                              Icons.add,
+                                                              size: 18,
+                                                            ),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                final current =
+                                                                    _selectedItems[
+                                                                        product
+                                                                            .id] ??
+                                                                        1;
+                                                                if (current <
+                                                                    product
+                                                                        .totalStockInStore) {
+                                                                  _selectedItems[
+                                                                      product
+                                                                          .id] =
+                                                                      current + 1;
+                                                                }
+                                                              });
+                                                            },
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            constraints:
+                                                                const BoxConstraints(),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                    ],
                                   ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                  ],
                 ),
               const SizedBox(height: 28),
               BlocBuilder<CatalogBloc, CatalogState>(

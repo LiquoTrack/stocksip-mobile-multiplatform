@@ -39,4 +39,23 @@ class ProfileRepositoryImpl implements ProfileRepository {
       imagePath: imagePath,
     );
   }
+
+  @override
+  Future<Profile> updateProfileWithImage({
+    required String profileId,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+    required String assignedRole,
+    String? imagePath,
+  }) async {
+    return await _service.updateProfileWithImage(
+      profileId: profileId,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      assignedRole: assignedRole,
+      imagePath: imagePath,
+    );
+  }
 }

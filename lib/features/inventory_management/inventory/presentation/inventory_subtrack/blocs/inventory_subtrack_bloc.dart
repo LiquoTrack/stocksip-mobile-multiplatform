@@ -9,33 +9,33 @@ import 'package:stocksip/features/inventory_management/inventory/presentation/in
 
 /// Bloc class for managing inventory subtraction
 /// Handles events and updates state accordingly
-class InventorySubtrackBloc extends Bloc<InventorySubtrackEvent, InventorySubtrackState> {
-  
+class InventorySubtrackBloc
+    extends Bloc<InventorySubtrackEvent, InventorySubtrackState> {
   final InventoryRepository inventoryRepository;
 
   /// Constructor for [InventorySubtrackBloc]
   /// Takes [inventoryRepository] as a parameter
-  InventorySubtrackBloc({required this.inventoryRepository}) : super(const InventorySubtrackState()) {
+  InventorySubtrackBloc({required this.inventoryRepository})
+    : super(const InventorySubtrackState()) {
     on<LoadProductListToSubtrackEvent>(_loadProductsListToSubtrack);
     on<UpdateSelectedProductToSubtrackEvent>(_updateSelectedProductToSubtrack);
     on<UpdateQuantityToSubtrackEvent>(_updateQuantityToSubtrack);
-    on<UpdateExpirationDateToSubtrackEvent>(_updateExpirationDateToSubtrack);
+    on<ValidateStockToSubtrackEvent>(_validateStockToSubtrack);
     on<SubmitInventorySubtrackEvent>(_submitInventorySubtrackForm);
     on<ClearSubtrackFormEvent>(_clearSubtrackForm);
   }
 
   /// Loads the list of products and inventories for the given warehouse
   FutureOr<void> _loadProductsListToSubtrack(
-    LoadProductListToSubtrackEvent event, 
-    Emitter<InventorySubtrackState> emit
+    LoadProductListToSubtrackEvent event,
+    Emitter<InventorySubtrackState> emit,
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-
-      final inventories = await inventoryRepository.getAllInventoriesByWarehouseId(warehouseId: event.warehouseId);
+      final inventories = await inventoryRepository
+          .getAllInventoriesByWarehouseId(warehouseId: event.warehouseId);
 
       emit(state.copyWith(status: Status.success, inventories: inventories));
-
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
@@ -43,14 +43,40 @@ class InventorySubtrackBloc extends Bloc<InventorySubtrackEvent, InventorySubtra
 
   /// Updates the selected product to subtract
   FutureOr<void> _updateSelectedProductToSubtrack(
-    UpdateSelectedProductToSubtrackEvent event, 
-    Emitter<InventorySubtrackState> emit
+    UpdateSelectedProductToSubtrackEvent event,
+    Emitter<InventorySubtrackState> emit,
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
+      if (event.inventoryId == null) {
+        throw Exception('Inventory ID is required to update selected product');
+      }
 
-      emit(state.copyWith(status: Status.success, selectedProductId: event.productId));
+      final inventory = await inventoryRepository.getInventoryById(
+        inventoryId: event.inventoryId!,
+      );
 
+      if (inventory.expirationDate == null) {
+        emit(
+          state.copyWith(
+            status: Status.success,
+            selectedProductId: event.productId,
+            expirationDate: null,
+            selectedInventoryId: event.inventoryId,
+          ),
+        );
+        return;
+      }
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          selectedProductId: event.productId,
+          expirationDate: inventory.expirationDate,
+          selectedInventoryId: event.inventoryId,
+        ),
+      );
+      return;
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
@@ -58,29 +84,17 @@ class InventorySubtrackBloc extends Bloc<InventorySubtrackEvent, InventorySubtra
 
   /// Updates the quantity to subtract
   FutureOr<void> _updateQuantityToSubtrack(
-    UpdateQuantityToSubtrackEvent event, 
-    Emitter<InventorySubtrackState> emit
+    UpdateQuantityToSubtrackEvent event,
+    Emitter<InventorySubtrackState> emit,
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-
-      emit(state.copyWith(status: Status.success, quantityToSubtract: event.quantityToSubtrack));
-
-    } catch (e) {
-      emit(state.copyWith(status: Status.failure, message: e.toString()));
-    }
-  }
-
-  /// Updates the expiration date to subtract
-  FutureOr<void> _updateExpirationDateToSubtrack(
-    UpdateExpirationDateToSubtrackEvent event, 
-    Emitter<InventorySubtrackState> emit
-  ) async {
-    emit(state.copyWith(status: Status.loading));
-    try {
-
-      emit(state.copyWith(status: Status.success, expirationDate: event.expirationDate));
-
+      emit(
+        state.copyWith(
+          status: Status.success,
+          quantityToSubtract: event.quantityToSubtrack,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
@@ -88,26 +102,24 @@ class InventorySubtrackBloc extends Bloc<InventorySubtrackEvent, InventorySubtra
 
   /// Submits the inventory subtrack form
   FutureOr<void> _submitInventorySubtrackForm(
-    SubmitInventorySubtrackEvent event, 
-    Emitter<InventorySubtrackState> emit
+    SubmitInventorySubtrackEvent event,
+    Emitter<InventorySubtrackState> emit,
   ) async {
     emit(state.copyWith(status: Status.loading));
     try {
-
       final request = InventorySubtrackRequest(
-        quantityToSubtrack: event.quantityToSubtrack, 
+        quantityToSubtrack: event.quantityToSubtrack,
         subtrackReason: event.exitReason,
-        expirationDate: event.expirationDate
+        expirationDate: event.expirationDate,
       );
 
       await inventoryRepository.subtractProductsFromWarehouseInventory(
         warehouseId: event.warehouseId,
         productId: state.selectedProductId,
-        request: request
+        request: request,
       );
 
       emit(state.copyWith(status: Status.success));
-
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
@@ -115,15 +127,40 @@ class InventorySubtrackBloc extends Bloc<InventorySubtrackEvent, InventorySubtra
 
   /// Clears the subtrack form state
   FutureOr<void> _clearSubtrackForm(
-    ClearSubtrackFormEvent event, 
-    Emitter<InventorySubtrackState> emit
+    ClearSubtrackFormEvent event,
+    Emitter<InventorySubtrackState> emit,
   ) async {
+    emit(
+      state.copyWith(
+        status: Status.initial,
+        selectedProductId: null,
 
-    emit(state.copyWith(
-      status: Status.initial,
-      selectedProductId: null,
-      quantityToSubtract: 0,
-      expirationDate: null
-    ));
+        quantityToSubtract: 0,
+        expirationDate: null,
+      ),
+    );
+  }
+
+  /// Validates the stock to subtrack input
+  FutureOr<void> _validateStockToSubtrack(
+    ValidateStockToSubtrackEvent event,
+    Emitter<InventorySubtrackState> emit,
+  ) {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      final quantity = int.tryParse(event.stockInput);
+      if (quantity == null || quantity <= 0) {
+        throw Exception('Please enter a valid quantity to subtract');
+      }
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          quantityToSubtract: quantity,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: Status.failure, message: e.toString()));
+    }
   }
 }

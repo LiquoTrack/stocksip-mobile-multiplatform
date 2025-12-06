@@ -16,7 +16,6 @@ class ProductUpdateMapper {
       unitPrice: product.unitPrice,
       code: product.code,
       minimumStock: product.minimumStock,
-      content: product.content,
       imageFile: imageFile,
     );
   }

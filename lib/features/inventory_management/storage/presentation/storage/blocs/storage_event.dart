@@ -87,6 +87,18 @@ class GetAllProductsEvent extends StorageEvent {
   const GetAllProductsEvent();
 }
 
+/// Event to fetch all brand names available in the storage system.
+class GetAllBrandNamesEvent extends StorageEvent {
+
+  const GetAllBrandNamesEvent();
+}
+
+/// Event to fetch all product type names available in the storage system.
+class GetAllProductTypeNamesEvent extends StorageEvent {
+
+  const GetAllProductTypeNamesEvent();
+}
+
 /// Event to fetch products by a specific warehouse ID.
 /// Used to load products from a warehouse's inventory.
 class GetProductsByWarehouseIdEvent extends StorageEvent {
