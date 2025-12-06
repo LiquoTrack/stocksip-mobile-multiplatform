@@ -172,7 +172,7 @@ class _InventoryPageState extends State<InventoryPage> {
             heroTag: "btn_transfer",
             backgroundColor: const Color(0xFF2B000D),
             onPressed: () =>
-                _openDraggableForm(child: const InventoryTransferPage()),
+                _openDraggableForm(child: InventoryTransferPage(warehouseId: widget.warehouseId)),
             mini: true,
             child: const Icon(Icons.swap_horiz, color: Colors.white),
           ),

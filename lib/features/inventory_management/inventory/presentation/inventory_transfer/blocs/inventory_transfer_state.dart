@@ -6,7 +6,7 @@ import 'package:stocksip/features/inventory_management/warehouses/domain/models/
 /// Includes status, messages, warehouses, inventories, current quantity, selected product, quantity to transfer, and expiration date
 class InventoryTransferState {
   final Status status;
-  final String? message;
+  final String message;
 
   final List<Warehouse> warehouses;
   final List<InventoryResponse> inventories;
@@ -22,7 +22,7 @@ class InventoryTransferState {
   /// Constructor for [InventoryTransferState]
   const InventoryTransferState({
     this.status = Status.initial,
-    this.message,
+    this.message = '',
     this.warehouses = const [],
     this.inventories = const [],
     this.currentQuantity = '',
