@@ -9,7 +9,7 @@ import 'package:stocksip/features/iam/admin_panel/domain/repositories/adminpanel
 import 'package:stocksip/features/iam/admin_panel/presentation/blocs/adminpanel_bloc.dart';
 import 'package:stocksip/features/iam/admin_panel/presentation/blocs/adminpanel_event.dart';
 
-class NewUserPage extends StatelessWidget {
+class NewUserPage extends StatefulWidget {
   final AdminPanelRepository? repository;
   final String? accountId;
   final BuildContext parentContext;
@@ -17,18 +17,41 @@ class NewUserPage extends StatelessWidget {
   const NewUserPage({super.key, this.repository, this.accountId, required this.parentContext});
 
   @override
+  State<NewUserPage> createState() => _NewUserPageState();
+}
+
+class _NewUserPageState extends State<NewUserPage> {
+  late final TextEditingController nameCtrl;
+  late final TextEditingController emailCtrl;
+  late final TextEditingController passwordCtrl;
+  late final TextEditingController phoneCtrl;
+  String? systemRole;
+  String? assignedRole;
+
+  @override
+  void initState() {
+    super.initState();
+    nameCtrl = TextEditingController();
+    emailCtrl = TextEditingController();
+    passwordCtrl = TextEditingController();
+    phoneCtrl = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    nameCtrl.dispose();
+    emailCtrl.dispose();
+    passwordCtrl.dispose();
+    phoneCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textStyleLabel = const TextStyle(
       color: Color(0xFF2B000D),
       fontWeight: FontWeight.w600,
     );
-
-    String? systemRole;
-    String? assignedRole;
-    final nameCtrl = TextEditingController();
-    final emailCtrl = TextEditingController();
-    final passwordCtrl = TextEditingController();
-    final phoneCtrl = TextEditingController();
 
     return SafeArea(
       child: Container(
@@ -47,8 +70,8 @@ class NewUserPage extends StatelessWidget {
                 border: Border.all(color: const Color(0xFFE0D4D4)),
               ),
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-              child: StatefulBuilder(
-                builder: (context, setSt) {
+              child: Builder(
+                builder: (context) {
 
                   Future<void> pickOption({
                     required List<String> options,
@@ -123,7 +146,7 @@ class NewUserPage extends StatelessWidget {
                                 return;
                               }
 
-                              final accId = accountId ?? await TokenStorage().readAccountId();
+                              final accId = widget.accountId ?? await TokenStorage().readAccountId();
                               if (accId == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('No account id available')),
@@ -131,7 +154,7 @@ class NewUserPage extends StatelessWidget {
                                 return;
                               }
 
-                              final repo = repository ?? AdminPanelRepositoryImpl(
+                              final repo = widget.repository ?? AdminPanelRepositoryImpl(
                                     service: AdminPanelService(client: AuthHttpClient()),
                                     tokenStorage: TokenStorage(),
                                   );
@@ -148,18 +171,16 @@ class NewUserPage extends StatelessWidget {
                                   ),
                                 );
                                 final currentRole =
-                                    parentContext.read<AdminPanelBloc>().state.selectedRole;
-                                parentContext
-                                    .read<AdminPanelBloc>()
-                                    .add(LoadSubUsers(currentRole));
+                                    context.read<AdminPanelBloc>().state.selectedRole;
+                                context.read<AdminPanelBloc>().add(LoadSubUsers(currentRole));
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Sub user registered')),
                                   );
                                   Navigator.of(context).maybePop();
                                 }
                               } catch (e) {
-                                ScaffoldMessenger.of(parentContext).showSnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Error: $e')),
                                 );
                               }
@@ -282,7 +303,7 @@ class NewUserPage extends StatelessWidget {
                           await pickOption(
                             options: const ['Admin', 'Employee'],
                             initial: systemRole,
-                            onSelected: (val) => setSt(() => systemRole = val),
+                            onSelected: (val) => setState(() => systemRole = val),
                           );
                         },
                         child: Container(
@@ -314,7 +335,7 @@ class NewUserPage extends StatelessWidget {
                           await pickOption(
                             options: const ['Seller', 'Buyer', 'WarehouseWorker', 'Admin'],
                             initial: assignedRole,
-                            onSelected: (val) => setSt(() => assignedRole = val),
+                            onSelected: (val) => setState(() => assignedRole = val),
                           );
                         },
                         child: Container(
