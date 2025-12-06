@@ -153,21 +153,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
-    // Backend ALWAYS requires ProfilePicture as an actual file
-    // User must always select an image (new or existing)
-    if (state.selectedImageUri == null || state.selectedImageUri!.isEmpty) {
-      emit(
-        state.copyWith(
-          status: Status.failure,
-          message: 'Please select an image to update your profile',
-        ),
-      );
-      return;
-    }
-
+    // Image is now optional - backend no longer requires it
     emit(state.copyWith(status: Status.loading));
     try {
-      // Use the combined method that handles both data and image in one request
+      // Use the combined method that handles both data and optional image
       await _repository.updateProfileWithImage(
         profileId: state.profileId,
         firstName: state.firstName,

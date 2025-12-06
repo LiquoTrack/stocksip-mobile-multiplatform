@@ -133,11 +133,6 @@ class ProfileService {
     }
   }
 
-  /// Updates profile with optional image upload in a single multipart request
-  /// This ensures all data is sent together with proper validation
-  /// 
-  /// **IMPORTANT**: Backend REQUIRES ProfilePicture field to be a file.
-  /// If no new image, the user must have selected one previously.
   Future<Profile> updateProfileWithImage({
     required String profileId,
     required String firstName,
@@ -155,7 +150,7 @@ class ProfileService {
 
       final Uri uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.updateProfile(profileId));
 
-      // Backend REQUIRES multipart with actual file for ProfilePicture
+      // Use multipart for consistency
       print('DEBUG: Using multipart (backend requirement)');
       
       final http.MultipartRequest request = http.MultipartRequest(
@@ -169,29 +164,18 @@ class ProfileService {
         ..fields['PhoneNumber'] = phoneNumber.isNotEmpty ? phoneNumber : ''
         ..fields['AssignedRole'] = assignedRole.isNotEmpty ? assignedRole : 'User';
 
-      // ProfilePicture MUST be a file, not empty text
-      // If imagePath is provided, use it
-      // Otherwise, backend expects user to have selected an image during creation
+      // ProfilePicture is optional - only add if provided
       if (imagePath != null && imagePath.isNotEmpty) {
         print('DEBUG: Adding NEW image from: $imagePath');
         request.files.add(
           await http.MultipartFile.fromPath('ProfilePicture', imagePath),
         );
       } else {
-        // Backend cannot accept empty/null for ProfilePicture in PUT requests
-        // This shouldn't happen if BLoC validation works correctly
-        print('DEBUG: WARNING - No image path provided, but backend requires it');
-        // Try sending empty file as last resort
-        request.files.add(
-          http.MultipartFile.fromBytes('ProfilePicture', []),
-        );
+        print('DEBUG: No image provided - skipping ProfilePicture field');
       }
 
       print('DEBUG: Request fields: ${request.fields}');
       print('DEBUG: Request files count: ${request.files.length}');
-      if (request.files.isNotEmpty) {
-        print('DEBUG: File field: ${request.files.first.field}, size: ${request.files.first.length}');
-      }
 
       final http.StreamedResponse response = await request.send();
 
