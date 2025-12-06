@@ -8,6 +8,15 @@ class SubscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final String normalizedStatus =
+        subscription.status == "PendingUpgradePayment"
+            ? "active"
+            : subscription.status.toLowerCase();
+
+    final Color normalizedColor =
+        normalizedStatus == "active" ? Colors.green : Colors.red;
+
     return Card(
       color: const Color(0xFF1A0008),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -52,13 +61,13 @@ class SubscriptionCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Divider(color: Colors.white.withAlpha(25)),
+
             InfoRow(
               label: "Status",
-              value: subscription.status,
-              valueColor: subscription.status.toLowerCase() == "active"
-                  ? Colors.green
-                  : Colors.red,
+              value: normalizedStatus,
+              valueColor: normalizedColor,
             ),
+
             InfoRow(
               label: "Expiration",
               value: subscription.expirationDate == "12/31/9999"

@@ -4,20 +4,16 @@ import 'package:stocksip/features/payment_and_subscriptions/subscription/domain/
 
 class SubscriptionState {
   final Status status;
-  final Subscription subscription;
-  final String? message;
+  final Subscription? subscription;
   final AccountSubscription? accountSubscription;
+  final String? initPoint;
+  final String? message;
 
   const SubscriptionState({
     this.status = Status.initial,
-    this.subscription = const Subscription(
-      accountId: '',
-      planId: '',
-      preferenceId: '',
-      initPoint: '',
-      isPaymentLaunched: false,
-    ),
+    this.subscription,
     this.accountSubscription,
+    this.initPoint,
     this.message,
   });
 
@@ -25,12 +21,14 @@ class SubscriptionState {
     Status? status,
     Subscription? subscription,
     AccountSubscription? accountSubscription,
+    final String? initPoint,
     String? message,
   }) {
     return SubscriptionState(
       status: status ?? this.status,
       subscription: subscription ?? this.subscription,
       accountSubscription: accountSubscription ?? this.accountSubscription,
+      initPoint: initPoint ?? this.initPoint,
       message: message ?? this.message,
     );
   }

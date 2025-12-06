@@ -9,6 +9,7 @@ class Plan {
   final String? paymentFrequency;
   final String planPrice;
   final PlanLimits? planLimits;
+  final bool isMaxPlanMessage;
 
   Plan({
     this.id,
@@ -19,6 +20,7 @@ class Plan {
     this.paymentFrequency,
     required this.planPrice,
     this.planLimits,
+    this.isMaxPlanMessage = false,
   });
 
   factory Plan.fromJson(Map<String, dynamic> json) {
