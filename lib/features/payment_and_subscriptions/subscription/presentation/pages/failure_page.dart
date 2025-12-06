@@ -23,7 +23,7 @@ class _FailurePageState extends State<FailurePage>
     super.initState();
 
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(seconds: 5),
       vsync: this,
     )..repeat(reverse: true);
 
