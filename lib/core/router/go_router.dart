@@ -24,7 +24,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/payment-failure',
       builder: (context, state) => const FailurePage(),
-    ),    
+    ),
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/choose-plan',

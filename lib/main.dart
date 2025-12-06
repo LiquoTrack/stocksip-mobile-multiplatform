@@ -13,6 +13,13 @@ import 'package:stocksip/features/iam/password_recovery/data/remote/service/reco
 import 'package:stocksip/features/iam/password_recovery/data/repositories/recovery_password_repository_impl.dart';
 import 'package:stocksip/features/iam/password_recovery/presentation/blocs/recovery_password_bloc.dart';
 import 'package:stocksip/features/iam/register/presentation/bloc/register_bloc.dart';
+import 'package:stocksip/features/inventory_management/inventory/data/remote/inventory_service.dart';
+import 'package:stocksip/features/inventory_management/inventory/data/repositories/inventory_repository_impl.dart';
+import 'package:stocksip/features/inventory_management/inventory/presentation/inventory/blocs/inventory_bloc.dart';
+import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_addition/blocs/inventory_addition_bloc.dart';
+import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_detail/blocs/inventory_detail_bloc.dart';
+import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_subtrack/blocs/inventory_subtrack_bloc.dart';
+import 'package:stocksip/features/inventory_management/inventory/presentation/inventory_transfer/blocs/inventory_transfer_bloc.dart';
 import 'package:stocksip/features/inventory_management/storage/data/remote/brand_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/remote/product_type_service.dart';
 import 'package:stocksip/features/inventory_management/storage/data/repositories/brand_repository_impl.dart';
@@ -127,58 +134,8 @@ class MainApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => LoginBloc(repository: authRepository),
-        ),
-        BlocProvider(
-          create: (context) => RegisterBloc(repository: authRepository),
-        ),
-        BlocProvider(
           create: (context) =>
               AuthBloc(tokenStorage: tokenStorage)..add(const AppStarted()),
-        ),
-        BlocProvider(
-          create: (context) => StorageBloc(
-            repository: ProductRepositoryImpl(
-              service: ProductService(client: authHttpClient),
-              tokenStorage: tokenStorage,
-            ),
-            productTypeRepository: ProductTypeRepositoryImpl(
-              productTypeService: ProductTypeService(),
-            ),
-            brandRepository: BrandRepositoryImpl(brandService: BrandService()),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => CareguideBloc(
-            repository: CareguideRepositoryImpl(
-              service: CareguideService(client: authHttpClient),
-            ),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => WarehouseBloc(
-            repository: WarehousesRepositoryImpl(
-              service: WarehouseService(client: authHttpClient),
-              tokenStorage: tokenStorage,
-            ),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => ProfileBloc(
-            repository: ProfileRepositoryImpl(service: ProfileService()),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => CatalogBloc(
-            repository: CatalogRepositoryImpl(catalogService: CatalogService()),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => RecoveryPasswordBloc(
-            repository: RecoveryPasswordRepositoryImpl(
-              service: RecoveryPasswordService(),
-            ),
-          ),
         ),
         BlocProvider(
           create: (context) => PlanBloc(
@@ -199,6 +156,49 @@ class MainApp extends StatelessWidget {
           create: (context) => SubscriptionBloc(
             repository: SubscriptionRepositoryImpl(
               service: SubscriptionsService(client: authHttpClient),
+              tokenStorage: tokenStorage,
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => InventoryBloc(
+            repository: InventoryRepositoryImpl(
+              service: InventoryService(client: authHttpClient),
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => InventoryDetailBloc(
+            inventoryRepository: InventoryRepositoryImpl(
+              service: InventoryService(client: authHttpClient),
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => InventoryAdditionBloc(
+            inventoryRepository: InventoryRepositoryImpl(
+              service: InventoryService(client: authHttpClient),
+            ),
+            productRepository: ProductRepositoryImpl(
+              service: ProductService(client: authHttpClient),
+              tokenStorage: tokenStorage,
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => InventorySubtrackBloc(
+            inventoryRepository: InventoryRepositoryImpl(
+              service: InventoryService(client: authHttpClient),
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => InventoryTransferBloc(
+            inventoryRepository: InventoryRepositoryImpl(
+              service: InventoryService(client: authHttpClient),
+            ),
+            warehouseRepository: WarehousesRepositoryImpl(
+              service: WarehouseService(client: authHttpClient),
               tokenStorage: tokenStorage,
             ),
           ),
